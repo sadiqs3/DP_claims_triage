@@ -1,0 +1,48 @@
+{
+  "tool_name": "lookup_policy_eligibility",
+  "version": "1.0",
+  "purpose": "Retrieve one policy enrolment and covered-device record for triage context.",
+  "accepted_lookup_patterns_in_priority_order": [
+    {
+      "fields": [
+        "policy_id"
+      ],
+      "expected_match_count": 1
+    },
+    {
+      "fields": [
+        "customer_id",
+        "covered_device_identifier"
+      ],
+      "expected_match_count": 1
+    },
+    {
+      "fields": [
+        "customer_id"
+      ],
+      "expected_match_count": "1 only; more than 1 -> MANUAL_REVIEW / DATA-001"
+    }
+  ],
+  "output_fields": [
+    "customer_id",
+    "policy_id",
+    "plan_id",
+    "policy_status",
+    "policy_enrollment_date",
+    "coverage_start_date",
+    "coverage_end_date",
+    "policy_termination_date",
+    "suspension_start_date",
+    "suspension_end_date",
+    "covered_device_id",
+    "covered_device_identifier",
+    "device_category",
+    "device_brand",
+    "device_model",
+    "device_purchase_date",
+    "device_enrollment_date",
+    "record_snapshot_date"
+  ],
+  "no_match_handling": "INFO_REQUIRED under DATA-001; ask for policy ID or covered device identifier.",
+  "multiple_match_handling": "MANUAL_REVIEW under DATA-001; do not select a policy by guesswork."
+}

@@ -1,0 +1,9 @@
+code,description
+DATA_CONFLICT,"Structured facts, evidence, or claim narrative materially conflict."
+DEVICE_MISMATCH,Claimed device identifier differs from the enrolled covered device.
+DATE_ANOMALY,"Incident, quote, repair, or policy dates are inconsistent or require interpretation."
+REPEAT_CLAIM_PATTERN,Claim history indicates a pattern requiring analyst assessment.
+HIGH_COST_EXCEPTION,Repair/replacement value exceeds a defined operational threshold.
+POLICY_EXCEPTION,"Goodwill, exception, or special operational handling is requested or required."
+RULE_NOT_AVAILABLE,"Product, geography, policy version, or incident scenario is outside the supported rule set."
+POTENTIAL_DUPLICATE,A materially similar recent claim or evidence item is detected.

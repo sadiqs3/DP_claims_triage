@@ -1,0 +1,7 @@
+device_brand,device_model,reference_device_value_usd,high_cost_repair_threshold_percent,high_cost_repair_threshold_usd,currency,value_basis,active_flag,reference_version
+Aster,Aster One,499.0,0.65,324.35,USD,Synthetic reference replacement value,True,v1
+Cobalt,Cobalt Mini,349.0,0.65,226.85,USD,Synthetic reference replacement value,True,v1
+Lumen,Lumen Pro,899.0,0.65,584.35,USD,Synthetic reference replacement value,True,v1
+Novatek,Pulse 12,599.0,0.65,389.35,USD,Synthetic reference replacement value,True,v1
+Orion,X5,999.0,0.65,649.35,USD,Synthetic reference replacement value,True,v1
+Vela,Vela Edge,699.0,0.65,454.35,USD,Synthetic reference replacement value,True,v1

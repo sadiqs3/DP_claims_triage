@@ -1,0 +1,19 @@
+coverage_matrix_id,plan_id,claim_category,category_scope,covered_flag,deductible_amount,currency,evidence_profile_id,repair_eligible_flag,replacement_eligible_flag,coverage_notes
+DP-ESSENTIAL-SCREEN_DAMAGE,DP-ESSENTIAL,SCREEN_DAMAGE,SUPPORTED,TRUE,29,USD,EVD-SCREEN-01,TRUE,TRUE,Covered accidental screen damage. Replacement is permitted only when repair is not feasible.
+DP-ESSENTIAL-ACCIDENTAL_DAMAGE,DP-ESSENTIAL,ACCIDENTAL_DAMAGE,SUPPORTED,FALSE,,,,FALSE,FALSE,Not covered under DeviceProtect Essential.
+DP-ESSENTIAL-LIQUID_DAMAGE,DP-ESSENTIAL,LIQUID_DAMAGE,SUPPORTED,FALSE,,,,FALSE,FALSE,Not covered under DeviceProtect Essential.
+DP-ESSENTIAL-MECHANICAL_BREAKDOWN,DP-ESSENTIAL,MECHANICAL_BREAKDOWN,SUPPORTED,FALSE,,,,FALSE,FALSE,Not covered under DeviceProtect Essential.
+DP-ESSENTIAL-THEFT,DP-ESSENTIAL,THEFT,SUPPORTED,FALSE,,,,FALSE,FALSE,Not covered under DeviceProtect Essential.
+DP-ESSENTIAL-LOSS,DP-ESSENTIAL,LOSS,GLOBAL_EXCLUSION,FALSE,,,,FALSE,FALSE,Explicit product-wide exclusion: loss is not covered.
+DP-COMPLETE-SCREEN_DAMAGE,DP-COMPLETE,SCREEN_DAMAGE,SUPPORTED,TRUE,49,USD,EVD-SCREEN-01,TRUE,TRUE,Covered accidental screen damage. Replacement is permitted only when repair is not feasible.
+DP-COMPLETE-ACCIDENTAL_DAMAGE,DP-COMPLETE,ACCIDENTAL_DAMAGE,SUPPORTED,TRUE,49,USD,EVD-ACCIDENTAL-01,TRUE,TRUE,Covered accidental damage other than screen-only or liquid-specific damage. Replacement is permitted only when repair is not feasible.
+DP-COMPLETE-LIQUID_DAMAGE,DP-COMPLETE,LIQUID_DAMAGE,SUPPORTED,TRUE,49,USD,EVD-LIQUID-01,TRUE,TRUE,Covered liquid damage. Replacement is permitted only when repair is not feasible.
+DP-COMPLETE-MECHANICAL_BREAKDOWN,DP-COMPLETE,MECHANICAL_BREAKDOWN,SUPPORTED,TRUE,0,USD,EVD-MECHANICAL-01,TRUE,TRUE,Covered mechanical breakdown. No deductible applies.
+DP-COMPLETE-THEFT,DP-COMPLETE,THEFT,SUPPORTED,FALSE,,,,FALSE,FALSE,Not covered under DeviceProtect Complete.
+DP-COMPLETE-LOSS,DP-COMPLETE,LOSS,GLOBAL_EXCLUSION,FALSE,,,,FALSE,FALSE,Explicit product-wide exclusion: loss is not covered.
+DP-PREMIUM-SCREEN_DAMAGE,DP-PREMIUM,SCREEN_DAMAGE,SUPPORTED,TRUE,49,USD,EVD-SCREEN-01,TRUE,TRUE,Covered accidental screen damage. Replacement is permitted only when repair is not feasible.
+DP-PREMIUM-ACCIDENTAL_DAMAGE,DP-PREMIUM,ACCIDENTAL_DAMAGE,SUPPORTED,TRUE,49,USD,EVD-ACCIDENTAL-01,TRUE,TRUE,Covered accidental damage other than screen-only or liquid-specific damage. Replacement is permitted only when repair is not feasible.
+DP-PREMIUM-LIQUID_DAMAGE,DP-PREMIUM,LIQUID_DAMAGE,SUPPORTED,TRUE,49,USD,EVD-LIQUID-01,TRUE,TRUE,Covered liquid damage. Replacement is permitted only when repair is not feasible.
+DP-PREMIUM-MECHANICAL_BREAKDOWN,DP-PREMIUM,MECHANICAL_BREAKDOWN,SUPPORTED,TRUE,0,USD,EVD-MECHANICAL-01,TRUE,TRUE,Covered mechanical breakdown. No deductible applies.
+DP-PREMIUM-THEFT,DP-PREMIUM,THEFT,SUPPORTED,TRUE,99,USD,EVD-THEFT-01,FALSE,TRUE,Covered theft claim. A replacement is the expected resolution path after required evidence and policy checks are satisfied.
+DP-PREMIUM-LOSS,DP-PREMIUM,LOSS,GLOBAL_EXCLUSION,FALSE,,,,FALSE,FALSE,Explicit product-wide exclusion: loss is not covered.

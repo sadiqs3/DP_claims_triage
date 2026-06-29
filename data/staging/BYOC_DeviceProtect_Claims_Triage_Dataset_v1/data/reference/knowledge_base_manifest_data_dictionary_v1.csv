@@ -1,0 +1,11 @@
+field_name,data_type,definition,allowed_values_or_example,required
+document_id,string,Stable unique identifier for the knowledge-base document.,KB-001,Yes
+file_name,string,Markdown filename within data/knowledge_base.,KB-001_claims_triage_sop_v1.md,Yes
+document_title,string,Human-readable document title.,Claims Triage Standard Operating Procedure,Yes
+document_type,string,Document classification.,SOP; Guide; Policy; Glossary,Yes
+retrieval_topics,string,Semicolon-separated concepts useful for retrieval.,manual review; escalation; evidence,Yes
+intended_use,string,Permitted purpose in agent workflow.,Operational guidance,Yes
+authority_level,string,Clarifies whether document is authoritative for decisions.,Operational guidance; not policy logic,Yes
+effective_start_date,date,Date document became effective.,2026-06-23,Yes
+version,string,Document version.,1.0,Yes
+agent_retrieval_allowed,boolean,Whether document may be added to RAG retrieval corpus.,Yes,Yes

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Secrets and local configuration
+.env
+*.key
+*.pem
+
+# macOS
+.DS_Store
+
+# VS Code local settings
+.vscode/settings.json
+
+# Temporary files
+*.log
+
+# Keep held-out evaluation data out of the development repository
+data/evaluation/

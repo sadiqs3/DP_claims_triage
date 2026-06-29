@@ -1,0 +1,17 @@
+field_name,data_type,requiredness,example,business_definition,usage_and_constraints
+historical_claim_id,string,Required,HCLM-000001,Unique synthetic identifier for a finalized prior claim.,Primary key; must be unique.
+policy_id,string,Required,POL-00003,Policy linked to the historical claim.,Foreign key to Item #4 Policy Eligibility Lookup.
+customer_id,string,Required,CUS-0026,Synthetic customer alias linked to the policy.,Denormalized lookup aid; no PII.
+covered_device_id,string,Required,CDV-00003,Covered-device record associated with the historical claim.,Foreign key to Item #4 Policy Eligibility Lookup.
+plan_id,string,Required,DP-COMPLETE,Protection plan attached to the policy at the time of the historical claim.,Foreign key to Item #2 Plan Master and Item #4 lookup.
+incident_date,date,Required,2026-02-15,Date on which the historical incident occurred.,"Must fall during an active, non-suspended coverage interval for this synthetic dataset."
+claim_reported_date,date,Required,2026-02-18,Date the historical claim was reported.,Must be on or after incident_date and before the record snapshot date.
+claim_category,enum,Required,SCREEN_DAMAGE,Historical incident category.,"Allowed values: SCREEN_DAMAGE, ACCIDENTAL_DAMAGE, LIQUID_DAMAGE, MECHANICAL_BREAKDOWN, THEFT, LOSS."
+final_claim_status,enum,Required,SETTLED,Final post-processing outcome of the historical claim.,"Allowed values: SETTLED, DECLINED, WITHDRAWN. This is not an Item #1 triage disposition."
+resolution_type,enum,Required,REPAIR,Resolution delivered for a settled claim.,"Allowed values: REPAIR, REPLACEMENT, NONE. NONE applies to DECLINED/WITHDRAWN."
+closure_reason_code,enum,Required,COVERED_CLAIM_SETTLED,Structured reason for final historical closure.,"Examples: COVERED_CLAIM_SETTLED, PLAN_EXCLUSION, INSUFFICIENT_EVIDENCE, CLAIM_LIMIT_EXHAUSTED, CUSTOMER_WITHDREW_CLAIM."
+claim_limit_consumed_flag,boolean,Required,TRUE,Whether the final historical claim consumes the plan annual claim allowance.,TRUE only for SETTLED claims in this dataset; use for LIM-001.
+theft_limit_consumed_flag,boolean,Required,FALSE,Whether the historical claim consumes the plan theft-specific allowance.,TRUE only for SETTLED THEFT claims; use for LIM-002.
+settled_amount_usd,decimal,Conditional,199,Synthetic operational settlement amount for a settled claim.,Blank when final_claim_status is DECLINED or WITHDRAWN; not used to make eligibility decisions.
+currency,string,Conditional,USD,Currency associated with settled_amount_usd.,USD for settled claims; blank otherwise.
+record_snapshot_date,date,Required,2026-06-23,Synthetic data snapshot date.,All historical claims precede this date.

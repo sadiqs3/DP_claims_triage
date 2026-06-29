@@ -1,0 +1,17 @@
+field_name,data_type,required,business_definition,usage_notes
+label_id,string,Yes,Unique internal label identifier.,Internal only; not exposed to the agent.
+claim_id,string,Yes,Foreign key to Item #6 claim intake.,Join key for evaluation.
+dataset_partition,enum,Yes,Development or held-out evaluation partition.,Held-out labels must remain locked until final evaluation.
+gold_disposition,enum,Yes,Expected Item #1 triage disposition.,Metric: exact match.
+gold_primary_rule_id,string,Yes,Canonical decision-driving Item #3 rule.,Metric: compare against acceptable primary rule IDs.
+gold_acceptable_primary_rule_ids,pipe-delimited string / JSON array,Yes,One or more rule IDs that are valid as the primary explanation when multiple verified hard failures coexist.,Avoids penalizing logically valid rule ordering.
+gold_applicable_decision_rule_ids,pipe-delimited string / JSON array,Yes,All known decision-driving rules for the case.,Use as optional rule-citation completeness measure.
+gold_follow_up_question_ids,pipe-delimited string / JSON array,Conditional,Controlled Item #9 question IDs expected for INFO_REQUIRED cases.,Blank for other dispositions.
+gold_manual_review_reason,enum,Conditional,Expected Item #1/3 manual-review reason.,Blank unless disposition is MANUAL_REVIEW.
+gold_evidence_assessment,enum,Yes,Expected evidence state relevant to the decision.,Supports explanation and evidence-handling evaluation.
+gold_next_agent_action,enum,Yes,Expected operational action after triage.,PROCEED = standard processing; INFO_REQUIRED = request; MANUAL_REVIEW = analyst; NOT_ELIGIBLE = decline confirmation.
+gold_requires_manual_analyst_review,boolean,Yes,Whether a claims analyst must review the case.,True only for MANUAL_REVIEW.
+gold_reason_summary,string,Yes,Concise internal rationale grounded in the authoritative rules/facts.,Use only for evaluation of explanation quality; do not provide verbatim to the agent.
+label_status,enum,Yes,Internal label maturity status.,All v1 labels are FINAL_INTERNAL_ORACLE.
+label_version,string,Yes,Version of the label set.,Version-controlled internal asset.
+label_snapshot_date,date,Yes,Data snapshot date used for label derivation.,2026-06-23.

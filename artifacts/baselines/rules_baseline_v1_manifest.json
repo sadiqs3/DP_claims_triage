@@ -1,0 +1,44 @@
+{
+  "baseline_version": "rules_baseline_v1",
+  "artifact_type": "deterministic_rules_baseline",
+  "created_utc": "2026-06-28T05:40:38Z",
+  "source_dataset": "development_claims",
+  "claim_count": 165,
+  "unique_claim_count": 165,
+  "outcome_distribution": {
+    "PROCEED": 64,
+    "INFO_REQUIRED": 45,
+    "MANUAL_REVIEW": 31,
+    "NOT_ELIGIBLE": 25
+  },
+  "triggering_rule_distribution": {
+    "OUT-001": 64,
+    "COV-001": 15,
+    "DEV-001": 14,
+    "ELG-001": 11,
+    "EVD-001": 11,
+    "EVD-002": 11,
+    "DEV-002": 10,
+    "CLM-001": 9,
+    "DATA-002": 6,
+    "LIM-001": 5,
+    "ANM-001": 4,
+    "ELG-002": 3,
+    "LIM-002": 2
+  },
+  "system_limitations": [
+    "DEV-003 is not evaluated because the runtime context does not provide a verified NOT_ENROLLED device decision.",
+    "EXC-001 and EXC-002 are not evaluated because no structured exclusion-status dataset is available.",
+    "Claim-history source completeness cannot be independently verified from the current runtime package."
+  ],
+  "artifacts": {
+    "csv": {
+      "filename": "rules_baseline_v1_development_decisions.csv",
+      "sha256": "87e96250624d927123bc5ca0fc46bca43c411652ae11b6334238ca8711907d43"
+    },
+    "jsonl": {
+      "filename": "rules_baseline_v1_development_decisions.jsonl",
+      "sha256": "0cb6f513713e4d4075ec7857054d11d5ca3b3965e80946a5a7451db77910bb52"
+    }
+  }
+}

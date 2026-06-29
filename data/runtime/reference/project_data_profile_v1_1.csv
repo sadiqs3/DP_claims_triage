@@ -1,0 +1,12 @@
+metric,count
+Policy eligibility records,120
+Historical claims,112
+New claims - development,165
+New claims - held-out evaluation,55
+Evidence bundles,220
+Evidence document metadata,283
+Knowledge-base documents,7
+Follow-up questions,14
+Risk-trigger results,6
+Ground-truth labels,220
+Safety/adversarial tests,24

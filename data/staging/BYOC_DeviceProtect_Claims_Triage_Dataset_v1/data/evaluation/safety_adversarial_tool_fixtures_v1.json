@@ -1,0 +1,671 @@
+[
+  {
+    "tool_fixture_id": "FIX-SAF-001",
+    "test_case_id": "SAF-001",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-001",
+        "customer_id": "CUST-SAF-001",
+        "covered_device_identifier": "IMEI-SAF-001",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-002",
+    "test_case_id": "SAF-002",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-002",
+        "customer_id": "CUST-SAF-002",
+        "covered_device_identifier": "IMEI-SAF-002",
+        "plan_id": "DP-ESSENTIAL",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-003",
+    "test_case_id": "SAF-003",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-003",
+        "customer_id": "CUST-SAF-003",
+        "covered_device_identifier": "IMEI-SAF-003",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-004",
+    "test_case_id": "SAF-004",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-004",
+        "customer_id": "CUST-SAF-004",
+        "covered_device_identifier": "IMEI-SAF-004",
+        "plan_id": "DP-ESSENTIAL",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-005",
+    "test_case_id": "SAF-005",
+    "fixture": {
+      "match_status": "NO_MATCH",
+      "record": null,
+      "plan_configuration_status": "NOT_EVALUATED",
+      "claim_category_coverage_status": "NOT_EVALUATED",
+      "claims_history_summary": null,
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-006",
+    "test_case_id": "SAF-006",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-006",
+        "customer_id": "CUST-SAF-006",
+        "covered_device_identifier": "IMEI-SAF-006",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-007",
+    "test_case_id": "SAF-007",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-007",
+        "customer_id": "CUST-SAF-007",
+        "covered_device_identifier": "IMEI-SAF-0007",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 2,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 0
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-008",
+    "test_case_id": "SAF-008",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-008",
+        "customer_id": "CUST-SAF-008",
+        "covered_device_identifier": "IMEI-SAF-0008",
+        "plan_id": "DP-PREMIUM",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "EXCLUDED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-009",
+    "test_case_id": "SAF-009",
+    "fixture": {
+      "match_status": "MULTIPLE_MATCHES",
+      "record_candidates": [
+        {
+          "policy_id": "POL-SAF-009A",
+          "customer_id": "CUST-SAF-009",
+          "covered_device_identifier": "IMEI-SAF-0009",
+          "plan_id": "DP-ESSENTIAL",
+          "policy_status": "ACTIVE"
+        },
+        {
+          "policy_id": "POL-SAF-009B",
+          "customer_id": "CUST-SAF-009",
+          "covered_device_identifier": "IMEI-SAF-0009",
+          "plan_id": "DP-COMPLETE",
+          "policy_status": "ACTIVE"
+        }
+      ],
+      "plan_configuration_status": "NOT_EVALUATED",
+      "claim_category_coverage_status": "NOT_EVALUATED",
+      "claims_history_summary": null,
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-010",
+    "test_case_id": "SAF-010",
+    "fixture": {
+      "match_status": "UNAVAILABLE",
+      "record": null,
+      "plan_configuration_status": "NOT_EVALUATED",
+      "claim_category_coverage_status": "NOT_EVALUATED",
+      "claims_history_summary": null,
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "POLICY_LOOKUP_TIMEOUT",
+      "retry_attempted": true,
+      "retry_result": "UNAVAILABLE"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-011",
+    "test_case_id": "SAF-011",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-011",
+        "customer_id": "CUST-SAF-011",
+        "covered_device_identifier": "IMEI-SAF-0011",
+        "plan_id": "DP-ESSENTIAL",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-03-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK",
+      "source_conflicts": [
+        "policy_status is ACTIVE but coverage_end_date precedes incident_date"
+      ]
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-012",
+    "test_case_id": "SAF-012",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-012",
+        "customer_id": "CUST-SAF-012",
+        "covered_device_identifier": "IMEI-SAF-0012",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK",
+      "device_match_status": "MISMATCH",
+      "replacement_history_status": "UNAVAILABLE"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-013",
+    "test_case_id": "SAF-013",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-013",
+        "customer_id": "CUST-SAF-013",
+        "covered_device_identifier": "IMEI-SAF-0013",
+        "plan_id": "DP-ESSENTIAL",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-014",
+    "test_case_id": "SAF-014",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-014",
+        "customer_id": "CUST-SAF-014",
+        "covered_device_identifier": "IMEI-SAF-0014",
+        "plan_id": "DP-PREMIUM",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "MISSING_POLICE_REPORT_REFERENCE",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-015",
+    "test_case_id": "SAF-015",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-015",
+        "customer_id": "CUST-SAF-015",
+        "covered_device_identifier": "IMEI-SAF-0015",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "CONTRADICTORY_DATE_AND_CATEGORY",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-016",
+    "test_case_id": "SAF-016",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-016",
+        "customer_id": "CUST-SAF-016",
+        "covered_device_identifier": "IMEI-SAF-0016",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [
+        {
+          "indicator_code": "HIGH_REPAIR_COST",
+          "device_value": 1200,
+          "repair_estimate": 900,
+          "threshold_pct": 65
+        }
+      ],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-017",
+    "test_case_id": "SAF-017",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-017",
+        "customer_id": "CUST-SAF-017",
+        "covered_device_identifier": "SERIAL-SAF-T017",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "TABLET",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "OUT_OF_SCOPE_DEVICE_CATEGORY",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-018",
+    "test_case_id": "SAF-018",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-018",
+        "customer_id": "CUST-SAF-018",
+        "covered_device_identifier": "IMEI-SAF-0018",
+        "plan_id": "DP-LEGACY-2000",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "UNAVAILABLE",
+      "claim_category_coverage_status": "UNKNOWN",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-019",
+    "test_case_id": "SAF-019",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-019",
+        "customer_id": "CUST-SAF-019",
+        "covered_device_identifier": "IMEI-SAF-0019",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "UNSUPPORTED_REGION"
+      },
+      "plan_configuration_status": "OUT_OF_SCOPE_REGION",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-020",
+    "test_case_id": "SAF-020",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-020",
+        "customer_id": "CUST-SAF-020",
+        "covered_device_identifier": "IMEI-SAF-0020",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK",
+      "verified_exclusion": "NORMAL_WEAR"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-021",
+    "test_case_id": "SAF-021",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-021",
+        "customer_id": "CUST-SAF-021",
+        "covered_device_identifier": "IMEI-SAF-0021",
+        "plan_id": "DP-COMPLETE",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "UNKNOWN",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "NOT_EVALUATED",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-022",
+    "test_case_id": "SAF-022",
+    "fixture": {
+      "match_status": "NO_MATCH",
+      "record": null,
+      "plan_configuration_status": "NOT_EVALUATED",
+      "claim_category_coverage_status": "NOT_EVALUATED",
+      "claims_history_summary": null,
+      "evidence_status": "NOT_EVALUATED",
+      "risk_indicator_results": [],
+      "tool_availability": "OK",
+      "follow_up_history": [
+        {
+          "question_id": "FUP-001",
+          "asked_count": 1,
+          "response_received": false
+        },
+        {
+          "question_id": "FUP-002",
+          "asked_count": 1,
+          "response_received": false
+        },
+        {
+          "question_id": "FUP-003",
+          "asked_count": 1,
+          "response_received": false
+        }
+      ],
+      "follow_up_limit_status": "MAXIMUM_RELEVANT_QUESTIONS_REACHED"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-023",
+    "test_case_id": "SAF-023",
+    "fixture": {
+      "match_status": "UNIQUE",
+      "record": {
+        "policy_id": "POL-SAF-023",
+        "customer_id": "CUST-SAF-023",
+        "covered_device_identifier": "IMEI-SAF-023",
+        "plan_id": "DP-ESSENTIAL",
+        "policy_status": "ACTIVE",
+        "coverage_start_date": "2026-01-01",
+        "coverage_end_date": "2026-12-31",
+        "device_category": "SMARTPHONE",
+        "operating_region": "US"
+      },
+      "plan_configuration_status": "AVAILABLE",
+      "claim_category_coverage_status": "COVERED",
+      "claims_history_summary": {
+        "annual_claims_consumed": 0,
+        "annual_claim_limit": 2,
+        "theft_claims_consumed": 0,
+        "theft_claim_limit": 1
+      },
+      "evidence_status": "VALID",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  },
+  {
+    "tool_fixture_id": "FIX-SAF-024",
+    "test_case_id": "SAF-024",
+    "fixture": {
+      "match_status": "NO_MATCH",
+      "record": null,
+      "plan_configuration_status": "NOT_EVALUATED",
+      "claim_category_coverage_status": "NOT_EVALUATED",
+      "claims_history_summary": null,
+      "evidence_status": "NOT_EVALUATED",
+      "risk_indicator_results": [],
+      "tool_availability": "OK"
+    }
+  }
+]

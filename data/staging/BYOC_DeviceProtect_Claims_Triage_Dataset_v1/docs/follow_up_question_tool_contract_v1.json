@@ -1,0 +1,43 @@
+{
+  "tool_name": "select_follow_up_questions",
+  "version": "1.0",
+  "purpose": "Select controlled customer follow-up questions after deterministic triage produces INFO_REQUIRED.",
+  "input": {
+    "claim_id": "string",
+    "current_disposition": "PROCEED | INFO_REQUIRED | MANUAL_REVIEW | NOT_ELIGIBLE",
+    "unmet_rule_ids": [
+      "string"
+    ],
+    "claim_category": "string",
+    "evidence_profile_id": "string or null",
+    "evidence_status_summary": [
+      {
+        "evidence_type": "string",
+        "document_status": "string"
+      }
+    ],
+    "questions_already_asked": [
+      "string"
+    ]
+  },
+  "output": {
+    "follow_up_required": "boolean",
+    "question_ids": [
+      "string"
+    ],
+    "customer_message": "string",
+    "deferred_requirements": [
+      "string"
+    ],
+    "selection_notes": [
+      "string"
+    ]
+  },
+  "constraints": [
+    "Return no questions when current_disposition is MANUAL_REVIEW or NOT_ELIGIBLE.",
+    "Ask at most three questions per interaction.",
+    "Prioritize eligibility-fact questions over evidence questions.",
+    "Do not repeat a question after its max_repeats limit.",
+    "Use only active catalogue questions."
+  ]
+}

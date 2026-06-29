@@ -1,0 +1,26 @@
+{
+  "tool_name": "get_claim_evidence_bundle",
+  "purpose": "Retrieve synthetic evidence metadata for one claim evidence bundle.",
+  "input": {
+    "evidence_bundle_id": "String; Item #6 claim intake reference."
+  },
+  "returns": [
+    "evidence bundle manifest",
+    "all evidence document metadata records for the bundle"
+  ],
+  "evaluation_logic": [
+    "Resolve applicable evidence profile from Item #2 only after policy and category are resolved.",
+    "A REQUIRED evidence type is satisfied only when at least one matching document record has document_status=RECEIVED_VALID.",
+    "RECEIVED_UNREADABLE is not sufficient and should trigger a targeted request for re-upload.",
+    "RECEIVED_CONTRADICTORY should trigger MANUAL_REVIEW rather than agent resolution."
+  ],
+  "must_not_return": [
+    "scenario_family",
+    "intended_disposition",
+    "expected_primary_rule",
+    "evaluation labels"
+  ],
+  "failure_handling": {
+    "unknown_bundle_id": "MANUAL_REVIEW with DATA_CONFLICT; do not infer document availability."
+  }
+}

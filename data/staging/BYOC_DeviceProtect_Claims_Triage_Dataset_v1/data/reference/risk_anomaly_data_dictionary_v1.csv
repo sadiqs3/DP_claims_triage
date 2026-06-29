@@ -1,0 +1,14 @@
+dataset_name,field_name,data_type,description,allowed_values_or_format,pii_flag,agent_accessible
+device_value_reference_v1,device_brand,string,Synthetic device brand used with device_model to locate a reference value.,Existing Item 4 brand values,NO,YES
+device_value_reference_v1,device_model,string,Synthetic device model used with device_brand to locate a reference value.,Existing Item 4 model values,NO,YES
+device_value_reference_v1,reference_device_value_usd,decimal,Synthetic reference replacement value; used only for high-cost review comparison.,Positive USD amount,NO,YES
+device_value_reference_v1,high_cost_repair_threshold_percent,decimal,Configured percentage of reference device value that triggers high-cost review.,0.65 in v1,NO,YES
+device_value_reference_v1,high_cost_repair_threshold_usd,decimal,Computed threshold value used for high-cost review.,Positive USD amount,NO,YES
+risk_anomaly_indicator_catalog_v1,risk_indicator_id,string,Stable identifier for a risk/data-completeness signal definition.,RSK-###,NO,YES
+risk_anomaly_indicator_catalog_v1,trigger_condition,string,Deterministic or controlled-service condition under which the signal is triggered.,Text,NO,YES
+risk_anomaly_indicator_catalog_v1,recommended_action,string,Required action when indicator triggers.,MANUAL_REVIEW only,NO,YES
+claim_risk_indicator_results_v1,claim_id,string,New claim to which the triggered signal applies.,CLM-######,NO,YES
+claim_risk_indicator_results_v1,risk_status,string,Status of the returned indicator result.,TRIGGERED; no row means no triggered risk signal,NO,YES
+claim_risk_indicator_results_v1,manual_review_reason,string,Structured reason code for an analyst referral.,HIGH_COST_EXCEPTION | POTENTIAL_DUPLICATE | RULE_NOT_AVAILABLE,NO,YES
+claim_risk_indicator_results_v1,source_reference_id,string,Evidence or claim record that supports the triggered signal.,EVI-###### | HCLM-###### | CLM-######,NO,YES
+claim_risk_indicator_results_v1,risk_summary,string,Neutral explanation of the signal; must not allege fraud or prescribe a decline.,Text,NO,YES

@@ -1,0 +1,17 @@
+item,asset,active_version,active_path,access_boundary
+1,Decision taxonomy and manual-review reasons,v1,data/reference/decision_taxonomy_dispositions_v1.csv; data/reference/manual_review_reasons_v1.csv,Agent reference
+1,Decision precedence,v1.1,data/reference/decision_precedence_v1_1.csv,Agent reference
+2,Protection plan master,v1.1,data/reference/protection_plan_master_v1_1.csv,Agent reference
+2,Plan coverage matrix,v1,data/reference/plan_coverage_matrix_v1.csv,Agent reference
+3,Policy rule catalogue,v1.2,data/reference/policy_rule_catalog_v1_2.csv,Authoritative deterministic rule source
+4,Policy eligibility lookup,v1.1,data/reference/policy_eligibility_lookup_v1_1.csv,Agent tool data
+5,Prior claims history,v1.2,data/reference/prior_claims_history_v1_2.csv,Agent tool data
+6,Claim intake - development,v1,data/claims/claims_intake_development_v1.csv,Agent tool data
+6,Claim intake - held-out,v1,data/evaluation/claims_intake_held_out_evaluation_v1.csv,Evaluation only
+6,Claim scenario metadata,v1.2,data/internal/claim_scenario_metadata_v1_2.csv,Internal only
+7,Evidence metadata,v1,data/reference/evidence_profile_requirements_v1.csv; data/claims/evidence_bundle_manifest_v1.csv; data/claims/claim_evidence_document_metadata_v1.csv,Agent reference/tool data
+8,Operational knowledge base,v1,data/knowledge_base/,RAG corpus
+9,Follow-up question catalogue,v1,data/reference/follow_up_question_catalog_v1.csv; data/reference/follow_up_question_selection_rules_v1.csv,Agent reference
+10,Risk/anomaly indicators,v1,data/reference/device_value_reference_v1.csv; data/reference/risk_anomaly_indicator_catalog_v1.csv; data/claims/claim_risk_indicator_results_v1.csv,Agent tool data; manual review only
+11,Ground truth labels,v1,data/internal/ground_truth_claim_labels_development_v1.csv; data/internal/ground_truth_claim_labels_held_out_evaluation_v1.csv,Internal only
+12,Safety/adversarial suite,v1,data/evaluation/safety_adversarial_test_cases_v1.csv; data/internal/safety_adversarial_expected_results_v1.csv,Evaluation/internal only

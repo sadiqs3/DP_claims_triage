@@ -1,0 +1,13 @@
+check_id,check_name,status,detail
+VAL-001,All expected active files are present,PASS,79 filesystem entries
+VAL-002,Coverage plan IDs exist in plan master,PASS,set()
+VAL-003,Policy rule manual-review reasons are controlled,PASS,set()
+VAL-004,Lookup plan IDs exist in plan master,PASS,set()
+VAL-005,Historical policy IDs exist in lookup,PASS,set()
+VAL-006,Current claim policy IDs exist in lookup or are explicit test exceptions,PASS,set()
+VAL-007,One evidence bundle exists for each current claim,PASS,"claims=220, bundles=220"
+VAL-008,Evidence document bundle IDs exist in manifest,PASS,set()
+VAL-009,Risk result claim IDs exist in current claims,PASS,set()
+VAL-010,Ground-truth claim IDs match current claims,PASS,"labels=220, claims=220"
+VAL-011,Safety expected result case IDs match safety inputs,PASS,"tests=24, expected=24"
+VAL-012,No duplicate current claim IDs,PASS,"unique=220, total=220"

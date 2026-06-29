@@ -1,0 +1,6 @@
+evidence_type,evidence_format,business_definition,usage_note
+DAMAGE_PHOTO,Image / photo metadata,Evidence of physical visual damage uploaded by customer.,"May support screen, accidental, or liquid damage assessment."
+REPAIR_QUOTE,Repair provider document metadata,Repair estimate or repair feasibility statement.,Optional in Version 1; required only later if a payment/repair authorization scope is added.
+DIAGNOSTIC_REPORT,Repair provider diagnostic metadata,Technical diagnosis of a mechanical malfunction.,Required for mechanical-breakdown triage.
+POLICE_REPORT_REFERENCE,Police report metadata,Reference number and report date for a theft incident.,Required for theft triage under the Premium plan.
+PROOF_OF_PURCHASE,Purchase document metadata,Original purchase or ownership proof.,Not mandatory in Version 1 because policy-device enrolment is authoritative; may appear as optional context only.

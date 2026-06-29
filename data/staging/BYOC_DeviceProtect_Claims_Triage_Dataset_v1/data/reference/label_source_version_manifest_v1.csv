@@ -1,0 +1,10 @@
+item,asset,active_version,used_for
+Item #1,Decision taxonomy and precedence,v1.0 + precedence amendment v1.1,Allowed dispositions and decision ordering
+Item #2,Plan master and coverage matrix,Plan Master v1.1; Coverage Matrix v1.0,"Plan limits, coverage status, evidence profile"
+Item #3,Policy rule catalog,v1.1,Rule IDs and outcome logic
+Item #4,Policy eligibility lookup,v1.1,"Policy, device and active-date facts"
+Item #5,Prior claims history,v1.2,Time-safe annual and theft claim-limit checks
+Item #6,Claim intake and internal scenario metadata,Claim Intake v1.0; Internal Metadata v1.2,"Claim cases, partition and intended scenario construction"
+Item #7,Evidence metadata,v1.0,Evidence state and contradiction checks
+Item #9,Follow-up question catalogue,v1.0,Controlled question IDs
+Item #10,Risk and anomaly indicators,v1.0,Risk-driven manual-review cases

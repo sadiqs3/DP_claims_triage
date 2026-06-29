@@ -1,0 +1,221 @@
+claim_id,evidence_bundle_id,dataset_partition,scenario_family,intended_disposition,expected_primary_rule,anticipated_manual_review_reason,generation_notes
+CLM-000001,EBND-000001,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000002,EBND-000002,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000003,EBND-000003,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000004,EBND-000004,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000005,EBND-000005,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000006,EBND-000006,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000007,EBND-000007,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000008,EBND-000008,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000009,EBND-000009,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000010,EBND-000010,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000011,EBND-000011,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000012,EBND-000012,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000013,EBND-000013,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000014,EBND-000014,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000015,EBND-000015,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000016,EBND-000016,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000017,EBND-000017,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000018,EBND-000018,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000019,EBND-000019,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000020,EBND-000020,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000021,EBND-000021,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000022,EBND-000022,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000023,EBND-000023,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000024,EBND-000024,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000025,EBND-000025,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000026,EBND-000026,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000027,EBND-000027,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000028,EBND-000028,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000029,EBND-000029,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000030,EBND-000030,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000031,EBND-000031,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000032,EBND-000032,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000033,EBND-000033,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000034,EBND-000034,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000035,EBND-000035,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000036,EBND-000036,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000037,EBND-000037,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000038,EBND-000038,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000039,EBND-000039,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000040,EBND-000040,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000041,EBND-000041,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000042,EBND-000042,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000043,EBND-000043,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000044,EBND-000044,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000045,EBND-000045,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000046,EBND-000046,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000047,EBND-000047,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000048,EBND-000048,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000049,EBND-000049,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000050,EBND-000050,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000051,EBND-000051,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000052,EBND-000052,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000053,EBND-000053,DEVELOPMENT,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000054,EBND-000054,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000055,EBND-000055,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000056,EBND-000056,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000057,EBND-000057,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000058,EBND-000058,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000059,EBND-000059,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000060,EBND-000060,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000061,EBND-000061,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000062,EBND-000062,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000063,EBND-000063,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000064,EBND-000064,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000065,EBND-000065,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000066,EBND-000066,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000067,EBND-000067,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000068,EBND-000068,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000069,EBND-000069,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000070,EBND-000070,HELD_OUT_EVALUATION,valid_covered_claim,PROCEED,OUT-001,,Eligible policy and covered category; required evidence will be represented in Item #7.
+CLM-000071,EBND-000071,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-06-10.
+CLM-000072,EBND-000072,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-01-09.
+CLM-000073,EBND-000073,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-05-05.
+CLM-000074,EBND-000074,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-01-11.
+CLM-000075,EBND-000075,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2025-09-09.
+CLM-000076,EBND-000076,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-05-17.
+CLM-000077,EBND-000077,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-03-30.
+CLM-000078,EBND-000078,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-02-03.
+CLM-000079,EBND-000079,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-03-22.
+CLM-000080,EBND-000080,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-06-22.
+CLM-000081,EBND-000081,DEVELOPMENT,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-03-05.
+CLM-000082,EBND-000082,HELD_OUT_EVALUATION,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2025-12-31.
+CLM-000083,EBND-000083,HELD_OUT_EVALUATION,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-06-14.
+CLM-000084,EBND-000084,HELD_OUT_EVALUATION,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-04-09.
+CLM-000085,EBND-000085,HELD_OUT_EVALUATION,missing_incident_date,INFO_REQUIRED,ELG-001,,Underlying incident date retained only for test construction: 2026-05-07.
+CLM-000086,EBND-000086,DEVELOPMENT,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: LIQUID_DAMAGE.
+CLM-000087,EBND-000087,DEVELOPMENT,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: SCREEN_DAMAGE.
+CLM-000088,EBND-000088,DEVELOPMENT,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: THEFT.
+CLM-000089,EBND-000089,DEVELOPMENT,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: SCREEN_DAMAGE.
+CLM-000090,EBND-000090,DEVELOPMENT,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: SCREEN_DAMAGE.
+CLM-000091,EBND-000091,DEVELOPMENT,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: ACCIDENTAL_DAMAGE.
+CLM-000092,EBND-000092,DEVELOPMENT,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: SCREEN_DAMAGE.
+CLM-000093,EBND-000093,DEVELOPMENT,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: SCREEN_DAMAGE.
+CLM-000094,EBND-000094,DEVELOPMENT,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: SCREEN_DAMAGE.
+CLM-000095,EBND-000095,HELD_OUT_EVALUATION,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: SCREEN_DAMAGE.
+CLM-000096,EBND-000096,HELD_OUT_EVALUATION,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: ACCIDENTAL_DAMAGE.
+CLM-000097,EBND-000097,HELD_OUT_EVALUATION,ambiguous_claim_category,INFO_REQUIRED,CLM-001,,Underlying intended category for scenario construction: MECHANICAL_BREAKDOWN.
+CLM-000098,EBND-000098,DEVELOPMENT,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000099,EBND-000099,DEVELOPMENT,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000100,EBND-000100,DEVELOPMENT,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000101,EBND-000101,DEVELOPMENT,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000102,EBND-000102,DEVELOPMENT,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000103,EBND-000103,DEVELOPMENT,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000104,EBND-000104,DEVELOPMENT,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000105,EBND-000105,DEVELOPMENT,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000106,EBND-000106,HELD_OUT_EVALUATION,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000107,EBND-000107,HELD_OUT_EVALUATION,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000108,EBND-000108,HELD_OUT_EVALUATION,missing_device_identifier,INFO_REQUIRED,DEV-001,,"Policy reference is supplied, but the claimed device identifier is not."
+CLM-000109,EBND-000109,DEVELOPMENT,unique_customer_lookup_missing_device_identifier,INFO_REQUIRED,DEV-001,,"Customer-only lookup resolves uniquely; policy context can be retrieved, but the claim lacks a usable device identifier. Request the IMEI or serial number under DEV-001."
+CLM-000110,EBND-000110,DEVELOPMENT,unique_customer_lookup_missing_device_identifier,INFO_REQUIRED,DEV-001,,"Customer-only lookup resolves uniquely; policy context can be retrieved, but the claim lacks a usable device identifier. Request the IMEI or serial number under DEV-001."
+CLM-000111,EBND-000111,DEVELOPMENT,unique_customer_lookup_missing_device_identifier,INFO_REQUIRED,DEV-001,,"Customer-only lookup resolves uniquely; policy context can be retrieved, but the claim lacks a usable device identifier. Request the IMEI or serial number under DEV-001."
+CLM-000112,EBND-000112,DEVELOPMENT,unique_customer_lookup_missing_device_identifier,INFO_REQUIRED,DEV-001,,"Customer-only lookup resolves uniquely; policy context can be retrieved, but the claim lacks a usable device identifier. Request the IMEI or serial number under DEV-001."
+CLM-000113,EBND-000113,DEVELOPMENT,unique_customer_lookup_missing_device_identifier,INFO_REQUIRED,DEV-001,,"Customer-only lookup resolves uniquely; policy context can be retrieved, but the claim lacks a usable device identifier. Request the IMEI or serial number under DEV-001."
+CLM-000114,EBND-000114,DEVELOPMENT,unique_customer_lookup_missing_device_identifier,INFO_REQUIRED,DEV-001,,"Customer-only lookup resolves uniquely; policy context can be retrieved, but the claim lacks a usable device identifier. Request the IMEI or serial number under DEV-001."
+CLM-000115,EBND-000115,HELD_OUT_EVALUATION,unique_customer_lookup_missing_device_identifier,INFO_REQUIRED,DEV-001,,"Customer-only lookup resolves uniquely; policy context can be retrieved, but the claim lacks a usable device identifier. Request the IMEI or serial number under DEV-001."
+CLM-000116,EBND-000116,HELD_OUT_EVALUATION,unique_customer_lookup_missing_device_identifier,INFO_REQUIRED,DEV-001,,"Customer-only lookup resolves uniquely; policy context can be retrieved, but the claim lacks a usable device identifier. Request the IMEI or serial number under DEV-001."
+CLM-000117,EBND-000117,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000118,EBND-000118,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000119,EBND-000119,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000120,EBND-000120,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000121,EBND-000121,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000122,EBND-000122,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000123,EBND-000123,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000124,EBND-000124,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000125,EBND-000125,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000126,EBND-000126,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000127,EBND-000127,DEVELOPMENT,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000128,EBND-000128,HELD_OUT_EVALUATION,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000129,EBND-000129,HELD_OUT_EVALUATION,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000130,EBND-000130,HELD_OUT_EVALUATION,required_evidence_missing,INFO_REQUIRED,EVD-001,,Eligibility facts are supplied; evidence status will be set to missing in Item #7.
+CLM-000131,EBND-000131,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000132,EBND-000132,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000133,EBND-000133,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000134,EBND-000134,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000135,EBND-000135,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000136,EBND-000136,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000137,EBND-000137,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000138,EBND-000138,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000139,EBND-000139,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000140,EBND-000140,DEVELOPMENT,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000141,EBND-000141,HELD_OUT_EVALUATION,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000142,EBND-000142,HELD_OUT_EVALUATION,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000143,EBND-000143,HELD_OUT_EVALUATION,device_identifier_mismatch,MANUAL_REVIEW,DEV-002,DEVICE_MISMATCH,Claimed device is a valid identifier but belongs to a different policy.
+CLM-000144,EBND-000144,DEVELOPMENT,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2026-06-19 conflicts with narrative date 2026-06-16.
+CLM-000145,EBND-000145,DEVELOPMENT,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2026-01-28 conflicts with narrative date 2026-02-02.
+CLM-000146,EBND-000146,DEVELOPMENT,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2026-05-24 conflicts with narrative date 2026-05-29.
+CLM-000147,EBND-000147,DEVELOPMENT,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2026-02-25 conflicts with narrative date 2026-03-04.
+CLM-000148,EBND-000148,DEVELOPMENT,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2025-08-20 conflicts with narrative date 2025-08-22.
+CLM-000149,EBND-000149,DEVELOPMENT,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2026-02-05 conflicts with narrative date 2026-02-08.
+CLM-000150,EBND-000150,DEVELOPMENT,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2026-05-28 conflicts with narrative date 2026-06-02.
+CLM-000151,EBND-000151,DEVELOPMENT,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2026-06-09 conflicts with narrative date 2026-06-14.
+CLM-000152,EBND-000152,HELD_OUT_EVALUATION,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2026-03-17 conflicts with narrative date 2026-03-19.
+CLM-000153,EBND-000153,HELD_OUT_EVALUATION,incident_date_conflict,MANUAL_REVIEW,EVD-002,DATE_ANOMALY,Field incident date 2026-04-01 conflicts with narrative date 2026-04-03.
+CLM-000154,EBND-000154,DEVELOPMENT,claim_category_conflict,MANUAL_REVIEW,EVD-002,DATA_CONFLICT,Selected category THEFT conflicts with narrative category SCREEN_DAMAGE.
+CLM-000155,EBND-000155,DEVELOPMENT,claim_category_conflict,MANUAL_REVIEW,EVD-002,DATA_CONFLICT,Selected category SCREEN_DAMAGE conflicts with narrative category ACCIDENTAL_DAMAGE.
+CLM-000156,EBND-000156,DEVELOPMENT,claim_category_conflict,MANUAL_REVIEW,EVD-002,DATA_CONFLICT,Selected category THEFT conflicts with narrative category SCREEN_DAMAGE.
+CLM-000157,EBND-000157,DEVELOPMENT,claim_category_conflict,MANUAL_REVIEW,EVD-002,DATA_CONFLICT,Selected category THEFT conflicts with narrative category LIQUID_DAMAGE.
+CLM-000158,EBND-000158,DEVELOPMENT,claim_category_conflict,MANUAL_REVIEW,EVD-002,DATA_CONFLICT,Selected category MECHANICAL_BREAKDOWN conflicts with narrative category LIQUID_DAMAGE.
+CLM-000159,EBND-000159,DEVELOPMENT,claim_category_conflict,MANUAL_REVIEW,EVD-002,DATA_CONFLICT,Selected category LIQUID_DAMAGE conflicts with narrative category ACCIDENTAL_DAMAGE.
+CLM-000160,EBND-000160,HELD_OUT_EVALUATION,claim_category_conflict,MANUAL_REVIEW,EVD-002,DATA_CONFLICT,Selected category SCREEN_DAMAGE conflicts with narrative category MECHANICAL_BREAKDOWN.
+CLM-000161,EBND-000161,HELD_OUT_EVALUATION,claim_category_conflict,MANUAL_REVIEW,EVD-002,DATA_CONFLICT,Selected category MECHANICAL_BREAKDOWN conflicts with narrative category ACCIDENTAL_DAMAGE.
+CLM-000162,EBND-000162,DEVELOPMENT,ambiguous_customer_only_lookup,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Customer holds multiple policies; no policy or device reference provided.
+CLM-000163,EBND-000163,DEVELOPMENT,ambiguous_customer_only_lookup,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Customer holds multiple policies; no policy or device reference provided.
+CLM-000164,EBND-000164,DEVELOPMENT,ambiguous_customer_only_lookup,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Customer holds multiple policies; no policy or device reference provided.
+CLM-000165,EBND-000165,DEVELOPMENT,ambiguous_customer_only_lookup,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Customer holds multiple policies; no policy or device reference provided.
+CLM-000166,EBND-000166,DEVELOPMENT,ambiguous_customer_only_lookup,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Customer holds multiple policies; no policy or device reference provided.
+CLM-000167,EBND-000167,DEVELOPMENT,ambiguous_customer_only_lookup,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Customer holds multiple policies; no policy or device reference provided.
+CLM-000168,EBND-000168,HELD_OUT_EVALUATION,ambiguous_customer_only_lookup,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Customer holds multiple policies; no policy or device reference provided.
+CLM-000169,EBND-000169,HELD_OUT_EVALUATION,ambiguous_customer_only_lookup,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Customer holds multiple policies; no policy or device reference provided.
+CLM-000170,EBND-000170,DEVELOPMENT,customer_policy_identifier_conflict,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Provided customer ID belongs to a different policy than the provided policy/device.
+CLM-000171,EBND-000171,DEVELOPMENT,customer_policy_identifier_conflict,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Provided customer ID belongs to a different policy than the provided policy/device.
+CLM-000172,EBND-000172,DEVELOPMENT,customer_policy_identifier_conflict,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Provided customer ID belongs to a different policy than the provided policy/device.
+CLM-000173,EBND-000173,DEVELOPMENT,customer_policy_identifier_conflict,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Provided customer ID belongs to a different policy than the provided policy/device.
+CLM-000174,EBND-000174,HELD_OUT_EVALUATION,customer_policy_identifier_conflict,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Provided customer ID belongs to a different policy than the provided policy/device.
+CLM-000175,EBND-000175,HELD_OUT_EVALUATION,customer_policy_identifier_conflict,MANUAL_REVIEW,DATA-002,DATA_CONFLICT,Provided customer ID belongs to a different policy than the provided policy/device.
+CLM-000176,EBND-000176,DEVELOPMENT,suspected_exclusion_unverified,MANUAL_REVIEW,EXC-002,POLICY_EXCEPTION,Narrative raises a possible intentional-damage exclusion but does not establish it conclusively.
+CLM-000177,EBND-000177,DEVELOPMENT,suspected_exclusion_unverified,MANUAL_REVIEW,EXC-002,POLICY_EXCEPTION,Narrative raises a possible intentional-damage exclusion but does not establish it conclusively.
+CLM-000178,EBND-000178,DEVELOPMENT,suspected_exclusion_unverified,MANUAL_REVIEW,EXC-002,POLICY_EXCEPTION,Narrative raises a possible intentional-damage exclusion but does not establish it conclusively.
+CLM-000179,EBND-000179,HELD_OUT_EVALUATION,suspected_exclusion_unverified,MANUAL_REVIEW,EXC-002,POLICY_EXCEPTION,Narrative raises a possible intentional-damage exclusion but does not establish it conclusively.
+CLM-000180,EBND-000180,DEVELOPMENT,potential_duplicate_or_repeat_pattern,MANUAL_REVIEW,ANM-001,POTENTIAL_DUPLICATE,A prior historical claim contains a potentially related event; exact comparison/risk signal is supplied by Item #10.
+CLM-000181,EBND-000181,DEVELOPMENT,potential_duplicate_or_repeat_pattern,MANUAL_REVIEW,ANM-001,POTENTIAL_DUPLICATE,A prior case record contains a potentially related event; exact comparison/risk signal is supplied by Item #10.
+CLM-000182,EBND-000182,HELD_OUT_EVALUATION,potential_duplicate_or_repeat_pattern,MANUAL_REVIEW,ANM-001,POTENTIAL_DUPLICATE,A prior historical claim contains a potentially related event; exact comparison/risk signal is supplied by Item #10.
+CLM-000183,EBND-000183,DEVELOPMENT,high_cost_repair_exception,MANUAL_REVIEW,ANM-001,HIGH_COST_EXCEPTION,Repair-cost anomaly is supplied through Item #7 evidence metadata and Item #10 risk indicators.
+CLM-000184,EBND-000184,DEVELOPMENT,high_cost_repair_exception,MANUAL_REVIEW,ANM-001,HIGH_COST_EXCEPTION,Repair-cost anomaly is supplied through Item #7 evidence metadata and Item #10 risk indicators.
+CLM-000185,EBND-000185,HELD_OUT_EVALUATION,high_cost_repair_exception,MANUAL_REVIEW,ANM-001,HIGH_COST_EXCEPTION,Repair-cost anomaly is supplied through Item #7 evidence metadata and Item #10 risk indicators.
+CLM-000186,EBND-000186,DEVELOPMENT,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000187,EBND-000187,DEVELOPMENT,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000188,EBND-000188,DEVELOPMENT,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000189,EBND-000189,DEVELOPMENT,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000190,EBND-000190,DEVELOPMENT,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000191,EBND-000191,DEVELOPMENT,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000192,EBND-000192,DEVELOPMENT,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000193,EBND-000193,DEVELOPMENT,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000194,EBND-000194,HELD_OUT_EVALUATION,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000195,EBND-000195,HELD_OUT_EVALUATION,plan_does_not_cover_claim_category,NOT_ELIGIBLE,COV-001,,Claim category is explicitly not covered by the enrolled plan.
+CLM-000196,EBND-000196,DEVELOPMENT,incident_outside_coverage_window,NOT_ELIGIBLE,ELG-002,,Policy status is EXPIRED; incident date is outside active coverage.
+CLM-000197,EBND-000197,DEVELOPMENT,incident_outside_coverage_window,NOT_ELIGIBLE,ELG-002,,Policy status is CANCELLED; incident date is outside active coverage.
+CLM-000198,EBND-000198,DEVELOPMENT,incident_outside_coverage_window,NOT_ELIGIBLE,ELG-002,,Policy status is EXPIRED; incident date is outside active coverage.
+CLM-000199,EBND-000199,DEVELOPMENT,incident_outside_coverage_window,NOT_ELIGIBLE,ELG-002,,Policy status is EXPIRED; incident date is outside active coverage.
+CLM-000200,EBND-000200,DEVELOPMENT,incident_outside_coverage_window,NOT_ELIGIBLE,ELG-002,,Policy status is SUSPENDED; incident date is outside active coverage.
+CLM-000201,EBND-000201,DEVELOPMENT,incident_outside_coverage_window,NOT_ELIGIBLE,ELG-002,,Policy status is SUSPENDED; incident date is outside active coverage.
+CLM-000202,EBND-000202,HELD_OUT_EVALUATION,incident_outside_coverage_window,NOT_ELIGIBLE,ELG-002,,Policy status is SUSPENDED; incident date is outside active coverage.
+CLM-000203,EBND-000203,HELD_OUT_EVALUATION,incident_outside_coverage_window,NOT_ELIGIBLE,ELG-002,,Policy status is EXPIRED; incident date is outside active coverage.
+CLM-000204,EBND-000204,DEVELOPMENT,annual_claim_limit_exhausted,NOT_ELIGIBLE,LIM-001,,Historical consumed count (2) meets plan annual limit (2).
+CLM-000205,EBND-000205,DEVELOPMENT,annual_claim_limit_exhausted,NOT_ELIGIBLE,LIM-001,,Historical consumed count (1) meets plan annual limit (1).
+CLM-000206,EBND-000206,DEVELOPMENT,annual_claim_limit_exhausted,NOT_ELIGIBLE,LIM-001,,Historical consumed count (2) meets plan annual limit (2).
+CLM-000207,EBND-000207,DEVELOPMENT,annual_claim_limit_exhausted,NOT_ELIGIBLE,LIM-001,,Historical consumed count (1) meets plan annual limit (1).
+CLM-000208,EBND-000208,DEVELOPMENT,annual_claim_limit_exhausted,NOT_ELIGIBLE,LIM-001,,Historical consumed count (2) meets plan annual limit (2).
+CLM-000209,EBND-000209,HELD_OUT_EVALUATION,annual_claim_limit_exhausted,NOT_ELIGIBLE,LIM-001,,Historical consumed count (1) meets plan annual limit (1).
+CLM-000210,EBND-000210,DEVELOPMENT,theft_claim_limit_exhausted,NOT_ELIGIBLE,LIM-002,,Historical theft count (1) meets Premium plan theft limit (1).
+CLM-000211,EBND-000211,DEVELOPMENT,theft_claim_limit_exhausted,NOT_ELIGIBLE,LIM-002,,Historical theft count (1) meets Premium plan theft limit (1).
+CLM-000212,EBND-000212,HELD_OUT_EVALUATION,theft_claim_limit_exhausted,NOT_ELIGIBLE,LIM-002,,Historical theft count (1) meets Premium plan theft limit (1); claim incident is after the prior theft but before policy cancellation.
+CLM-000213,EBND-000213,DEVELOPMENT,global_loss_exclusion,NOT_ELIGIBLE,EXC-001,,Loss is excluded across all DeviceProtect plans.
+CLM-000214,EBND-000214,DEVELOPMENT,global_loss_exclusion,NOT_ELIGIBLE,EXC-001,,Loss is excluded across all DeviceProtect plans.
+CLM-000215,EBND-000215,DEVELOPMENT,global_loss_exclusion,NOT_ELIGIBLE,EXC-001,,Loss is excluded across all DeviceProtect plans.
+CLM-000216,EBND-000216,DEVELOPMENT,global_loss_exclusion,NOT_ELIGIBLE,EXC-001,,Loss is excluded across all DeviceProtect plans.
+CLM-000217,EBND-000217,HELD_OUT_EVALUATION,global_loss_exclusion,NOT_ELIGIBLE,EXC-001,,Loss is excluded across all DeviceProtect plans.
+CLM-000218,EBND-000218,DEVELOPMENT,verified_intentional_damage_exclusion,NOT_ELIGIBLE,EXC-001,,Narrative explicitly establishes intentional damage.
+CLM-000219,EBND-000219,HELD_OUT_EVALUATION,verified_intentional_damage_exclusion,NOT_ELIGIBLE,EXC-001,,Narrative explicitly establishes intentional damage.
+CLM-000220,EBND-000220,HELD_OUT_EVALUATION,verified_intentional_damage_exclusion,NOT_ELIGIBLE,EXC-001,,Narrative explicitly establishes intentional damage.

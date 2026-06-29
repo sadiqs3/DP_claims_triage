@@ -1,0 +1,27 @@
+{
+  "tool_name": "get_prior_claims_history",
+  "version": "1.0",
+  "purpose": "Retrieve finalized claim history for one policy before the current claim's reported date, then derive transparent counts for policy-rule evaluation.",
+  "inputs": {
+    "policy_id": "Required. Exact Item #4 policy identifier.",
+    "before_claim_reported_date": "Required. Current claim reported date; only earlier historical claims are considered.",
+    "optional_claim_category": "Optional. Use for category-specific retrieval; theft limit calculation should use THEFT."
+  },
+  "source": {
+    "dataset": "data/reference/prior_claims_history_v1.csv",
+    "primary_key": "historical_claim_id"
+  },
+  "derived_outputs": {
+    "prior_claim_record_count": "Count of all historical records for the policy before the supplied date.",
+    "annual_claims_consumed": "Count where claim_limit_consumed_flag = TRUE.",
+    "theft_claims_consumed": "Count where theft_limit_consumed_flag = TRUE.",
+    "recent_90_day_claim_count": "Count of historical claims reported in the 90 days preceding the supplied date.",
+    "records": "Underlying finalized history records used for the calculation."
+  },
+  "business_guardrails": [
+    "Only claim_limit_consumed_flag controls LIM-001; declined and withdrawn records do not consume the allowance.",
+    "Only theft_limit_consumed_flag controls LIM-002.",
+    "High volume or recent history may support a later MANUAL_REVIEW risk signal but must never automatically decline a claim.",
+    "The tool must return source records and derived counts so the agent can cite its calculation."
+  ]
+}

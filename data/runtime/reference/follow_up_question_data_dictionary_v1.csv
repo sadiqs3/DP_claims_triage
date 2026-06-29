@@ -1,0 +1,17 @@
+field_name,data_type,nullable,business_definition,validation_or_usage_notes,example_value
+question_id,string,No,Unique controlled follow-up question identifier.,Pattern FUP-###; immutable once referenced in audit logs.,FUP-001
+question_name,string,No,Short operational label for the question.,Not shown to customers by default.,Confirm incident date
+trigger_type,enum,No,Type of unmet information condition that activates the question.,MISSING_FIELD | MISSING_OR_INVALID_FIELD | MISSING_OR_AMBIGUOUS_FIELD | MISSING_REQUIRED_EVIDENCE | UNREADABLE_OR_INVALID_EVIDENCE.,MISSING_REQUIRED_EVIDENCE
+trigger_condition,string,No,Specific condition under which the question may be selected.,Must align with an INFO_REQUIRED condition; no manual-review trigger should appear here.,Required DAMAGE_PHOTO is absent.
+source_rule_id,string,No,Item #3 rule that grounds the question.,Must be an active policy-rule identifier.,EVD-001
+decision_stage,enum,No,Decision stage in which the question may be asked.,ELIGIBILITY_FACTS | REQUIRED_EVIDENCE.,ELIGIBILITY_FACTS
+applicable_claim_categories,string,No,Supported claim categories to which the question applies.,ALL or a valid Item #2 / Item #6 category.,THEFT
+evidence_profile_id,string,No,Item #7 evidence profile connected to the question.,N/A for non-evidence questions.,EVD-THEFT-01
+response_field,string,No,Field or document type requested from the customer.,Used to prevent duplicate requests and track completion.,reported_incident_date
+response_format,enum,No,Expected response format.,TEXT | DATE_YYYY_MM_DD | FILE_UPLOAD | TEXT_OR_FILE_UPLOAD | ENUM_OR_FREE_TEXT.,FILE_UPLOAD
+question_priority,integer,No,Ordering priority; lower numbers are asked first.,Used within the three-question maximum.,20
+customer_facing_question,string,No,Approved neutral wording for customer communication.,May be preceded by a standard acknowledgement; do not materially alter without controlled change.,Please confirm the date on which the incident occurred.
+plain_language_reason,string,No,Customer-friendly reason for the request.,Must not imply an approval or accuse the customer.,We need the incident date to continue assessing the claim under the policy period.
+agent_handling_after_response,string,No,Required agent behavior after receiving the response.,"Must direct reassessment, not final decision invention.",Validate the date and re-run policy checks.
+max_repeats,integer,No,Maximum number of times the same question may be asked.,v1 is 1 for every question.,1
+active_flag,Yes/No,No,Whether the controlled question is active.,Only active questions are selectable.,Yes

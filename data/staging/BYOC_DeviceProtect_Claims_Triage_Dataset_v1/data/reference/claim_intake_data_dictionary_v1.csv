@@ -1,0 +1,15 @@
+field_name,data_type,nullable,business_definition,validation_or_usage_notes,example_value
+claim_id,string,No,Unique ID of the new claim intake case.,Pattern CLM-######. Use as the case key across future datasets.,CLM-000001
+case_created_date,date (YYYY-MM-DD),No,Date the claim intake record was submitted/created.,Must be on or before the dataset snapshot date.,2026-06-18
+claim_submission_channel,enum,No,Channel through which the claim was submitted.,WEB_PORTAL | MOBILE_APP | CONTACT_CENTER.,MOBILE_APP
+claim_language,enum,No,Language of the intake narrative.,EN in v1.,EN
+policy_id_provided,string,Yes,Policy reference supplied by the claimant.,May be blank; agent must use Policy Eligibility Lookup rather than assume a match.,POL-00081
+customer_id_provided,string,Yes,Customer reference supplied by the claimant.,Synthetic identifier only; may conflict with policy in deliberate review scenarios.,CUS-0042
+claimed_device_identifier,string,Yes,Device identifier supplied in the claim intake.,May be blank or intentionally mismatch the covered-device record in test scenarios.,DVC-00000081
+reported_incident_date,date (YYYY-MM-DD),Yes,Incident date stated in the structured intake form.,Blank means the agent should request clarification; narrative may also be contradictory in review scenarios.,2026-06-14
+claim_category_selected,enum,No,Claim type selected in the intake form.,SCREEN_DAMAGE | ACCIDENTAL_DAMAGE | LIQUID_DAMAGE | MECHANICAL_BREAKDOWN | THEFT | LOSS | UNSPECIFIED.,SCREEN_DAMAGE
+requested_service_type,enum,No,Requested service stated at intake.,REPAIR | REPLACEMENT | UNSPECIFIED. It does not by itself decide eligibility.,REPAIR
+evidence_bundle_id,string,No,Pointer to Item #7 evidence metadata.,Pattern EBND-######. The actual evidence status is not held in this dataset.,EBND-000001
+customer_statement,string,No,Free-text customer claim narrative.,Synthetic English text. Use this for claim understanding; do not treat it as authoritative over policy/rules.,My phone slipped...
+intake_record_status,enum,No,Lifecycle status of the intake record.,SUBMITTED for all v1 rows.,SUBMITTED
+record_snapshot_date,date (YYYY-MM-DD),No,Date at which this synthetic dataset was frozen.,2026-06-23 for v1.,2026-06-23

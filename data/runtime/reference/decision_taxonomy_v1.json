@@ -1,0 +1,156 @@
+{
+  "artifact_name": "BYOC Claims Triage Decision Taxonomy",
+  "version": "1.0",
+  "status": "Frozen draft - Item #1",
+  "purpose": "Defines the permitted triage dispositions for an AI-assisted device-protection claims workflow. The system provides recommendations and routing; it does not make final payment, repair authorization, fraud, or customer-closure decisions.",
+  "primary_dispositions": [
+    {
+      "code": "PROCEED",
+      "display_name": "Eligible for standard processing",
+      "definition": "Available facts indicate the claim is within policy coverage, required evidence is present, and no manual-review trigger exists.",
+      "system_action": "Route to the standard repair/replacement/claims-processing path.",
+      "human_review_required": false,
+      "example_trigger": "Active policy, matching device, covered accidental damage, claim limit available, and valid required evidence."
+    },
+    {
+      "code": "INFO_REQUIRED",
+      "display_name": "Request additional information",
+      "definition": "The claim may be eligible, but one or more material eligibility facts or required supporting evidence are missing or unclear.",
+      "system_action": "Hold the claim and generate only targeted follow-up questions.",
+      "human_review_required": false,
+      "example_trigger": "Policy appears active and incident type may be covered, but incident date, IMEI, photos, or required repair quote is missing."
+    },
+    {
+      "code": "MANUAL_REVIEW",
+      "display_name": "Refer for manual review",
+      "definition": "A conflict, exception, anomaly, unsupported scenario, or rule gap means the system should not make a deterministic recommendation.",
+      "system_action": "Route to a claims analyst with facts, applicable rules, and the review reason.",
+      "human_review_required": true,
+      "example_trigger": "Claim narrative conflicts with structured data, device mismatch, date anomaly, possible duplicate claim, or policy exception."
+    },
+    {
+      "code": "NOT_ELIGIBLE",
+      "display_name": "Not eligible — decline recommendation",
+      "definition": "A verified policy rule conclusively shows the claim is not covered. Final decline communication remains subject to human/process confirmation.",
+      "system_action": "Provide rule-grounded reason and route for decline confirmation.",
+      "human_review_required": true,
+      "example_trigger": "Policy inactive on incident date, claim category explicitly excluded, device is not covered, claim limit exhausted, or waiting period clearly applies."
+    }
+  ],
+  "manual_review_reasons": [
+    {
+      "code": "DATA_CONFLICT",
+      "description": "Structured facts, evidence, or claim narrative materially conflict."
+    },
+    {
+      "code": "DEVICE_MISMATCH",
+      "description": "Claimed device identifier differs from the enrolled covered device."
+    },
+    {
+      "code": "DATE_ANOMALY",
+      "description": "Incident, quote, repair, or policy dates are inconsistent or require interpretation."
+    },
+    {
+      "code": "REPEAT_CLAIM_PATTERN",
+      "description": "Claim history indicates a pattern requiring analyst assessment."
+    },
+    {
+      "code": "HIGH_COST_EXCEPTION",
+      "description": "Repair/replacement value exceeds a defined operational threshold."
+    },
+    {
+      "code": "POLICY_EXCEPTION",
+      "description": "Goodwill, exception, or special operational handling is requested or required."
+    },
+    {
+      "code": "RULE_NOT_AVAILABLE",
+      "description": "Product, geography, policy version, or incident scenario is outside the supported rule set."
+    },
+    {
+      "code": "POTENTIAL_DUPLICATE",
+      "description": "A materially similar recent claim or evidence item is detected."
+    }
+  ],
+  "information_classes": {
+    "eligibility_facts": [
+      "Policy status on incident date",
+      "Incident date",
+      "Covered-device identity / IMEI / serial number",
+      "Incident category",
+      "Coverage start and end dates",
+      "Waiting-period applicability",
+      "Claim-limit availability"
+    ],
+    "supporting_evidence": [
+      "Damage photos",
+      "Repair quotation",
+      "Proof of purchase where required",
+      "Police report reference where required",
+      "Identity or ownership confirmation where required"
+    ],
+    "rule": "A clearly failed coverage rule should produce NOT_ELIGIBLE without requesting irrelevant supporting evidence. Missing information should normally produce INFO_REQUIRED rather than an automatic decline."
+  },
+  "decision_precedence": [
+    {
+      "step": 1,
+      "condition": "System conflict, exception, material inconsistency, anomaly, unsupported scenario, or unavailable rule",
+      "disposition": "MANUAL_REVIEW"
+    },
+    {
+      "step": 2,
+      "condition": "A minimum eligibility fact is missing or unclear",
+      "disposition": "INFO_REQUIRED"
+    },
+    {
+      "step": 3,
+      "condition": "A verified hard policy rule clearly fails",
+      "disposition": "NOT_ELIGIBLE"
+    },
+    {
+      "step": 4,
+      "condition": "Eligibility appears met but required supporting evidence is missing or unclear",
+      "disposition": "INFO_REQUIRED"
+    },
+    {
+      "step": 5,
+      "condition": "All mandatory checks pass and no review trigger exists",
+      "disposition": "PROCEED"
+    }
+  ],
+  "safety_boundaries": [
+    "The workflow is AI-assisted triage, not autonomous final claims adjudication.",
+    "LLM confidence alone must not determine a disposition.",
+    "Structured policy rules are authoritative for coverage determinations.",
+    "Conflicting sources must be routed to MANUAL_REVIEW; the system must not guess.",
+    "Risk signals can trigger MANUAL_REVIEW but must never independently trigger NOT_ELIGIBLE.",
+    "Every result must include disposition, facts used, rules applied, missing information, and manual-review reason where applicable."
+  ],
+  "mvp_scope": {
+    "supported_product_family": "One device-protection product family",
+    "geography": "One geography / operating context",
+    "incident_categories": "Three to four categories",
+    "language": "English claim narratives",
+    "excluded_from_mvp": [
+      "Payment decisions",
+      "Repair authorization",
+      "Fraud confirmation",
+      "Direct customer claim closure"
+    ]
+  },
+  "recommended_response_schema": {
+    "claim_id": "string",
+    "recommended_disposition": "PROCEED | INFO_REQUIRED | MANUAL_REVIEW | NOT_ELIGIBLE",
+    "reason_summary": "string",
+    "facts_used": [
+      "string"
+    ],
+    "rules_applied": [
+      "string"
+    ],
+    "missing_information": [
+      "string"
+    ],
+    "manual_review_reason": "string or null",
+    "human_review_required": "boolean"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "tool_name": "get_claim_risk_indicators",
+  "version": "v1",
+  "purpose": "Return triggered secondary risk/data-completeness signals for one claim. The result supports analyst routing only.",
+  "input": {
+    "claim_id": "Required claim identifier, for example CLM-000183."
+  },
+  "data_sources": [
+    "claim_risk_indicator_results_v1.csv",
+    "risk_anomaly_indicator_catalog_v1.csv",
+    "device_value_reference_v1.csv"
+  ],
+  "output_fields": [
+    "risk_indicator_id",
+    "risk_indicator_name",
+    "priority",
+    "manual_review_reason",
+    "source_reference_id",
+    "observed_value",
+    "threshold_or_window",
+    "risk_summary"
+  ],
+  "empty_result_meaning": "No risk indicator was triggered. It does not mean the claim is covered, complete, or approved.",
+  "guardrails": [
+    "Return only triggered risk signals associated with the requested claim.",
+    "Risk results may only route to MANUAL_REVIEW; never NOT_ELIGIBLE.",
+    "Do not state or imply fraud, misconduct, or intentional deception.",
+    "Do not ask the customer to explain an internal risk signal.",
+    "Cite source references in the analyst handoff."
+  ]
+}

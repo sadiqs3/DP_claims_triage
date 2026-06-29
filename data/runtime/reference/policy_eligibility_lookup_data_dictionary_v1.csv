@@ -1,0 +1,19 @@
+field_name,data_type,requiredness,example,business_definition,usage_and_constraints
+customer_id,string,Required,CUS-0001,Stable synthetic customer alias. No customer PII is stored.,Use only as a lookup key; may map to more than one policy.
+policy_id,string,Required,POL-00001,Unique policy/enrolment identifier.,Preferred primary lookup key.
+plan_id,string,Required,DP-COMPLETE,References Item #2 protection_plan_master_v1.csv.,Retrieve plan terms and coverage matrix using this key.
+policy_status,enum,Required,ACTIVE,"Status as of record_snapshot_date: ACTIVE, EXPIRED, CANCELLED, SUSPENDED.",Do not use alone to assess a historical incident date.
+policy_enrollment_date,date,Required,2026-01-10,Date the protection plan was enrolled.,ISO 8601 (YYYY-MM-DD).
+coverage_start_date,date,Required,2026-01-10,First covered date under the policy.,Use for ELG-002.
+coverage_end_date,date,Required,2027-01-09,Last scheduled covered date under the policy.,Use inclusive date logic for ELG-002.
+policy_termination_date,date,Conditional,2026-04-15,Effective termination date for cancelled policies. Blank otherwise.,Incident date on/after this date is not covered.
+suspension_start_date,date,Conditional,2026-05-20,Start of a suspension period. Blank when not suspended.,Incident date during a suspension period is not active.
+suspension_end_date,date,Conditional,,End of suspension period. Blank means open-ended at snapshot.,Kept for future support of resolved suspensions.
+covered_device_id,string,Required,CDV-00001,Unique internal identifier for the covered device record.,One device per policy in MVP.
+covered_device_identifier,string,Required,DVC-00000001,Synthetic IMEI-like business identifier used for exact matching.,Intentionally non-real; no actual IMEI is used.
+device_category,enum,Required,SMARTPHONE,Device category in MVP scope.,Must be SMARTPHONE for v1.
+device_brand,string,Required,Novatek,Fictional device manufacturer/brand.,For context and narrative validation only.
+device_model,string,Required,Pulse 12,Fictional device model.,For context and narrative validation only.
+device_purchase_date,date,Required,2025-11-02,Date device was purchased.,Must be on or before device enrollment date.
+device_enrollment_date,date,Required,2026-01-10,Date device was linked to the policy.,Aligned with policy enrolment in v1.
+record_snapshot_date,date,Required,2026-06-23,Date this static synthetic reference data represents.,All policy_status values are as of this date.

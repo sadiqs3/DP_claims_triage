@@ -1,0 +1,10 @@
+evidence_profile_id,requirement_sequence,evidence_type,requirement_level,acceptance_criteria,handling_if_missing_or_invalid,business_purpose
+EVD-SCREEN-01,1,DAMAGE_PHOTO,REQUIRED,At least one readable image or upload summary that shows the reported screen damage.,INFO_REQUIRED,Confirm visible screen damage.
+EVD-SCREEN-01,2,REPAIR_QUOTE,OPTIONAL,"Readable repair estimate from a repair provider, if already obtained.",NOT_BLOCKING,Support repair feasibility/cost assessment.
+EVD-ACCIDENTAL-01,1,DAMAGE_PHOTO,REQUIRED,At least one readable image or upload summary that shows the reported accidental damage.,INFO_REQUIRED,Confirm visible accidental damage.
+EVD-ACCIDENTAL-01,2,REPAIR_QUOTE,OPTIONAL,"Readable repair estimate from a repair provider, if already obtained.",NOT_BLOCKING,Support repair feasibility/cost assessment.
+EVD-LIQUID-01,1,DAMAGE_PHOTO,REQUIRED,At least one readable image or upload summary showing reported liquid exposure effects or device damage.,INFO_REQUIRED,Confirm observed liquid-damage symptoms.
+EVD-LIQUID-01,2,REPAIR_QUOTE,OPTIONAL,"Readable repair estimate from a repair provider, if already obtained.",NOT_BLOCKING,Support repair feasibility/cost assessment.
+EVD-MECHANICAL-01,1,DIAGNOSTIC_REPORT,REQUIRED,Readable diagnostic report or provider assessment describing the reported mechanical malfunction.,INFO_REQUIRED,Confirm fault under normal-use assessment.
+EVD-MECHANICAL-01,2,REPAIR_QUOTE,OPTIONAL,"Readable repair estimate from a repair provider, if already obtained.",NOT_BLOCKING,Support repair feasibility/cost assessment.
+EVD-THEFT-01,1,POLICE_REPORT_REFERENCE,REQUIRED,Readable police-report reference that identifies the reported theft event.,INFO_REQUIRED,Provide theft incident reference for verification.

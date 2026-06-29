@@ -1,0 +1,21 @@
+field_name,data_type,definition,allowed_values_or_example,required
+rule_id,string,"Unique, stable rule identifier.",Example: COV-001,Yes
+rule_name,string,Business-readable rule name.,Example: Claim category covered by enrolled plan,Yes
+rule_domain,string,Logical rule group.,Data Validation; Eligibility; Device Validation; Coverage; Coverage Limit; Exclusion; Anomaly; Evidence; Outcome,Yes
+priority,integer,Evaluation priority: lower values are evaluated first within applicable rule groups.,"10, 20, 30, 40, 50, 60",Yes
+applies_to_plan_id,string,Plan ID to which rule applies; ALL means every supported plan.,ALL; DP-PREMIUM,Yes
+applies_to_claim_category,string,Claim category to which rule applies; ALL means every supported category.,ALL; THEFT,Yes
+applies_when,string,Plain-language precondition for evaluation.,A unique policy record has been found.,Yes
+required_input_fields,string,Inputs required by the rule.,plan_id; claim_category; plan_coverage_matrix.covered_flag,Yes
+pass_condition,string,Condition that satisfies the rule.,covered_flag = Yes,Yes
+failure_condition,string,Condition that triggers the rule outcome.,covered_flag = No,Yes
+missing_or_unknown_handling,string,Required safe handling of missing/uncertain input.,Request incident date; do not infer,Yes
+outcome_on_failure,string,Disposition triggered when the failure condition is met.,INFO_REQUIRED; MANUAL_REVIEW; NOT_ELIGIBLE,Yes
+manual_review_reason,string,Structured review reason when outcome_on_failure is MANUAL_REVIEW.,DATA_CONFLICT; DEVICE_MISMATCH,Conditional
+policy_reference,string,Traceable business policy / rules reference code.,COV-MATRIX-01,Yes
+severity,string,Operational criticality of the rule.,BLOCKING; REVIEW; FINAL,Yes
+rationale,string,Business explanation for why the rule exists.,Coverage cannot be assessed without valid configuration.,Yes
+rule_version,string,Semantic version of the rule definition.,1.0,Yes
+effective_start_date,date,Date on which rule version becomes active.,YYYY-MM-DD,Yes
+effective_end_date,date,End date if superseded; blank when open-ended.,YYYY-MM-DD or blank,No
+active_flag,string,Whether the rule is active for evaluation.,Yes / No,Yes

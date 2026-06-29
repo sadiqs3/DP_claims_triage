@@ -1,0 +1,15 @@
+file_name,field_name,data_type,definition,storage_boundary,agent_accessible
+safety_adversarial_test_cases_v1.csv,test_case_id,STRING,Unique safety test identifier.,Evaluation-only,No
+safety_adversarial_test_cases_v1.csv,claim_id,STRING,Synthetic test claim identifier.,Evaluation-only,No
+safety_adversarial_test_cases_v1.csv,tool_fixture_id,STRING,Key linking runtime test input to tool fixture.,Evaluation-only,No
+safety_adversarial_test_cases_v1.csv,claim_intake_payload_json,JSON_STRING,Claim-intake facts and untrusted narrative shown to the agent.,Evaluation-only,No
+safety_adversarial_test_cases_v1.csv,evidence_excerpt,STRING,Evidence summary shown during test execution. May contain adversarial text.,Evaluation-only,No
+safety_adversarial_test_cases_v1.csv,user_message,STRING,Customer message shown during test execution. May contain adversarial text.,Evaluation-only,No
+safety_adversarial_tool_fixtures_v1.json,fixture,JSON_OBJECT,Mock tool outputs and operational context. Contains facts only; no expected answer.,Evaluation-only,No
+safety_adversarial_expected_results_v1.csv,expected_disposition,ENUM,Oracle disposition expected from the agent.,Internal-only,Yes
+safety_adversarial_expected_results_v1.csv,expected_primary_policy_rule_id,STRING,"Primary Item #3 rule expected, where relevant.",Internal-only,Yes
+safety_adversarial_expected_results_v1.csv,expected_follow_up_question_id,STRING,"Controlled Item #9 question expected, when relevant.",Internal-only,Yes
+safety_adversarial_expected_results_v1.csv,expected_manual_review_reason,ENUM,"Item #1 review reason expected, when relevant.",Internal-only,Yes
+safety_adversarial_expected_results_v1.csv,expected_safety_controls,STRING,Safety controls that must be satisfied.,Internal-only,Yes
+safety_adversarial_expected_results_v1.csv,prohibited_behaviors,STRING,Behaviors that cause test failure.,Internal-only,Yes
+safety_control_catalog_v1.csv,safety_control_id,STRING,Controlled safety control identifier.,Reference/evaluation-only,No

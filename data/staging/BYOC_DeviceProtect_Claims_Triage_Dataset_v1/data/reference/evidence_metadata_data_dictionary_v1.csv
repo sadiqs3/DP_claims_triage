@@ -1,0 +1,30 @@
+file_name,field_name,data_type,requiredness,business_definition,validation_or_usage_notes,example_value
+evidence_profile_requirements_v1.csv,evidence_profile_id,string,Yes,Reference identifier for evidence requirements.,Join to Item #2 plan coverage matrix after coverage applies.,EVD-THEFT-01
+evidence_profile_requirements_v1.csv,requirement_sequence,integer,Yes,Requirement display/evaluation order within an evidence profile.,Lower number is evaluated first.,1
+evidence_profile_requirements_v1.csv,evidence_type,enum,Yes,Required or optional evidence type.,Join to evidence type catalog.,POLICE_REPORT_REFERENCE
+evidence_profile_requirements_v1.csv,requirement_level,enum,Yes,Whether the profile requires the evidence type.,REQUIRED | OPTIONAL.,REQUIRED
+evidence_profile_requirements_v1.csv,acceptance_criteria,string,Yes,Plain language criterion for a valid item.,Used for agent explanation and UI.,Readable police-report reference.
+evidence_profile_requirements_v1.csv,handling_if_missing_or_invalid,enum,Yes,Required handling when evidence is absent or unusable.,INFO_REQUIRED or NOT_BLOCKING.,INFO_REQUIRED
+evidence_profile_requirements_v1.csv,business_purpose,string,Yes,Why the evidence is considered.,Not a coverage decision by itself.,Confirm theft event.
+evidence_bundle_manifest_v1.csv,evidence_bundle_id,string,Yes,Unique bundle linked from Item #6 claim intake.,One-to-one with claim_id in this synthetic dataset.,EBND-000001
+evidence_bundle_manifest_v1.csv,claim_id,string,Yes,Claim linked to the evidence bundle.,Foreign key to Item #6.,CLM-000001
+evidence_bundle_manifest_v1.csv,evidence_submission_status,enum,Yes,Whether any evidence document metadata exists in the bundle.,DOCUMENTS_SUBMITTED | NO_DOCUMENTS_SUBMITTED.,DOCUMENTS_SUBMITTED
+evidence_bundle_manifest_v1.csv,received_document_count,integer,Yes,Count of document metadata records in the bundle.,Derived from item-level data.,2
+evidence_bundle_manifest_v1.csv,first_received_date,date,Conditional,Earliest submitted date for a bundle.,Blank when no documents submitted.,2026-04-10
+evidence_bundle_manifest_v1.csv,last_received_date,date,Conditional,Latest submitted date for a bundle.,Blank when no documents submitted.,2026-04-10
+evidence_bundle_manifest_v1.csv,evidence_source_system,enum,Yes,Synthetic intake source for evidence metadata.,CUSTOMER_PORTAL | MOBILE_UPLOAD | AGENT_CASE_ATTACHMENTS.,MOBILE_UPLOAD
+evidence_bundle_manifest_v1.csv,record_snapshot_date,date,Yes,Extract snapshot date.,All rows use this synthetic snapshot.,2026-06-23
+claim_evidence_document_metadata_v1.csv,evidence_item_id,string,Yes,Unique synthetic evidence-item identifier.,Primary key.,EVI-000001
+claim_evidence_document_metadata_v1.csv,evidence_bundle_id,string,Yes,Evidence bundle containing the item.,Foreign key to bundle manifest.,EBND-000001
+claim_evidence_document_metadata_v1.csv,claim_id,string,Yes,Claim linked to the evidence item.,Foreign key to Item #6.,CLM-000001
+claim_evidence_document_metadata_v1.csv,evidence_type,enum,Yes,Document/evidence category.,Join to evidence type catalog.,DAMAGE_PHOTO
+claim_evidence_document_metadata_v1.csv,document_status,enum,Yes,Quality and conflict status of the received item.,RECEIVED_VALID | RECEIVED_UNREADABLE | RECEIVED_CONTRADICTORY.,RECEIVED_VALID
+claim_evidence_document_metadata_v1.csv,submitted_date,date,Yes,Synthetic evidence-upload date.,Must be on/before snapshot date.,2026-04-10
+claim_evidence_document_metadata_v1.csv,document_reference,string,Yes,Synthetic document reference; not a real file.,Used only for traceability.,IMG-000001
+claim_evidence_document_metadata_v1.csv,extracted_incident_date,date,No,Incident date stated or inferred from document metadata.,Can be blank or differ from intake; differences require review.,2026-04-08
+claim_evidence_document_metadata_v1.csv,extracted_claim_category,enum,No,Claim category indicated by evidence metadata.,Compare to claim intake when present.,SCREEN_DAMAGE
+claim_evidence_document_metadata_v1.csv,extracted_device_identifier,string,No,Device identifier stated in evidence metadata.,Compare with lookup after policy resolution.,DVC-00000018
+claim_evidence_document_metadata_v1.csv,repair_estimate_usd,decimal,No,Repair estimate if the evidence item is a repair quote.,Used later by risk/anomaly layer; does not decide eligibility.,249.00
+claim_evidence_document_metadata_v1.csv,police_report_reference,string,No,Police reference if evidence item is a theft report.,Required valid item for theft profile.,PR-456789
+claim_evidence_document_metadata_v1.csv,document_summary,string,Yes,Short controlled synthetic summary of document contents.,Metadata-only; no actual document or image included.,Repair provider estimate dated 2026-04-10.
+claim_evidence_document_metadata_v1.csv,record_snapshot_date,date,Yes,Extract snapshot date.,All rows use this synthetic snapshot.,2026-06-23

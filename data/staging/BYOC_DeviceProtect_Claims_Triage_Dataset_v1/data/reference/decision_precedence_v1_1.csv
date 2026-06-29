@@ -1,0 +1,7 @@
+precedence_order,condition_group,examples,outcome,notes
+1,Critical conflict / unavailable rule / unsupported scope,Multiple policy records; plan configuration missing; unsupported product or policy version; evidence contradiction,MANUAL_REVIEW,Never resolve conflicting system information by guesswork.
+2,Conclusive hard policy failure,Policy inactive on incident date; category not covered; verified device not enrolled; annual/theft limit exhausted; confirmed exclusion,NOT_ELIGIBLE,Only when facts are verified and sufficient. Do not request nonessential evidence first.
+3,Material eligibility fact missing or unclear,No incident date; no usable IMEI/serial; claim category unclear; no unique policy record,INFO_REQUIRED,"Ask only targeted, relevant questions."
+4,Eligibility passed but anomaly or exception needs judgement,Potential duplicate; high-cost exception; repeat-claim pattern; date anomaly; unresolved mismatch,MANUAL_REVIEW,Risk indicators route a case; they never cause automatic decline.
+5,Eligibility passed but mandatory supporting evidence missing,"Required photos, repair quote, police-report reference, or proof of purchase absent",INFO_REQUIRED,Evidence profile will be defined in Item #7.
+6,All applicable rules pass,"Coverage, dates, device, limits, exclusions, risk and evidence checks all satisfied",PROCEED,"Means eligible for standard processing, not final claim approval."

@@ -1,0 +1,28 @@
+file_name,field_name,data_type,required,definition,example
+protection_plan_master.csv,plan_id,string,Yes,Unique plan identifier.,DP-PREMIUM
+protection_plan_master.csv,plan_version,string,Yes,Version identifier for the plan configuration.,1.0
+protection_plan_master.csv,plan_name,string,Yes,Human-readable plan name.,DeviceProtect Premium
+protection_plan_master.csv,product_family,string,Yes,Fictional product family name.,DeviceProtect
+protection_plan_master.csv,plan_tier,enum,Yes,ESSENTIAL | COMPLETE | PREMIUM.,PREMIUM
+protection_plan_master.csv,operating_market,string,Yes,Single operating market for the MVP.,US
+protection_plan_master.csv,covered_device_category,enum,Yes,SMARTPHONE only for the MVP.,SMARTPHONE
+protection_plan_master.csv,policy_duration_months,integer,Yes,Length of the policy term in months.,12
+protection_plan_master.csv,annual_claim_limit,integer,Yes,Maximum total claims available in a policy year.,2
+protection_plan_master.csv,maximum_theft_claims,integer,Yes,Maximum theft claims allowed within the policy term.,1
+protection_plan_master.csv,default_resolution_strategy,enum,Yes,REPAIR_FIRST for all current plans.,REPAIR_FIRST
+protection_plan_master.csv,replacement_allowed_if,enum,Yes,Replacement condition.,REPAIR_NOT_FEASIBLE
+protection_plan_master.csv,plan_status,enum,Yes,ACTIVE | INACTIVE | RETIRED.,ACTIVE
+protection_plan_master.csv,effective_start_date,date,Yes,First date on which this plan version may be enrolled. ISO 8601.,2026-01-01
+protection_plan_master.csv,effective_end_date,date,Yes,Last date on which this plan version may be enrolled. ISO 8601.,2027-12-31
+protection_plan_master.csv,plan_description,string,Yes,Plain-language synthetic plan summary.,Comprehensive protection...
+plan_coverage_matrix.csv,coverage_matrix_id,string,Yes,Unique identifier for a plan/category record.,DP-PREMIUM-THEFT
+plan_coverage_matrix.csv,plan_id,string,Yes,Foreign key to protection_plan_master.plan_id.,DP-PREMIUM
+plan_coverage_matrix.csv,claim_category,enum,Yes,SCREEN_DAMAGE | ACCIDENTAL_DAMAGE | LIQUID_DAMAGE | MECHANICAL_BREAKDOWN | THEFT | LOSS.,THEFT
+plan_coverage_matrix.csv,category_scope,enum,Yes,SUPPORTED for configured triage categories; GLOBAL_EXCLUSION for explicit universal exclusions.,SUPPORTED
+plan_coverage_matrix.csv,covered_flag,boolean,Yes,"TRUE when the plan covers the claim category, subject to Item #3 policy rules.",TRUE
+plan_coverage_matrix.csv,deductible_amount,decimal,Conditional,Customer deductible for covered claim category. Blank when not covered.,99
+plan_coverage_matrix.csv,currency,string,Conditional,Currency for deductible_amount. Blank when not covered.,USD
+plan_coverage_matrix.csv,evidence_profile_id,string,Conditional,Reference to a future evidence-requirement profile. Blank when category is not covered.,EVD-THEFT-01
+plan_coverage_matrix.csv,repair_eligible_flag,boolean,Yes,TRUE if repair can be selected after eligibility checks.,FALSE
+plan_coverage_matrix.csv,replacement_eligible_flag,boolean,Yes,TRUE if replacement can be selected after eligibility checks.,TRUE
+plan_coverage_matrix.csv,coverage_notes,string,Yes,Synthetic explanatory notes; not an authoritative detailed rule.,Police-report reference...
