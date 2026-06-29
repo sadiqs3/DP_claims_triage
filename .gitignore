@@ -27,3 +27,6 @@ env/
 
 # Keep held-out evaluation data out of the development repository
 data/evaluation/
+
+# Ignore env files
+.env
