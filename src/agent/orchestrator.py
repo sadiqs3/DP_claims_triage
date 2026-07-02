@@ -2,12 +2,15 @@ from __future__ import annotations
 
 from typing import Any, Callable, Mapping
 
+from src.agent.agent_content_guardrail import (
+    apply_agent_content_safety_guardrail,
+)
 from src.agent.response_guardrail import build_guarded_agent_response
 from src.tools.deterministic_triage import run_deterministic_triage
 
 
 WORKFLOW_NAME = "guarded_claim_triage_orchestrator"
-WORKFLOW_VERSION = "reference_v1"
+WORKFLOW_VERSION = "reference_v2"
 
 ProposalBuilder = Callable[
     [Mapping[str, Any]],
@@ -30,7 +33,7 @@ def build_template_proposal(
     Create a deterministic, non-LLM explanation proposal.
 
     This is a safe reference implementation. A future LLM node may replace
-    this function, but its output must still pass through the guardrail.
+    this function, but its output must still pass through both guardrails.
     """
     result = _as_dict(tool_result)
     decision = _as_dict(result.get("deterministic_decision"))
@@ -64,37 +67,45 @@ def build_template_proposal(
 
     reviewer_notes = {
         "PROCEED": (
-            "Continue with standard processing. This routing result is "
-            "decision support only and is not a payment approval."
+            "This is a system triage recommendation and decision support only. "
+            "An authorised reviewer may apply approved review, escalation, or "
+            "exception-handling procedures where appropriate."
         ),
         "INFO_REQUIRED": (
-            "Request only the missing, invalid, or unreadable information "
-            "identified in the authoritative rule trace."
+            "This is a system triage recommendation. Obtain the missing, "
+            "invalid, or unreadable information identified in the "
+            "authoritative rule trace. An authorised reviewer may apply "
+            "approved review, escalation, or exception-handling procedures "
+            "where appropriate."
         ),
         "MANUAL_REVIEW": (
-            "Route the case to an analyst for review. Do not infer fraud, "
-            "customer fault, or a final denial from this routing outcome."
+            "This is a system triage recommendation. Route the case for "
+            "analyst review without inferring fraud, customer fault, or a "
+            "final denial. An authorised reviewer may apply approved review, "
+            "escalation, or exception-handling procedures where appropriate."
         ),
         "NOT_ELIGIBLE": (
-            "Do not continue standard eligibility processing unless an "
-            "authoritative policy-data correction or additional verified "
-            "information changes the underlying facts."
+            "This is a system triage recommendation based on the deterministic "
+            "rule result. An authorised reviewer may apply approved review, "
+            "escalation, or exception-handling procedures where appropriate."
         ),
     }
 
     next_step_messages = {
         "PROCEED": (
-            "Continue the claim through the standard downstream workflow."
+            "Continue the claim through the approved downstream workflow."
         ),
         "INFO_REQUIRED": (
-            "Obtain the required information and reassess the claim."
+            "Obtain the required information and reassess the claim through "
+            "the approved process."
         ),
         "MANUAL_REVIEW": (
             "Assign the claim to the appropriate reviewer queue."
         ),
         "NOT_ELIGIBLE": (
-            "Follow the documented policy-process handling for this "
-            "eligibility outcome."
+            "Record the system triage recommendation and follow the approved "
+            "analyst review or escalation process before any final customer "
+            "communication."
         ),
     }
 
@@ -135,7 +146,8 @@ def run_guarded_claim_orchestrator(
     Run the protected claim-triage workflow.
 
     The deterministic tool remains authoritative. The proposal builder may
-    provide explanation content only; the response guardrail protects all
+    provide explanation content only. The agent-content safety guardrail
+    validates explanation wording before the response guardrail protects all
     eligibility-routing fields in the final response.
     """
     tool_result = run_deterministic_triage(
@@ -166,9 +178,33 @@ def run_guarded_claim_orchestrator(
         }
     )
 
+    content_safety_result = apply_agent_content_safety_guardrail(
+        tool_result=tool_result,
+        proposed_content=agent_proposal,
+    )
+
+    workflow_trace.append(
+        {
+            "node": "agent_content_safety_guardrail",
+            "status": "COMPLETED",
+            "content_safety_status": content_safety_result[
+                "content_safety_status"
+            ],
+            "fallback_used": content_safety_result["fallback_used"],
+            "content_safety_violations": content_safety_result[
+                "content_safety_violations"
+            ],
+        }
+    )
+
+    response_guardrail_input = dict(agent_proposal)
+    response_guardrail_input.update(
+        content_safety_result["agent_content"]
+    )
+
     final_response = build_guarded_agent_response(
         tool_result=tool_result,
-        proposed_response=agent_proposal,
+        proposed_response=response_guardrail_input,
     )
 
     workflow_trace.append(
@@ -187,5 +223,9 @@ def run_guarded_claim_orchestrator(
         "workflow_status": "COMPLETED",
         "claim_id": tool_result["claim_id"],
         "workflow_trace": workflow_trace,
+        "tool_result": tool_result,
+        "agent_proposal": agent_proposal,
+        "proposal_source": proposal_source,
+        "content_safety": content_safety_result,
         "final_response": final_response,
     }
