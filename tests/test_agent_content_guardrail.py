@@ -44,6 +44,7 @@ class TestAgentContentGuardrail(unittest.TestCase):
             "FALLBACK_APPLIED",
         )
         self.assertTrue(result["fallback_used"])
+
         self.assertIn(
             "RESTRICTS_HUMAN_REVIEW",
             result["content_safety_violations"],
@@ -52,6 +53,7 @@ class TestAgentContentGuardrail(unittest.TestCase):
             "HUMAN_REVIEW_BOUNDARY_NOT_STATED",
             result["content_safety_violations"],
         )
+
         self.assertIn(
             "authorised reviewer",
             result["agent_content"]["reviewer_note"].casefold(),
@@ -65,7 +67,8 @@ class TestAgentContentGuardrail(unittest.TestCase):
             ),
             "reviewer_note": (
                 "This is decision support only. An authorised reviewer may "
-                "apply approved review or escalation procedures where appropriate."
+                "apply approved review or escalation procedures where "
+                "appropriate."
             ),
             "next_step_message": (
                 "Record the recommendation and follow the approved analyst "
@@ -99,25 +102,89 @@ class TestAgentContentGuardrail(unittest.TestCase):
             "FALLBACK_APPLIED",
         )
         self.assertTrue(result["fallback_used"])
+
         self.assertIn(
             "MISSING_OR_INVALID_NEXT_STEP_MESSAGE",
             result["content_safety_violations"],
         )
 
     def test_fallback_preserves_human_control(self):
-        fallback_content = build_safe_fallback_content(SAMPLE_TOOL_RESULT)
+        fallback_content = build_safe_fallback_content(
+            SAMPLE_TOOL_RESULT
+        )
 
         self.assertIn(
             "System triage recommendation",
             fallback_content["case_summary"],
         )
+
         self.assertIn(
             "authorised reviewer",
             fallback_content["reviewer_note"].casefold(),
         )
+
         self.assertIn(
             "before any final customer communication",
             fallback_content["next_step_message"].casefold(),
+        )
+
+    def test_negated_final_decision_disclaimer_is_retained(self):
+        safe_content = {
+            "case_summary": (
+                "This is a system triage recommendation only, not an approval, "
+                "payout, final denial, or fraud determination."
+            ),
+            "reviewer_note": (
+                "This is decision support only. An authorised reviewer may "
+                "apply approved review or escalation procedures where "
+                "appropriate."
+            ),
+            "next_step_message": (
+                "Follow the approved analyst review process."
+            ),
+        }
+
+        result = apply_agent_content_safety_guardrail(
+            tool_result=SAMPLE_TOOL_RESULT,
+            proposed_content=safe_content,
+        )
+
+        self.assertEqual(result["content_safety_status"], "SAFE")
+        self.assertFalse(result["fallback_used"])
+
+        self.assertNotIn(
+            "IMPLIES_FINAL_DECISION",
+            result["content_safety_violations"],
+        )
+
+    def test_affirmative_final_denial_uses_fallback(self):
+        unsafe_content = {
+            "case_summary": (
+                "This is a final denial under the system workflow."
+            ),
+            "reviewer_note": (
+                "This is decision support only. An authorised reviewer may "
+                "apply approved review or escalation procedures where "
+                "appropriate."
+            ),
+            "next_step_message": (
+                "Follow the approved analyst review process."
+            ),
+        }
+
+        result = apply_agent_content_safety_guardrail(
+            tool_result=SAMPLE_TOOL_RESULT,
+            proposed_content=unsafe_content,
+        )
+
+        self.assertEqual(
+            result["content_safety_status"],
+            "FALLBACK_APPLIED",
+        )
+
+        self.assertIn(
+            "IMPLIES_FINAL_DECISION",
+            result["content_safety_violations"],
         )
 
 

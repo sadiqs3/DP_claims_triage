@@ -26,7 +26,7 @@ class StructuredExplanation(BaseModel):
     )
     reviewer_note: str = Field(
         min_length=1,
-        max_length=500,
+        max_length=450,
     )
     next_step_message: str = Field(
         min_length=1,
@@ -54,6 +54,48 @@ def _get_model_name(model: str | None = None) -> str:
         raise ValueError("A non-empty OpenAI model name is required.")
 
     return selected_model
+
+
+def _compact_system_limitations(
+    system_limitations: object,
+) -> list[str]:
+    """
+    Create concise, deterministic limitation summaries for the LLM.
+
+    Full limitation text remains in the authoritative deterministic decision.
+    """
+    if not isinstance(system_limitations, list):
+        return []
+
+    summaries: list[str] = []
+
+    for limitation in system_limitations:
+        limitation_text = str(limitation).strip()
+
+        if not limitation_text:
+            continue
+
+        normalized_text = limitation_text.casefold()
+
+        if "dev-003" in normalized_text:
+            summaries.append(
+                "DEV-003: verified NOT_ENROLLED device status is unavailable."
+            )
+        elif "exc-001" in normalized_text or "exc-002" in normalized_text:
+            summaries.append(
+                "EXC-001/EXC-002: structured exclusion status is unavailable."
+            )
+        elif "claim-history source completeness" in normalized_text:
+            summaries.append(
+                "Claim history: source completeness cannot be independently "
+                "verified."
+            )
+        elif len(limitation_text) > 180:
+            summaries.append(limitation_text[:177].rstrip() + "...")
+        else:
+            summaries.append(limitation_text)
+
+    return summaries
 
 
 def _build_explanation_input(
@@ -97,7 +139,9 @@ def _build_explanation_input(
         "precedence_stage": decision["precedence_stage"],
         "decision_reason": decision["decision_reason"],
         "rule_trace": decision["rule_trace"],
-        "system_limitations": decision["system_limitations"],
+        "system_limitations_summary": _compact_system_limitations(
+            decision["system_limitations"]
+        ),
         "decision_support_only": decision["decision_support_only"],
         "authority_notice": (
             "The deterministic decision is authoritative. "
@@ -109,12 +153,13 @@ def _build_explanation_input(
 def build_openai_explanation_proposal(
     tool_result: Mapping[str, Any],
     model: str | None = None,
+    client: OpenAI | None = None,
 ) -> dict[str, str]:
     """
     Generate a structured, non-authoritative explanation proposal.
 
-    The returned fields are intended to pass through response_guardrail.py.
-    They must never be used to alter deterministic eligibility routing.
+    The returned fields are intended to pass through both guardrails. They
+    must never be used to alter deterministic eligibility routing.
     """
     if not os.getenv("OPENAI_API_KEY"):
         raise EnvironmentError(
@@ -136,36 +181,33 @@ You must never:
 - infer fraud, customer fault, intent, coverage, evidence, or policy facts
   that are not explicitly provided;
 - introduce new rule IDs, policy terms, or claim facts;
-- discourage, prevent, or replace authorised human review or escalation;
-- remove or minimise listed system limitations.
+- discourage, prevent, or replace authorised human review or escalation.
 
 Write neutral, concise operational guidance for an analyst.
 
-Describe the result only as a system triage recommendation, not as a final
-approval, denial, settlement, or determination.
+Return:
+1. case_summary: explain the deterministic routing result and its reason.
+2. reviewer_note: state that this is a system triage recommendation and that
+   authorised reviewers may use approved review, escalation, or
+   exception-handling procedures.
+3. next_step_message: state the appropriate process next step.
 
-The reviewer_note must:
-- state that the deterministic outcome is the system's triage recommendation;
-- state that authorised reviewers may follow approved review, escalation, or
-  exception-handling procedures where appropriate;
-- preserve relevant system limitations.
+Keep every field complete and concise.
 
-The next_step_message must describe an operational next step without implying
-that the claim has been finally approved, denied, rejected, paid, or settled.
+For system limitations:
+- use only the supplied compact limitation summaries;
+- mention them briefly, preferably by identifier;
+- do not reproduce long limitation descriptions;
+- direct the reviewer to the authoritative decision record for full details.
 
-Do not tell an analyst that they must not reassess, reopen, review, challenge,
-reinterpret, or escalate a case. Do not use wording such as:
-"do not reassess", "do not reopen", or "do not reinterpret".
-
-Use the supplied rule trace only as supporting context.
 The deterministic outcome is authoritative for this system response and is
 decision-support-only. Authorised human reviewers retain responsibility for
 applying approved operational procedures.
 """.strip()
 
-    client = OpenAI()
+    openai_client = client or OpenAI()
 
-    response = client.responses.parse(
+    response = openai_client.responses.parse(
         model=selected_model,
         instructions=instructions,
         input=json.dumps(

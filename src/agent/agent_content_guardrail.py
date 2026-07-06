@@ -6,17 +6,12 @@ from typing import Any, Mapping
 from src.agent.response_guardrail import ALLOWED_AGENT_CONTENT_FIELDS
 
 
-CONTENT_SAFETY_VERSION = "v1"
+CONTENT_SAFETY_VERSION = "v2"
 
 PROHIBITED_PATTERNS: dict[str, re.Pattern[str]] = {
     "RESTRICTS_HUMAN_REVIEW": re.compile(
         r"\b(?:do not|don't|must not|should not|cannot)\s+"
         r"(?:override|reinterpret|reassess|reopen|review|challenge|escalate)\b",
-        flags=re.IGNORECASE,
-    ),
-    "IMPLIES_FINAL_DECISION": re.compile(
-        r"\b(?:final|definitive|binding)\s+"
-        r"(?:approval|denial|rejection|determination|decision)\b",
         flags=re.IGNORECASE,
     ),
     "IMPLIES_CUSTOMER_OUTCOME": re.compile(
@@ -30,6 +25,22 @@ PROHIBITED_PATTERNS: dict[str, re.Pattern[str]] = {
         flags=re.IGNORECASE,
     ),
 }
+
+FINAL_DECISION_PATTERN = re.compile(
+    r"\b(?:final|definitive|binding)\s+"
+    r"(?:approval|denial|rejection|determination|decision)\b",
+    flags=re.IGNORECASE,
+)
+
+NEGATION_PATTERN = re.compile(
+    r"\b(?:not|no|never|without)\b",
+    flags=re.IGNORECASE,
+)
+
+ADVERSATIVE_PATTERN = re.compile(
+    r"\b(?:but|however|although|except|unless)\b",
+    flags=re.IGNORECASE,
+)
 
 
 NEXT_STEP_BY_OUTCOME = {
@@ -73,7 +84,7 @@ def _clean_text(value: object) -> str | None:
 def _extract_agent_content(
     proposed_content: Mapping[str, Any] | None,
 ) -> tuple[dict[str, str], list[str]]:
-    """Extract only permitted explanation fields and identify invalid content."""
+    """Extract permitted explanation fields and identify invalid content."""
     proposal = _as_dict(proposed_content)
     content: dict[str, str] = {}
     violations: list[str] = []
@@ -172,6 +183,52 @@ def build_safe_fallback_content(
     }
 
 
+def _is_negated_final_decision_reference(
+    text: str,
+    match: re.Match[str],
+) -> bool:
+    """
+    Check whether a final-decision phrase is part of a negated disclaimer.
+
+    Example allowed wording:
+    "This is not an approval, payout, final denial, or fraud determination."
+    """
+    text_before_match = text[:match.start()]
+
+    sentence_start = max(
+        text_before_match.rfind("."),
+        text_before_match.rfind("!"),
+        text_before_match.rfind("?"),
+        text_before_match.rfind(";"),
+    ) + 1
+
+    clause_prefix = text_before_match[sentence_start:]
+
+    negation_matches = list(
+        NEGATION_PATTERN.finditer(clause_prefix)
+    )
+
+    if not negation_matches:
+        return False
+
+    last_negation = negation_matches[-1]
+    text_after_negation = clause_prefix[last_negation.end():]
+
+    if ADVERSATIVE_PATTERN.search(text_after_negation):
+        return False
+
+    return True
+
+
+def _contains_unsafe_final_decision_phrase(text: str) -> bool:
+    """Return True only for non-negated final-decision language."""
+    for match in FINAL_DECISION_PATTERN.finditer(text):
+        if not _is_negated_final_decision_reference(text, match):
+            return True
+
+    return False
+
+
 def _find_semantic_violations(
     agent_content: Mapping[str, str],
 ) -> list[str]:
@@ -187,12 +244,16 @@ def _find_semantic_violations(
         if pattern.search(combined_text):
             violations.append(violation_code)
 
+    if _contains_unsafe_final_decision_phrase(combined_text):
+        violations.append("IMPLIES_FINAL_DECISION")
+
     reviewer_note = agent_content.get("reviewer_note", "").casefold()
 
     has_authorised_reviewer = (
         "authorised reviewer" in reviewer_note
         or "authorized reviewer" in reviewer_note
     )
+
     has_review_path = any(
         phrase in reviewer_note
         for phrase in (
@@ -214,7 +275,7 @@ def apply_agent_content_safety_guardrail(
     proposed_content: Mapping[str, Any] | None,
 ) -> dict[str, Any]:
     """
-    Validate LLM explanation text and apply a deterministic fallback if needed.
+    Validate LLM explanation text and apply deterministic fallback if needed.
 
     This guardrail handles only non-authoritative explanation content. The
     downstream response guardrail remains responsible for authoritative fields.
