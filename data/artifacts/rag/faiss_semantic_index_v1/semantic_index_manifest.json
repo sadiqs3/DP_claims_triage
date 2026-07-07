@@ -1,0 +1,11 @@
+{
+  "artifact_version": "faiss_semantic_index_v1",
+  "chunk_order_fingerprint": "0a0912f687603e11336f82357d7d5db01d94f2b719b1fbac8cc42c01f246932f",
+  "corpus_fingerprint": "f73f827d3614e2987a7e976c687043f3fe9e2f5faeeb9c6555508089230ebf48",
+  "corpus_size": 21,
+  "created_at_utc": "2026-07-07T14:18:20.256385+00:00",
+  "embedding_dimension": 1536,
+  "embedding_model": "text-embedding-3-small",
+  "faiss_version": "1.14.3",
+  "index_type": "IndexFlatIP"
+}

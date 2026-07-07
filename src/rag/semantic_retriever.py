@@ -1,17 +1,19 @@
 from __future__ import annotations
 
+# Semantic retrieval over approved KB chunks only.
+# It remains analyst-facing and cannot alter deterministic triage authority.
 from typing import Any, Mapping, Sequence
 
 import numpy as np
 import pandas as pd
 from openai import OpenAI
 
+from src.rag.corpus_builder import compute_corpus_fingerprint
 from src.rag.lexical_retriever import (
     _validate_corpus,
     _validate_query,
     _validate_top_k,
 )
-from src.rag.corpus_builder import compute_corpus_fingerprint
 
 TOOL_NAME = "semantic_sop_retrieval"
 TOOL_VERSION = "embedding_v1"
@@ -179,6 +181,29 @@ def _embed_texts(
     )
 
 
+def embed_approved_corpus_chunks(
+    corpus: pd.DataFrame,
+    embedding_model: str = DEFAULT_EMBEDDING_MODEL,
+    client: object | None = None,
+) -> tuple[pd.DataFrame, np.ndarray]:
+    """
+    Prepare and embed approved KB chunks only.
+
+    This helper accepts the allow-listed RAG corpus. It must not receive
+    claim records, customer narratives, identifiers, or workflow output.
+    """
+    prepared_corpus = _prepare_corpus(corpus)
+    validated_model = _validate_embedding_model(embedding_model)
+
+    document_embeddings = _embed_texts(
+        texts=prepared_corpus["chunk_text"].tolist(),
+        embedding_model=validated_model,
+        client=client,
+    )
+
+    return prepared_corpus, document_embeddings
+
+
 class ControlledSemanticRetriever:
     """
     In-memory semantic retriever for approved analyst-guidance chunks only.
@@ -227,6 +252,7 @@ class ControlledSemanticRetriever:
         self._corpus_fingerprint = compute_corpus_fingerprint(
             self._corpus
         )
+
     @classmethod
     def from_openai(
         cls,
@@ -237,21 +263,18 @@ class ControlledSemanticRetriever:
         """
         Create an in-memory index by embedding approved corpus chunks only.
         """
-        prepared_corpus = _prepare_corpus(corpus)
-        validated_model = _validate_embedding_model(
-            embedding_model
-        )
-
-        document_embeddings = _embed_texts(
-            texts=prepared_corpus["chunk_text"].tolist(),
-            embedding_model=validated_model,
-            client=client,
+        prepared_corpus, document_embeddings = (
+            embed_approved_corpus_chunks(
+                corpus=corpus,
+                embedding_model=embedding_model,
+                client=client,
+            )
         )
 
         return cls(
             corpus=prepared_corpus,
             document_embeddings=document_embeddings,
-            embedding_model=validated_model,
+            embedding_model=embedding_model,
         )
 
     @property
@@ -284,9 +307,8 @@ class ControlledSemanticRetriever:
         """
         Retrieve semantic analyst guidance for a query.
 
-        A result is returned only when its cosine-similarity score meets the
-        supplied threshold. The threshold governs guidance availability only;
-        it never changes claim routing.
+        The threshold governs guidance availability only; it never changes
+        claim routing or any authoritative deterministic result.
         """
         normalised_query = _validate_query(query)
         validated_top_k = _validate_top_k(top_k)

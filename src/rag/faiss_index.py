@@ -14,7 +14,11 @@ import pandas as pd
 
 from src.rag.corpus_builder import compute_corpus_fingerprint
 from src.rag.lexical_retriever import _validate_corpus
-from src.rag.semantic_retriever import DEFAULT_EMBEDDING_MODEL
+
+from src.rag.semantic_retriever import (
+    DEFAULT_EMBEDDING_MODEL,
+    embed_approved_corpus_chunks,
+)
 
 
 INDEX_ARTIFACT_VERSION = "faiss_semantic_index_v1"
@@ -264,6 +268,33 @@ def persist_faiss_semantic_index(
 
     return manifest
 
+def build_persisted_faiss_index_from_openai(
+    corpus: pd.DataFrame,
+    output_dir: str | Path,
+    embedding_model: str = DEFAULT_EMBEDDING_MODEL,
+    client: object | None = None,
+) -> FAISSIndexManifest:
+    """
+    Build a persisted FAISS index from approved KB chunks only.
+
+    The input must be the allow-listed RAG corpus. It must not contain claim
+    records, customer narratives, identifiers, follow-up wording, or workflow
+    outputs.
+    """
+    prepared_corpus, document_embeddings = (
+        embed_approved_corpus_chunks(
+            corpus=corpus,
+            embedding_model=embedding_model,
+            client=client,
+        )
+    )
+
+    return persist_faiss_semantic_index(
+        corpus=prepared_corpus,
+        document_embeddings=document_embeddings,
+        output_dir=output_dir,
+        embedding_model=embedding_model,
+    )
 
 def load_validated_faiss_semantic_index(
     corpus: pd.DataFrame,

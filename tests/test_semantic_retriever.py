@@ -9,6 +9,11 @@ from src.rag.semantic_retriever import (
     ControlledSemanticRetriever,
 )
 
+from src.rag.semantic_retriever import (
+    ControlledSemanticRetriever,
+    embed_approved_corpus_chunks,
+)
+
 
 class FakeEmbeddingsEndpoint:
     def __init__(self, vectors_by_text):
@@ -272,6 +277,86 @@ class TestControlledSemanticRetriever(unittest.TestCase):
 
         self.assertEqual(first_view, second_view)
 
+class TestApprovedCorpusEmbeddingHelper(unittest.TestCase):
+    """Tests the reusable approved-KB embedding helper only."""
+
+    @classmethod
+    def setUpClass(cls):
+        runtime_data = load_runtime_data()
+        cls.corpus = build_rag_corpus(
+            runtime_data["rag_document_registry"].copy()
+        )
+
+    def test_embeds_ordered_approved_corpus_chunks(self):
+        """Embeddings must align to the deterministic approved corpus order."""
+
+        class FakeEmbeddingsEndpoint:
+            def __init__(self):
+                self.calls = []
+
+            def create(self, input, model):
+                texts = [input] if isinstance(input, str) else list(input)
+
+                self.calls.append(
+                    {
+                        "input": texts,
+                        "model": model,
+                    }
+                )
+
+                return SimpleNamespace(
+                    data=[
+                        SimpleNamespace(
+                            index=index,
+                            embedding=[
+                                float(index + 1),
+                                float(index + 2),
+                                float(index + 3),
+                            ],
+                        )
+                        for index, _ in enumerate(texts)
+                    ]
+                )
+
+        fake_endpoint = FakeEmbeddingsEndpoint()
+        fake_client = SimpleNamespace(embeddings=fake_endpoint)
+
+        prepared_corpus, embeddings = embed_approved_corpus_chunks(
+            corpus=self.corpus,
+            client=fake_client,
+        )
+
+        expected_corpus = (
+            self.corpus.sort_values(
+                by=[
+                    "registry_priority",
+                    "document_id",
+                    "section_index",
+                ],
+                kind="stable",
+            )
+            .reset_index(drop=True)
+        )
+
+        self.assertEqual(
+            prepared_corpus["chunk_id"].tolist(),
+            expected_corpus["chunk_id"].tolist(),
+        )
+        self.assertEqual(
+            embeddings.shape,
+            (len(expected_corpus), 3),
+        )
+
+        self.assertEqual(len(fake_endpoint.calls), 1)
+        self.assertEqual(
+            fake_endpoint.calls[0]["input"],
+            expected_corpus["chunk_text"].tolist(),
+        )
+
+        np.testing.assert_array_equal(
+            embeddings[0],
+            np.array([1.0, 2.0, 3.0], dtype=np.float32),
+        )
 
 if __name__ == "__main__":
     unittest.main()

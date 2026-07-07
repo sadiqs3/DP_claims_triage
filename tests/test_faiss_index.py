@@ -3,16 +3,18 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from types import SimpleNamespace
 
 from src.data_loader import load_runtime_data
 from src.rag.corpus_builder import build_rag_corpus
+
 from src.rag.faiss_index import (
     INDEX_FILENAME,
     MANIFEST_FILENAME,
+    build_persisted_faiss_index_from_openai,
     load_validated_faiss_semantic_index,
     persist_faiss_semantic_index,
 )
-
 
 class TestPersistedFAISSSemanticIndex(unittest.TestCase):
     """Tests for persisted approved-KB embeddings and integrity checks."""
@@ -176,6 +178,68 @@ class TestPersistedFAISSSemanticIndex(unittest.TestCase):
                     output_dir=temporary_dir,
                 )
 
+    def test_builds_persisted_index_from_ordered_approved_chunks(self):
+        """
+        The wrapper must embed only approved KB chunks in deterministic order.
+
+        Fake embeddings keep this test offline and independent of OpenAI.
+        """
+
+        class FakeEmbeddingsEndpoint:
+            def __init__(self):
+                self.calls = []
+
+            def create(self, input, model):
+                texts = [input] if isinstance(input, str) else list(input)
+
+                self.calls.append(
+                    {
+                        "input": texts,
+                        "model": model,
+                    }
+                )
+
+                return SimpleNamespace(
+                    data=[
+                        SimpleNamespace(
+                            index=index,
+                            embedding=[
+                                float(index + 1),
+                                float(index + 2),
+                                float(index + 3),
+                                float(index + 4),
+                            ],
+                        )
+                        for index, _ in enumerate(texts)
+                    ]
+                )
+
+        fake_endpoint = FakeEmbeddingsEndpoint()
+        fake_client = SimpleNamespace(embeddings=fake_endpoint)
+
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            manifest = build_persisted_faiss_index_from_openai(
+                corpus=self.corpus,
+                output_dir=temporary_dir,
+                client=fake_client,
+            )
+
+            loaded = load_validated_faiss_semantic_index(
+                corpus=self.corpus,
+                output_dir=temporary_dir,
+            )
+
+        self.assertEqual(len(fake_endpoint.calls), 1)
+        self.assertEqual(
+            fake_endpoint.calls[0]["input"],
+            loaded.corpus["chunk_text"].tolist(),
+        )
+        self.assertEqual(loaded.index.ntotal, len(self.corpus))
+        self.assertEqual(loaded.index.d, 4)
+        self.assertEqual(
+            manifest.embedding_model,
+            "text-embedding-3-small",
+        )
 
 if __name__ == "__main__":
     unittest.main()
