@@ -1,16 +1,19 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Mapping, Sequence
 
 from src.agent.agent_content_guardrail import (
     apply_agent_content_safety_guardrail,
 )
 from src.agent.response_guardrail import build_guarded_agent_response
 from src.tools.deterministic_triage import run_deterministic_triage
+from src.tools.follow_up_selection import (
+    run_controlled_follow_up_selection,
+)
 
 
 WORKFLOW_NAME = "guarded_claim_triage_orchestrator"
-WORKFLOW_VERSION = "reference_v2"
+WORKFLOW_VERSION = "reference_v3"
 
 ProposalBuilder = Callable[
     [Mapping[str, Any]],
@@ -141,14 +144,14 @@ def run_guarded_claim_orchestrator(
     data: Mapping[str, Any],
     claim_id: str,
     proposal_builder: ProposalBuilder | None = None,
+    questions_already_asked: Sequence[str] | str | None = None,
 ) -> dict[str, Any]:
     """
     Run the protected claim-triage workflow.
 
-    The deterministic tool remains authoritative. The proposal builder may
-    provide explanation content only. The agent-content safety guardrail
-    validates explanation wording before the response guardrail protects all
-    eligibility-routing fields in the final response.
+    Deterministic triage remains authoritative. Controlled follow-up selection
+    may return only approved catalogue questions. The proposal builder may
+    provide analyst-facing explanation content only.
     """
     tool_result = run_deterministic_triage(
         data=data,
@@ -163,6 +166,34 @@ def run_guarded_claim_orchestrator(
             "tool_version": tool_result["tool_version"],
         }
     ]
+
+    follow_up_tool_result = run_controlled_follow_up_selection(
+        data=data,
+        claim_id=claim_id,
+        deterministic_tool_result=tool_result,
+        questions_already_asked=questions_already_asked,
+    )
+
+    controlled_follow_up = _as_dict(
+        follow_up_tool_result.get("follow_up_selection")
+    )
+
+    workflow_trace.append(
+        {
+            "node": "controlled_follow_up_selection",
+            "status": "COMPLETED",
+            "follow_up_required": controlled_follow_up.get(
+                "follow_up_required"
+            ),
+            "selection_status": controlled_follow_up.get(
+                "selection_status"
+            ),
+            "question_ids": controlled_follow_up.get(
+                "question_ids",
+                [],
+            ),
+        }
+    )
 
     agent_proposal, proposal_source = _build_agent_proposal(
         tool_result=tool_result,
@@ -207,6 +238,15 @@ def run_guarded_claim_orchestrator(
         proposed_response=response_guardrail_input,
     )
 
+    final_response["controlled_follow_up"] = controlled_follow_up
+    final_response["controlled_follow_up_source"] = (
+        f"{follow_up_tool_result['tool_name']}:"
+        f"{follow_up_tool_result['tool_version']}"
+    )
+    final_response["controlled_follow_up_notice"] = (
+        follow_up_tool_result["authority_notice"]
+    )
+
     workflow_trace.append(
         {
             "node": "response_guardrail",
@@ -224,6 +264,7 @@ def run_guarded_claim_orchestrator(
         "claim_id": tool_result["claim_id"],
         "workflow_trace": workflow_trace,
         "tool_result": tool_result,
+        "follow_up_tool_result": follow_up_tool_result,
         "agent_proposal": agent_proposal,
         "proposal_source": proposal_source,
         "content_safety": content_safety_result,

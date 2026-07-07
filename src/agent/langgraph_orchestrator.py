@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import operator
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from langgraph.graph import END, START, StateGraph
 from typing_extensions import Annotated, TypedDict
@@ -15,17 +15,23 @@ from src.agent.orchestrator import (
 )
 from src.agent.response_guardrail import build_guarded_agent_response
 from src.tools.deterministic_triage import run_deterministic_triage
+from src.tools.follow_up_selection import (
+    run_controlled_follow_up_selection,
+)
 
 
 WORKFLOW_NAME = "langgraph_guarded_claim_triage"
-WORKFLOW_VERSION = "langgraph_v2"
+WORKFLOW_VERSION = "langgraph_v3"
 
 
 class GuardedClaimTriageState(TypedDict, total=False):
     """State shared across the guarded LangGraph workflow."""
 
     claim_id: str
+    questions_already_asked: Sequence[str] | str | None
     tool_result: dict[str, Any]
+    follow_up_tool_result: dict[str, Any]
+    controlled_follow_up: dict[str, Any]
     agent_proposal: dict[str, Any]
     proposal_source: str
     content_safety: dict[str, Any]
@@ -69,9 +75,10 @@ def create_guarded_claim_triage_graph(
     """
     Create the protected LangGraph claim-triage workflow.
 
-    The deterministic tool remains authoritative. Explanation content passes
+    Deterministic triage remains authoritative. Controlled follow-up selection
+    may return only approved catalogue questions. Explanation content passes
     through a semantic safety guardrail before the response guardrail protects
-    all authoritative eligibility-routing fields.
+    authoritative routing fields.
     """
 
     def deterministic_triage_node(
@@ -90,6 +97,45 @@ def create_guarded_claim_triage_graph(
                     "status": "COMPLETED",
                     "authoritative": True,
                     "tool_version": tool_result["tool_version"],
+                }
+            ],
+        }
+
+    def controlled_follow_up_selection_node(
+        state: GuardedClaimTriageState,
+    ) -> dict[str, Any]:
+        tool_result = _as_dict(state.get("tool_result"))
+
+        follow_up_tool_result = run_controlled_follow_up_selection(
+            data=data,
+            claim_id=state["claim_id"],
+            deterministic_tool_result=tool_result,
+            questions_already_asked=state.get(
+                "questions_already_asked"
+            ),
+        )
+
+        controlled_follow_up = _as_dict(
+            follow_up_tool_result.get("follow_up_selection")
+        )
+
+        return {
+            "follow_up_tool_result": follow_up_tool_result,
+            "controlled_follow_up": controlled_follow_up,
+            "workflow_trace": [
+                {
+                    "node": "controlled_follow_up_selection",
+                    "status": "COMPLETED",
+                    "follow_up_required": controlled_follow_up.get(
+                        "follow_up_required"
+                    ),
+                    "selection_status": controlled_follow_up.get(
+                        "selection_status"
+                    ),
+                    "question_ids": controlled_follow_up.get(
+                        "question_ids",
+                        [],
+                    ),
                 }
             ],
         }
@@ -155,6 +201,12 @@ def create_guarded_claim_triage_graph(
         tool_result = _as_dict(state.get("tool_result"))
         agent_proposal = _as_dict(state.get("agent_proposal"))
         content_safety = _as_dict(state.get("content_safety"))
+        controlled_follow_up = _as_dict(
+            state.get("controlled_follow_up")
+        )
+        follow_up_tool_result = _as_dict(
+            state.get("follow_up_tool_result")
+        )
 
         response_guardrail_input = dict(agent_proposal)
         response_guardrail_input.update(
@@ -164,6 +216,17 @@ def create_guarded_claim_triage_graph(
         final_response = build_guarded_agent_response(
             tool_result=tool_result,
             proposed_response=response_guardrail_input,
+        )
+
+        final_response["controlled_follow_up"] = (
+            controlled_follow_up
+        )
+        final_response["controlled_follow_up_source"] = (
+            f"{follow_up_tool_result.get('tool_name', 'unknown')}:"
+            f"{follow_up_tool_result.get('tool_version', 'unknown')}"
+        )
+        final_response["controlled_follow_up_notice"] = (
+            follow_up_tool_result.get("authority_notice", "")
         )
 
         return {
@@ -186,6 +249,10 @@ def create_guarded_claim_triage_graph(
         deterministic_triage_node,
     )
     workflow.add_node(
+        "controlled_follow_up_selection",
+        controlled_follow_up_selection_node,
+    )
+    workflow.add_node(
         "explanation_proposal",
         explanation_proposal_node,
     )
@@ -201,6 +268,10 @@ def create_guarded_claim_triage_graph(
     workflow.add_edge(START, "deterministic_triage")
     workflow.add_edge(
         "deterministic_triage",
+        "controlled_follow_up_selection",
+    )
+    workflow.add_edge(
+        "controlled_follow_up_selection",
         "explanation_proposal",
     )
     workflow.add_edge(
@@ -220,6 +291,7 @@ def run_langgraph_guarded_claim_triage(
     data: Mapping[str, Any],
     claim_id: str,
     proposal_builder: ProposalBuilder | None = None,
+    questions_already_asked: Sequence[str] | str | None = None,
 ) -> dict[str, Any]:
     """Run the protected LangGraph claim-triage workflow."""
     graph = create_guarded_claim_triage_graph(
@@ -230,6 +302,7 @@ def run_langgraph_guarded_claim_triage(
     state = graph.invoke(
         {
             "claim_id": claim_id,
+            "questions_already_asked": questions_already_asked,
             "workflow_trace": [],
         }
     )
@@ -241,6 +314,7 @@ def run_langgraph_guarded_claim_triage(
         "claim_id": state["claim_id"],
         "workflow_trace": state["workflow_trace"],
         "tool_result": state["tool_result"],
+        "follow_up_tool_result": state["follow_up_tool_result"],
         "agent_proposal": state["agent_proposal"],
         "proposal_source": state["proposal_source"],
         "content_safety": state["content_safety"],

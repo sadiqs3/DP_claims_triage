@@ -1,3 +1,4 @@
+import copy
 import unittest
 from unittest.mock import patch
 
@@ -32,22 +33,96 @@ SAMPLE_TOOL_RESULT = {
 }
 
 
+SAMPLE_NO_FOLLOW_UP_RESULT = {
+    "tool_name": "controlled_follow_up_selection",
+    "tool_version": "v1",
+    "claim_id": "CLM-TEST-001",
+    "authority_notice": (
+        "Follow-up selection is deterministic and uses only approved "
+        "catalogue questions."
+    ),
+    "follow_up_selection": {
+        "claim_id": "CLM-TEST-001",
+        "follow_up_required": False,
+        "selection_status": "NOT_REQUIRED",
+        "question_ids": [],
+        "selected_questions": [],
+        "customer_message": "",
+        "deferred_requirements": [],
+        "selection_notes": [
+            "No follow-up is required for PROCEED."
+        ],
+    },
+}
+
+
+SAMPLE_INFO_REQUIRED_TOOL_RESULT = {
+    **SAMPLE_TOOL_RESULT,
+    "deterministic_decision": {
+        **SAMPLE_TOOL_RESULT["deterministic_decision"],
+        "triage_outcome": "INFO_REQUIRED",
+        "triggering_rule_id": "ELG-001",
+        "precedence_stage": 3,
+        "decision_reason": (
+            "A valid incident date is required before eligibility can be "
+            "assessed."
+        ),
+    },
+}
+
+
+SAMPLE_INFO_REQUIRED_FOLLOW_UP_RESULT = {
+    "tool_name": "controlled_follow_up_selection",
+    "tool_version": "v1",
+    "claim_id": "CLM-TEST-001",
+    "authority_notice": (
+        "Follow-up selection is deterministic and uses only approved "
+        "catalogue questions."
+    ),
+    "follow_up_selection": {
+        "claim_id": "CLM-TEST-001",
+        "follow_up_required": True,
+        "selection_status": "QUESTIONS_SELECTED",
+        "question_ids": ["FUP-002"],
+        "selected_questions": [
+            {
+                "question_id": "FUP-002",
+                "source_rule_id": "ELG-001",
+                "response_field": "reported_incident_date",
+                "response_format": "DATE_YYYY_MM_DD",
+                "customer_facing_question": (
+                    "Please confirm the date on which the incident occurred."
+                ),
+            }
+        ],
+        "customer_message": (
+            "Thanks for submitting your claim. Please confirm the date on "
+            "which the incident occurred."
+        ),
+        "deferred_requirements": [],
+        "selection_notes": [
+            "Question selected from the approved catalogue."
+        ],
+    },
+}
+
+
 class TestGuardedClaimOrchestrator(unittest.TestCase):
 
-    @patch(
-        "src.agent.orchestrator.run_deterministic_triage",
-        return_value=SAMPLE_TOOL_RESULT,
-    )
-    def test_template_workflow_is_safe_and_has_four_nodes(
-        self,
-        mock_triage,
-    ):
-        result = run_guarded_claim_orchestrator(
-            data={},
-            claim_id="CLM-TEST-001",
-        )
+    def test_template_workflow_is_safe_and_has_five_nodes(self):
+        with patch(
+            "src.agent.orchestrator.run_deterministic_triage",
+            return_value=SAMPLE_TOOL_RESULT,
+        ) as mock_triage, patch(
+            "src.agent.orchestrator.run_controlled_follow_up_selection",
+            return_value=SAMPLE_NO_FOLLOW_UP_RESULT,
+        ) as mock_follow_up:
+            result = run_guarded_claim_orchestrator(
+                data={},
+                claim_id="CLM-TEST-001",
+            )
 
-        self.assertEqual(WORKFLOW_VERSION, "reference_v2")
+        self.assertEqual(WORKFLOW_VERSION, "reference_v3")
         self.assertEqual(result["workflow_status"], "COMPLETED")
         self.assertEqual(result["proposal_source"], "TEMPLATE")
 
@@ -58,10 +133,23 @@ class TestGuardedClaimOrchestrator(unittest.TestCase):
             ],
             [
                 "deterministic_triage",
+                "controlled_follow_up_selection",
                 "explanation_proposal",
                 "agent_content_safety_guardrail",
                 "response_guardrail",
             ],
+        )
+
+        self.assertFalse(
+            result["final_response"]["controlled_follow_up"][
+                "follow_up_required"
+            ]
+        )
+        self.assertEqual(
+            result["final_response"]["controlled_follow_up"][
+                "question_ids"
+            ],
+            [],
         )
 
         self.assertEqual(
@@ -84,14 +172,65 @@ class TestGuardedClaimOrchestrator(unittest.TestCase):
             claim_id="CLM-TEST-001",
         )
 
-    @patch(
-        "src.agent.orchestrator.run_deterministic_triage",
-        return_value=SAMPLE_TOOL_RESULT,
-    )
-    def test_unsafe_content_and_authority_override_are_blocked(
-        self,
-        mock_triage,
-    ):
+        mock_follow_up.assert_called_once_with(
+            data={},
+            claim_id="CLM-TEST-001",
+            deterministic_tool_result=SAMPLE_TOOL_RESULT,
+            questions_already_asked=None,
+        )
+
+    def test_info_required_carries_controlled_follow_up_output(self):
+        with patch(
+            "src.agent.orchestrator.run_deterministic_triage",
+            return_value=SAMPLE_INFO_REQUIRED_TOOL_RESULT,
+        ) as mock_triage, patch(
+            "src.agent.orchestrator.run_controlled_follow_up_selection",
+            return_value=SAMPLE_INFO_REQUIRED_FOLLOW_UP_RESULT,
+        ) as mock_follow_up:
+            result = run_guarded_claim_orchestrator(
+                data={},
+                claim_id="CLM-TEST-001",
+                questions_already_asked=["FUP-001"],
+            )
+
+        controlled_follow_up = result["final_response"][
+            "controlled_follow_up"
+        ]
+
+        self.assertEqual(
+            result["final_response"]["triage_outcome"],
+            "INFO_REQUIRED",
+        )
+        self.assertEqual(
+            result["final_response"]["triggering_rule_id"],
+            "ELG-001",
+        )
+
+        self.assertTrue(controlled_follow_up["follow_up_required"])
+        self.assertEqual(
+            controlled_follow_up["question_ids"],
+            ["FUP-002"],
+        )
+        self.assertEqual(
+            controlled_follow_up["selection_status"],
+            "QUESTIONS_SELECTED",
+        )
+
+        self.assertEqual(
+            result["final_response"]["controlled_follow_up_source"],
+            "controlled_follow_up_selection:v1",
+        )
+
+        mock_triage.assert_called_once()
+
+        mock_follow_up.assert_called_once_with(
+            data={},
+            claim_id="CLM-TEST-001",
+            deterministic_tool_result=SAMPLE_INFO_REQUIRED_TOOL_RESULT,
+            questions_already_asked=["FUP-001"],
+        )
+
+    def test_unsafe_content_and_authority_override_are_blocked(self):
         def unsafe_proposal_builder(tool_result):
             return {
                 "case_summary": (
@@ -107,11 +246,18 @@ class TestGuardedClaimOrchestrator(unittest.TestCase):
                 "triggering_rule_id": "LIM-001",
             }
 
-        result = run_guarded_claim_orchestrator(
-            data={},
-            claim_id="CLM-TEST-001",
-            proposal_builder=unsafe_proposal_builder,
-        )
+        with patch(
+            "src.agent.orchestrator.run_deterministic_triage",
+            return_value=SAMPLE_TOOL_RESULT,
+        ) as mock_triage, patch(
+            "src.agent.orchestrator.run_controlled_follow_up_selection",
+            return_value=SAMPLE_NO_FOLLOW_UP_RESULT,
+        ) as mock_follow_up:
+            result = run_guarded_claim_orchestrator(
+                data={},
+                claim_id="CLM-TEST-001",
+                proposal_builder=unsafe_proposal_builder,
+            )
 
         self.assertEqual(
             result["content_safety"]["content_safety_status"],
@@ -144,23 +290,24 @@ class TestGuardedClaimOrchestrator(unittest.TestCase):
         )
 
         mock_triage.assert_called_once()
+        mock_follow_up.assert_called_once()
 
-    @patch(
-        "src.agent.orchestrator.run_deterministic_triage",
-        return_value=SAMPLE_TOOL_RESULT,
-    )
-    def test_none_custom_proposal_uses_safe_fallback(
-        self,
-        mock_triage,
-    ):
+    def test_none_custom_proposal_uses_safe_fallback(self):
         def empty_proposal_builder(tool_result):
             return None
 
-        result = run_guarded_claim_orchestrator(
-            data={},
-            claim_id="CLM-TEST-001",
-            proposal_builder=empty_proposal_builder,
-        )
+        with patch(
+            "src.agent.orchestrator.run_deterministic_triage",
+            return_value=SAMPLE_TOOL_RESULT,
+        ) as mock_triage, patch(
+            "src.agent.orchestrator.run_controlled_follow_up_selection",
+            return_value=SAMPLE_NO_FOLLOW_UP_RESULT,
+        ) as mock_follow_up:
+            result = run_guarded_claim_orchestrator(
+                data={},
+                claim_id="CLM-TEST-001",
+                proposal_builder=empty_proposal_builder,
+            )
 
         self.assertEqual(result["proposal_source"], "CUSTOM")
         self.assertEqual(result["agent_proposal"], {})
@@ -177,33 +324,37 @@ class TestGuardedClaimOrchestrator(unittest.TestCase):
         )
         self.assertIn(
             "System triage recommendation",
-            result["final_response"]["agent_content"]["case_summary"],
+            result["final_response"]["agent_content"][
+                "case_summary"
+            ],
         )
 
         mock_triage.assert_called_once()
+        mock_follow_up.assert_called_once()
 
-    @patch(
-        "src.agent.orchestrator.run_deterministic_triage",
-        return_value=SAMPLE_TOOL_RESULT,
-    )
-    def test_invalid_custom_proposal_type_raises_error(
-        self,
-        mock_triage,
-    ):
+    def test_invalid_custom_proposal_type_raises_error(self):
         def invalid_proposal_builder(tool_result):
             return ["not", "a", "mapping"]
 
-        with self.assertRaisesRegex(
-            ValueError,
-            "proposal_builder must return a mapping or None.",
-        ):
-            run_guarded_claim_orchestrator(
-                data={},
-                claim_id="CLM-TEST-001",
-                proposal_builder=invalid_proposal_builder,
-            )
+        with patch(
+            "src.agent.orchestrator.run_deterministic_triage",
+            return_value=copy.deepcopy(SAMPLE_TOOL_RESULT),
+        ) as mock_triage, patch(
+            "src.agent.orchestrator.run_controlled_follow_up_selection",
+            return_value=copy.deepcopy(SAMPLE_NO_FOLLOW_UP_RESULT),
+        ) as mock_follow_up:
+            with self.assertRaisesRegex(
+                ValueError,
+                "proposal_builder must return a mapping or None.",
+            ):
+                run_guarded_claim_orchestrator(
+                    data={},
+                    claim_id="CLM-TEST-001",
+                    proposal_builder=invalid_proposal_builder,
+                )
 
         mock_triage.assert_called_once()
+        mock_follow_up.assert_called_once()
 
 
 if __name__ == "__main__":
