@@ -59,4 +59,7 @@ def load_runtime_data() -> dict[str, pd.DataFrame]:
             .query("dataset_partition == 'DEVELOPMENT'")
             .copy()
         ),
+        "rag_document_registry": pd.read_csv(
+            reference_dir / "rag_document_registry_v1.csv"
+        ),
     }

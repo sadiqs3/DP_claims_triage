@@ -1,0 +1,15 @@
+query_id,query_family,query_text,relevant_chunk_ids_json,rationale
+RAG-EVAL-001,EVIDENCE_PROFILE,A claimant reports liquid exposure. Which proof is mandatory for this category?,"[""KB-002::S03""]",Tests category-to-evidence-profile mapping without using the exact table wording.
+RAG-EVAL-002,EVIDENCE_STATUS,What is the correct operational response to a required image that cannot be read?,"[""KB-002::S04""]",Tests handling of unreadable mandatory evidence.
+RAG-EVAL-003,EVIDENCE_CONTRADICTION,A repair document identifies a different handset from the policy record. How should that inconsistency be handled?,"[""KB-002::S05""]",Tests neutral handling of evidence that conflicts with structured device facts.
+RAG-EVAL-004,EVIDENCE_PRINCIPLE,Can a supporting repair quotation make an otherwise uncovered event eligible?,"[""KB-002::S02""]",Tests the principle that evidence validates a potentially eligible claim but does not create coverage.
+RAG-EVAL-005,MANUAL_REVIEW_PACKET,What details must accompany a case assigned for analyst review?,"[""KB-004::S03""]",Tests required escalation-packet content.
+RAG-EVAL-006,MANUAL_REVIEW_WRITING,How should an escalation note describe conflicting device identifiers without alleging dishonesty?,"[""KB-004::S04""]","Tests neutral, fact-based escalation writing."
+RAG-EVAL-007,MANUAL_REVIEW_SCOPE,What investigations or approvals are outside the triage agent's role after a review trigger?,"[""KB-004::S05""]",Tests the boundary between triage support and analyst actions.
+RAG-EVAL-008,SOURCE_PRECEDENCE,"When structured sources disagree, which source order and routing approach should govern the triage?","[""KB-001::S03""]",Tests authoritative-source precedence and safe conflict routing.
+RAG-EVAL-009,MATERIAL_FOLLOW_UP,Should the system request additional paperwork after a conclusive policy failure already determines the route?,"[""KB-001::S05""]",Tests the rule that follow-up must be material to the next decision step.
+RAG-EVAL-010,TRIAGE_FLOW,What operational sequence should be completed before choosing a triage disposition?,"[""KB-001::S04""]",Tests the standard operational triage sequence.
+RAG-EVAL-011,EXPLANATION_FACT_TYPES,Which categories of facts and uncertainty need to be distinguished in an auditable explanation?,"[""KB-005::S02""]","Tests separation of verified, reported, unknown, and rule-based information."
+RAG-EVAL-012,AUDIT_FIELDS,Which fields must be recorded to make a triage recommendation auditable?,"[""KB-005::S03""]",Tests required decision-explanation and audit fields.
+RAG-EVAL-013,DISPOSITION_WORDING,How should the system express a recommended decline without presenting it as a final customer decision?,"[""KB-005::S04""]",Tests safe disposition wording and non-finality.
+RAG-EVAL-014,TRACEABILITY,What references should be retained for traceability while avoiding unnecessary customer information?,"[""KB-005::S05""]",Tests traceability references and data-minimisation guidance.

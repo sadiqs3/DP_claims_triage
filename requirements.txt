@@ -5,3 +5,5 @@ ipykernel==7.3.0
 openai==2.44.0
 python-dotenv==1.2.2
 pydantic==2.13.4
+numpy==2.4.6
+scikit-learn==1.9.0
