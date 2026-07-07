@@ -66,17 +66,27 @@ class TestControlledPersistedFAISSRetriever(unittest.TestCase):
         ).astype(np.float32)
 
         cls.facts = AuthoritativeTriageFacts(
-            claim_type="ACCIDENTAL_DAMAGE",
-            incident_category="SCREEN_DAMAGE",
-            coverage_outcome="ELIGIBLE",
-            evidence_state="MISSING_REQUIRED",
-            manual_review_required=True,
-            product_family="SMARTPHONE",
-            required_evidence_codes=(
-                "DAMAGE_PHOTOS",
-                "PROOF_OF_PURCHASE",
+            triage_outcome="MANUAL_REVIEW",
+            triggering_rule_id="ANM-001",
+            precedence_stage=4,
+            claim_category="SCREEN_DAMAGE",
+            requested_service_type="REPAIR",
+            plan_configuration_status="ACTIVE_CONFIGURATION_AVAILABLE",
+            product_scope_status="IN_SCOPE",
+            coverage_lookup_status="UNIQUE_COVERAGE_RECORD",
+            covered_flag=True,
+            evidence_profile_id="EVD-SCREEN-01",
+            evidence_assessment_status="INCOMPLETE",
+            missing_required_evidence_codes=(
+                "DAMAGE_PHOTO",
+                "REPAIR_QUOTE",
             ),
-            manual_review_reason_codes=("SERIAL_MISMATCH",),
+            unreadable_required_evidence_codes=(
+                "DIAGNOSTIC_REPORT",
+            ),
+            device_match_status="DEVICE_MATCH",
+            risk_indicator_ids=("RSK-001",),
+            manual_review_reason_codes=("POTENTIAL_DUPLICATE",),
         )
 
         cls.controlled_query = (

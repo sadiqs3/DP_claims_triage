@@ -1,82 +1,169 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-import re
-from typing import Iterable
 from hashlib import sha256
+import re
 
 
-_CODE_PATTERN = re.compile(r"^[A-Z][A-Z0-9_]{0,63}$")
+_CODE_PATTERN = re.compile(r"^[A-Z][A-Z0-9_-]{0,63}$")
+_ALLOWED_TRIAGE_OUTCOMES = {
+    "PROCEED",
+    "INFO_REQUIRED",
+    "MANUAL_REVIEW",
+    "NOT_ELIGIBLE",
+}
 
 
 def _validate_code(field_name: str, value: str) -> str:
-    """Allow only deterministic, uppercase system codes."""
+    """Allow only uppercase deterministic codes, including hyphenated IDs."""
     if not isinstance(value, str) or not _CODE_PATTERN.fullmatch(value):
         raise ValueError(
-            f"{field_name} must be an uppercase deterministic code, "
-            f"for example: 'MISSING_REQUIRED' or 'MANUAL_REVIEW'."
+            f"{field_name} must be an uppercase deterministic code using "
+            "letters, numbers, underscores, or hyphens."
         )
+
     return value
 
 
-def _normalise_codes(field_name: str, values: Iterable[str]) -> tuple[str, ...]:
-    """Validate, de-duplicate, and sort codes for deterministic handling."""
-    validated = {_validate_code(field_name, value) for value in values}
+def _validate_optional_code(
+    field_name: str,
+    value: str | None,
+) -> str | None:
+    """Allow an omitted retrieval fact or one validated deterministic code."""
+    if value is None:
+        return None
+
+    return _validate_code(field_name, value)
+
+
+def _normalise_codes(
+    field_name: str,
+    values: Iterable[str],
+) -> tuple[str, ...]:
+    """Validate, de-duplicate, and sort code collections deterministically."""
+    if values is None or isinstance(values, (str, bytes)):
+        raise ValueError(
+            f"{field_name} must be an iterable of deterministic codes."
+        )
+
+    try:
+        validated = {
+            _validate_code(field_name, value)
+            for value in values
+        }
+    except TypeError as exc:
+        raise ValueError(
+            f"{field_name} must be an iterable of deterministic codes."
+        ) from exc
+
     return tuple(sorted(validated))
+
+
+def _validate_optional_boolean(
+    field_name: str,
+    value: bool | None,
+) -> bool | None:
+    """Allow a deterministic boolean or an unassessed value."""
+    if value is None:
+        return None
+
+    if not isinstance(value, bool):
+        raise ValueError(f"{field_name} must be True, False, or None.")
+
+    return value
 
 
 @dataclass(frozen=True)
 class AuthoritativeTriageFacts:
     """
-    Retrieval-safe deterministic facts only.
+    Retrieval-safe facts projected from deterministic claim context only.
 
-    Do not add customer narrative, claim notes, identifiers,
-    follow-up wording, or LLM-generated values here.
+    This contract must not contain identifiers, customer statements, document
+    text, decision_reason, arbitrary rule-trace values, or LLM-generated text.
     """
 
-    claim_type: str
-    incident_category: str
-    coverage_outcome: str
-    evidence_state: str
-    manual_review_required: bool
+    triage_outcome: str
+    triggering_rule_id: str
+    precedence_stage: int
 
-    product_family: str | None = None
-    required_evidence_codes: tuple[str, ...] = ()
+    claim_category: str | None = None
+    requested_service_type: str | None = None
+    plan_configuration_status: str | None = None
+    product_scope_status: str | None = None
+    coverage_lookup_status: str | None = None
+    covered_flag: bool | None = None
+    evidence_profile_id: str | None = None
+    evidence_assessment_status: str | None = None
+    missing_required_evidence_codes: tuple[str, ...] = ()
+    unreadable_required_evidence_codes: tuple[str, ...] = ()
+    device_match_status: str | None = None
+    risk_indicator_ids: tuple[str, ...] = ()
     manual_review_reason_codes: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
-        _validate_code("claim_type", self.claim_type)
-        _validate_code("incident_category", self.incident_category)
-        _validate_code("coverage_outcome", self.coverage_outcome)
-        _validate_code("evidence_state", self.evidence_state)
-
-        if self.product_family is not None:
-            _validate_code("product_family", self.product_family)
-
-        object.__setattr__(
-            self,
-            "required_evidence_codes",
-            _normalise_codes(
-                "required_evidence_codes",
-                self.required_evidence_codes,
-            ),
-        )
-
-        object.__setattr__(
-            self,
-            "manual_review_reason_codes",
-            _normalise_codes(
-                "manual_review_reason_codes",
-                self.manual_review_reason_codes,
-            ),
-        )
-
-        if not self.manual_review_required and self.manual_review_reason_codes:
+        if self.triage_outcome not in _ALLOWED_TRIAGE_OUTCOMES:
             raise ValueError(
-                "manual_review_reason_codes must be empty when "
-                "manual_review_required is False."
+                "triage_outcome must be one of: "
+                + ", ".join(sorted(_ALLOWED_TRIAGE_OUTCOMES))
+                + "."
             )
-        
+
+        _validate_code("triggering_rule_id", self.triggering_rule_id)
+
+        if (
+            type(self.precedence_stage) is not int
+            or not 1 <= self.precedence_stage <= 6
+        ):
+            raise ValueError(
+                "precedence_stage must be an integer between 1 and 6."
+            )
+
+        optional_code_fields = (
+            "claim_category",
+            "requested_service_type",
+            "plan_configuration_status",
+            "product_scope_status",
+            "coverage_lookup_status",
+            "evidence_profile_id",
+            "evidence_assessment_status",
+            "device_match_status",
+        )
+
+        for field_name in optional_code_fields:
+            object.__setattr__(
+                self,
+                field_name,
+                _validate_optional_code(
+                    field_name,
+                    getattr(self, field_name),
+                ),
+            )
+
+        object.__setattr__(
+            self,
+            "covered_flag",
+            _validate_optional_boolean("covered_flag", self.covered_flag),
+        )
+
+        collection_fields = (
+            "missing_required_evidence_codes",
+            "unreadable_required_evidence_codes",
+            "risk_indicator_ids",
+            "manual_review_reason_codes",
+        )
+
+        for field_name in collection_fields:
+            object.__setattr__(
+                self,
+                field_name,
+                _normalise_codes(
+                    field_name,
+                    getattr(self, field_name),
+                ),
+            )
+
+
 @dataclass(frozen=True)
 class ControlledRAGQuery:
     """
@@ -94,22 +181,34 @@ class ControlledRAGQuery:
 
 
 def _display_code(code: str) -> str:
-    """Create a deterministic, retrieval-friendly rendering of a system code."""
-    return code.replace("_", " ").lower()
+    """Create a retrieval-friendly rendering while retaining the raw code."""
+    return code.replace("_", " ").replace("-", " ").lower()
+
+
+def _render_code(code: str) -> str:
+    """Render one deterministic code with a stable human-readable form."""
+    return f"{code} ({_display_code(code)})"
+
+
+def _render_codes(codes: tuple[str, ...]) -> str:
+    """Render an ordered deterministic code collection."""
+    return ", ".join(_render_code(code) for code in codes)
 
 
 class ControlledRAGQueryBuilder:
     """
-    Builds retrieval queries only from AuthoritativeTriageFacts.
+    Build analyst-guidance retrieval queries from safe deterministic facts only.
 
-    This class deliberately has no input for customer narrative, claim notes,
-    customer identifiers, free-text extraction, or follow-up wording.
+    This class has no input for customer narrative, claim notes, identifiers,
+    document text, decision reasons, arbitrary rule-trace values, or follow-up
+    wording.
     """
 
     _RETRIEVAL_INTENT = (
         "Retrieve approved internal knowledge-base guidance for analyst "
         "evidence handling, documentation standards, manual-review procedures, "
-        "and appropriate analyst next steps."
+        "and appropriate analyst next steps. Use this guidance only as "
+        "non-authoritative decision support."
     )
 
     def build(self, facts: AuthoritativeTriageFacts) -> ControlledRAGQuery:
@@ -122,47 +221,60 @@ class ControlledRAGQueryBuilder:
         parts = [
             "Device protection claim analyst guidance.",
             (
-                f"Claim type: {facts.claim_type} "
-                f"({_display_code(facts.claim_type)})."
+                "Authoritative triage outcome: "
+                f"{_render_code(facts.triage_outcome)}."
             ),
             (
-                f"Incident category: {facts.incident_category} "
-                f"({_display_code(facts.incident_category)})."
+                "Triggering deterministic rule: "
+                f"{_render_code(facts.triggering_rule_id)}."
             ),
-            (
-                f"Coverage outcome: {facts.coverage_outcome} "
-                f"({_display_code(facts.coverage_outcome)})."
-            ),
-            (
-                f"Evidence state: {facts.evidence_state} "
-                f"({_display_code(facts.evidence_state)})."
-            ),
+            f"Decision precedence stage: {facts.precedence_stage}.",
         ]
 
-        if facts.product_family:
-            parts.append(
-                f"Product family: {facts.product_family} "
-                f"({_display_code(facts.product_family)})."
-            )
-
-        if facts.required_evidence_codes:
-            rendered_evidence = ", ".join(
-                f"{code} ({_display_code(code)})"
-                for code in facts.required_evidence_codes
-            )
-            parts.append(f"Required evidence codes: {rendered_evidence}.")
-
-        parts.append(
-            "Manual review required: "
-            f"{'YES' if facts.manual_review_required else 'NO'}."
+        optional_code_parts = (
+            ("Claim category", facts.claim_category),
+            ("Requested service type", facts.requested_service_type),
+            ("Plan configuration status", facts.plan_configuration_status),
+            ("Product scope status", facts.product_scope_status),
+            ("Coverage lookup status", facts.coverage_lookup_status),
+            ("Evidence profile ID", facts.evidence_profile_id),
+            ("Evidence assessment status", facts.evidence_assessment_status),
+            ("Device-match status", facts.device_match_status),
         )
 
-        if facts.manual_review_reason_codes:
-            rendered_reasons = ", ".join(
-                f"{code} ({_display_code(code)})"
-                for code in facts.manual_review_reason_codes
+        for label, code in optional_code_parts:
+            if code is not None:
+                parts.append(f"{label}: {_render_code(code)}.")
+
+        if facts.covered_flag is not None:
+            parts.append(
+                "Coverage explicitly confirmed: "
+                f"{'YES' if facts.covered_flag else 'NO'}."
             )
-            parts.append(f"Manual-review reason codes: {rendered_reasons}.")
+
+        if facts.missing_required_evidence_codes:
+            parts.append(
+                "Missing required evidence codes: "
+                f"{_render_codes(facts.missing_required_evidence_codes)}."
+            )
+
+        if facts.unreadable_required_evidence_codes:
+            parts.append(
+                "Unreadable required evidence codes: "
+                f"{_render_codes(facts.unreadable_required_evidence_codes)}."
+            )
+
+        if facts.risk_indicator_ids:
+            parts.append(
+                "Risk indicator IDs: "
+                f"{_render_codes(facts.risk_indicator_ids)}."
+            )
+
+        if facts.manual_review_reason_codes:
+            parts.append(
+                "Manual-review reason codes: "
+                f"{_render_codes(facts.manual_review_reason_codes)}."
+            )
 
         parts.append(self._RETRIEVAL_INTENT)
 
