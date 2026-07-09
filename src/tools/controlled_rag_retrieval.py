@@ -19,7 +19,10 @@ from src.rag.triage_facts_projection import (
     PROJECTION_VERSION,
     project_authoritative_rag_facts,
 )
-
+from src.rag.cross_encoder_reranker import (
+    CrossEncoderScorer,
+    rerank_controlled_rag_result,
+)
 
 TOOL_NAME = "controlled_rag_retrieval"
 TOOL_VERSION = "projection_faiss_v1"
@@ -93,7 +96,6 @@ def _build_approved_corpus(data: Mapping[str, Any]) -> pd.DataFrame:
 
     return build_rag_corpus(registry.copy())
 
-
 def run_controlled_rag_retrieval(
     data: Mapping[str, Any],
     claim_id: str,
@@ -102,6 +104,9 @@ def run_controlled_rag_retrieval(
     top_k: int = 3,
     min_relevance_score: float = DEFAULT_MIN_RELEVANCE_SCORE,
     client: object | None = None,
+    reranker_scorer: CrossEncoderScorer | None = None,
+    rerank_top_n: int | None = None,
+    reranker_model_name: str | None = None,
 ) -> dict[str, Any]:
     """
     Retrieve approved analyst guidance for a deterministic triage result.
@@ -155,7 +160,7 @@ def run_controlled_rag_retrieval(
 
     tool_result = _as_dict(deterministic_tool_result)
 
-    return {
+    controlled_result = {
         "tool_name": TOOL_NAME,
         "tool_version": TOOL_VERSION,
         "claim_id": normalised_claim_id,
@@ -187,3 +192,13 @@ def run_controlled_rag_retrieval(
         "retrieved_guidance": retrieval_result["results"],
         "retrieval_result": retrieval_result,
     }
+
+    if reranker_scorer is not None:
+        controlled_result = rerank_controlled_rag_result(
+            rag_tool_result=controlled_result,
+            scorer=reranker_scorer,
+            top_n=rerank_top_n,
+            model_name=reranker_model_name,
+        )
+
+    return controlled_result

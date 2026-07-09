@@ -49,7 +49,19 @@ class FakeEmbeddingsEndpoint:
             ]
         )
 
+class FakeCrossEncoderScorer:
+    """Deterministic fake reranker scorer for unit tests."""
 
+    model_name = "fake-cross-encoder"
+
+    def __init__(self, scores):
+        self.scores = scores
+        self.pairs = []
+
+    def predict(self, pairs):
+        self.pairs = list(pairs)
+        return list(self.scores)
+    
 class TestControlledRAGRetrievalTool(unittest.TestCase):
     """Tests the tool bridge from deterministic triage to RAG retrieval."""
 
@@ -231,6 +243,56 @@ class TestControlledRAGRetrievalTool(unittest.TestCase):
                 artifact_dir=self.artifact_dir,
                 client=fake_client,
             )
+
+    def test_optionally_reranks_retrieved_guidance(self):
+        fake_client, _ = self._fake_client()
+        fake_reranker = FakeCrossEncoderScorer(
+            scores=[0.10, 0.95, 0.40],
+        )
+
+        result = run_controlled_rag_retrieval(
+            data=self.data,
+            claim_id=self.claim_id,
+            deterministic_tool_result=self.triage_result,
+            artifact_dir=self.artifact_dir,
+            top_k=3,
+            min_relevance_score=0.0,
+            client=fake_client,
+            reranker_scorer=fake_reranker,
+            rerank_top_n=2,
+        )
+
+        self.assertEqual(
+            result["reranking"]["reranker_name"],
+            "cross_encoder_reranker",
+        )
+        self.assertEqual(
+            result["reranking"]["reranking_status"],
+            "RERANKED",
+        )
+        self.assertEqual(
+            result["reranking"]["reranker_model_name"],
+            "fake-cross-encoder",
+        )
+        self.assertEqual(result["reranking"]["candidate_count"], 3)
+        self.assertEqual(result["reranking"]["reranked_count"], 2)
+
+        self.assertEqual(result["retrieved_guidance_count"], 2)
+        self.assertEqual(len(result["retrieved_guidance"]), 2)
+        self.assertEqual(result["retrieved_guidance"][0]["rank"], 1)
+        self.assertEqual(
+            result["retrieved_guidance"][0]["original_rank"],
+            2,
+        )
+        self.assertEqual(
+            result["retrieved_guidance"][0]["rerank_score"],
+            0.95,
+        )
+        self.assertEqual(
+            result["retrieval_result"]["result_count"],
+            2,
+        )
+        self.assertEqual(len(fake_reranker.pairs), 3)
 
 
 if __name__ == "__main__":
