@@ -1,0 +1,46 @@
+{
+  "artifact_name": "retrieval_evaluation_with_reranker",
+  "artifact_version": "v1",
+  "created_at_utc": "2026-07-09T04:36:59.579932+00:00",
+  "evaluation_set": {
+    "path": "data/evaluation/retrieval/rag_retrieval_eval_v1.csv",
+    "query_count": 14,
+    "top_k": 3,
+    "reranker_candidate_k": 5
+  },
+  "corpus": {
+    "chunk_count": 21,
+    "document_count": 4
+  },
+  "models": {
+    "semantic_embedding_model": "text-embedding-3-small",
+    "cross_encoder_model": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  },
+  "methods_evaluated": [
+    "Lexical TF-IDF",
+    "Semantic Embedding",
+    "Hybrid RRF",
+    "Semantic + Cross-Encoder Reranker"
+  ],
+  "headline_results": {
+    "semantic_embedding": {
+      "hit_at_1": 0.7857142857142857,
+      "hit_at_3": 0.9285714285714286,
+      "mrr_at_3": 0.8571428571428571,
+      "no_result_rate": 0.0
+    },
+    "semantic_cross_encoder_reranker": {
+      "hit_at_1": 0.7857142857142857,
+      "hit_at_3": 0.9285714285714286,
+      "mrr_at_3": 0.8452380714285714,
+      "no_result_rate": 0.0
+    }
+  },
+  "interpretation": "The cross-encoder reranker was evaluated on the same frozen 14-query retrieval set and approved KB corpus. It matched the semantic embedding baseline on Hit@1 and Hit@3, with a slightly lower MRR@3 in this small evaluation set. It remains useful as a controlled optional reranking stage and satisfies the reranker evaluation requirement without changing deterministic triage.",
+  "output_files": {
+    "summary_metrics": "data/evaluation/retrieval/retrieval_summary_metrics_with_reranker_v1.csv",
+    "family_metrics": "data/evaluation/retrieval/retrieval_family_metrics_with_reranker_v1.csv",
+    "per_query_results": "data/evaluation/retrieval/retrieval_per_query_results_with_reranker_v1.csv",
+    "manifest": "data/evaluation/retrieval/retrieval_evaluation_with_reranker_manifest_v1.json"
+  }
+}
