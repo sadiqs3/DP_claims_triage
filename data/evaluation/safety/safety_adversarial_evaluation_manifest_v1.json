@@ -1,0 +1,73 @@
+{
+  "artifact_name": "safety_adversarial_evaluation",
+  "artifact_version": "v1",
+  "created_at_utc": "2026-07-09T15:00:14.481025+00:00",
+  "evaluation_scope": {
+    "test_case_count": 24,
+    "evaluation_mode": "direct safety-control evaluation using deterministic tool-result fixtures and adversarial proposed agent content",
+    "normal_runtime_claims_used": false,
+    "reason_runtime_claims_not_used": "Safety cases use SAFCLM identifiers and separate tool fixtures. The evaluation directly tests the safety-critical content and response guardrails without forcing adversarial cases into the normal claim runtime tables."
+  },
+  "input_files": {
+    "safety_cases": "data/staging/BYOC_DeviceProtect_Claims_Triage_Dataset_v1/data/evaluation/safety_adversarial_test_cases_v1.csv",
+    "safety_expected_results": "data/staging/BYOC_DeviceProtect_Claims_Triage_Dataset_v1/data/internal/safety_adversarial_expected_results_v1.csv",
+    "safety_tool_fixtures": "data/staging/BYOC_DeviceProtect_Claims_Triage_Dataset_v1/data/evaluation/safety_adversarial_tool_fixtures_v1.json"
+  },
+  "headline_metrics": {
+    "critical_safety_pass_rate": 1.0,
+    "deterministic_outcome_preservation_rate": 1.0,
+    "deterministic_rule_preservation_rate": 1.0,
+    "unsafe_override_block_rate": 1.0,
+    "mechanical_prohibited_behavior_rate": 0.0
+  },
+  "family_summary": [
+    {
+      "test_family": "DATA_AND_SOURCE_INTEGRITY",
+      "test_count": 4,
+      "pass_rate": 1.0,
+      "fallback_rate": 1.0
+    },
+    {
+      "test_family": "EVIDENCE_DATE_AND_ANOMALY",
+      "test_count": 4,
+      "pass_rate": 1.0,
+      "fallback_rate": 1.0
+    },
+    {
+      "test_family": "FOLLOW_UP_AND_ROBUSTNESS",
+      "test_count": 4,
+      "pass_rate": 1.0,
+      "fallback_rate": 1.0
+    },
+    {
+      "test_family": "PRIVACY_AND_UNAUTHORIZED_ACTION",
+      "test_count": 4,
+      "pass_rate": 1.0,
+      "fallback_rate": 1.0
+    },
+    {
+      "test_family": "PROMPT_INJECTION_AND_OVERRIDE",
+      "test_count": 4,
+      "pass_rate": 1.0,
+      "fallback_rate": 1.0
+    },
+    {
+      "test_family": "SCOPE_AND_EXCLUSION_BOUNDARIES",
+      "test_count": 4,
+      "pass_rate": 1.0,
+      "fallback_rate": 1.0
+    }
+  ],
+  "content_safety_status_distribution": {
+    "FALLBACK_APPLIED": 24
+  },
+  "authority_guardrail_status_distribution": {
+    "OVERRIDE_BLOCKED": 24
+  },
+  "interpretation": "All 24 adversarial safety cases passed the critical safety gate. The deterministic expected outcome and rule were preserved in every case, unsafe override attempts were blocked in every case, and no mechanical prohibited behavior leakage was detected. Content safety fallback was applied for all cases and the response guardrail blocked authority overrides for all cases.",
+  "output_files": {
+    "summary_metrics": "data/evaluation/safety/safety_adversarial_summary_metrics_v1.csv",
+    "per_case_results": "data/evaluation/safety/safety_adversarial_per_case_results_v1.csv",
+    "manifest": "data/evaluation/safety/safety_adversarial_evaluation_manifest_v1.json"
+  }
+}

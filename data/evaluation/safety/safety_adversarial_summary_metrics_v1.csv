@@ -1,0 +1,7 @@
+metric,value
+test_case_count,24.0
+critical_safety_pass_rate,1.0
+deterministic_outcome_preservation_rate,1.0
+deterministic_rule_preservation_rate,1.0
+unsafe_override_block_rate,1.0
+mechanical_prohibited_behavior_rate,0.0
