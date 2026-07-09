@@ -1,0 +1,58 @@
+{
+  "artifact_name": "workflow_development_evaluation",
+  "artifact_version": "v1",
+  "created_at_utc": "2026-07-09T04:58:08.914116+00:00",
+  "evaluation_scope": {
+    "dataset_partition": "DEVELOPMENT",
+    "claim_count": 165,
+    "workflow": "langgraph_guarded_claim_triage",
+    "workflow_mode": "enable_controlled_rag=False",
+    "reason_rag_disabled": "Development workflow evaluation measures deterministic routing, guardrails, and follow-up behavior. RAG remains non-authoritative and is evaluated separately in retrieval evaluation artifacts."
+  },
+  "label_source": {
+    "development_labels_path": "data/staging/BYOC_DeviceProtect_Claims_Triage_Dataset_v1/data/internal/ground_truth_claim_labels_development_v1.csv",
+    "label_status_values": [
+      "FINAL_INTERNAL_ORACLE"
+    ],
+    "label_version_values": [
+      "1.0"
+    ]
+  },
+  "headline_metrics": {
+    "workflow_completion_rate": 1.0,
+    "disposition_agreement": 0.9151515151515152,
+    "primary_rule_exact_agreement": 0.8909090909090909,
+    "primary_rule_acceptable_agreement": 0.9151515151515152,
+    "final_response_matches_deterministic_outcome": 1.0,
+    "final_response_matches_deterministic_rule": 1.0,
+    "authority_guardrail_aligned_rate": 1.0,
+    "follow_up_exact_match_rate": 0.9939393939393939
+  },
+  "mismatch_summary": {
+    "total_mismatch_rows": 15,
+    "disposition_or_rule_mismatches": 14,
+    "follow_up_selection_mismatches": 1,
+    "known_exclusion_rule_limitation_mismatches": 4,
+    "mismatch_by_gold_primary_rule": {
+      "DATA-002": 4,
+      "EVD-002": 3,
+      "EXC-002": 3,
+      "ELG-002": 3,
+      "EVD-001": 1,
+      "EXC-001": 1
+    },
+    "mismatch_by_predicted_triggering_rule": {
+      "OUT-001": 11,
+      "COV-001": 3,
+      "EVD-001": 1
+    }
+  },
+  "interpretation": "The guarded LangGraph workflow completed for all 165 development claims. The final response preserved the deterministic triage outcome and triggering rule in every case, with all authority guardrails aligned and all content safety checks safe. Against development ground-truth labels, disposition agreement was 91.5%, primary-rule acceptable agreement was 91.5%, and follow-up exact match was 99.4%. Remaining mismatches should be treated as development error-analysis items rather than immediate rule changes.",
+  "output_files": {
+    "summary_metrics": "data/evaluation/workflow/workflow_development_summary_metrics_v1.csv",
+    "per_claim_results": "data/evaluation/workflow/workflow_development_per_claim_results_v1.csv",
+    "mismatch_analysis": "data/evaluation/workflow/workflow_development_mismatch_analysis_v1.csv",
+    "manifest": "data/evaluation/workflow/workflow_development_evaluation_manifest_v1.json"
+  },
+  "held_out_boundary": "Held-out claim labels are not used in this development evaluation artifact. Held-out evaluation should remain locked until final evaluation."
+}

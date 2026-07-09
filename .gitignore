@@ -29,6 +29,8 @@ env/
 /data/evaluation/*
 !/data/evaluation/retrieval/
 !/data/evaluation/retrieval/**
+!/data/evaluation/workflow/
+!/data/evaluation/workflow/**
 
 # Ignore env files
 .env
