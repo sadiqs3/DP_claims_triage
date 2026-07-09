@@ -15,6 +15,8 @@ from src.agent.orchestrator import (
     build_template_proposal,
 )
 from src.agent.response_guardrail import build_guarded_agent_response
+from src.rag.analyst_guidance_formatter import format_analyst_guidance
+from src.rag.cross_encoder_reranker import CrossEncoderScorer
 from src.tools.controlled_rag_retrieval import (
     run_controlled_rag_retrieval,
 )
@@ -22,11 +24,10 @@ from src.tools.deterministic_triage import run_deterministic_triage
 from src.tools.follow_up_selection import (
     run_controlled_follow_up_selection,
 )
-from src.rag.analyst_guidance_formatter import format_analyst_guidance
 
 
 WORKFLOW_NAME = "langgraph_guarded_claim_triage"
-WORKFLOW_VERSION = "langgraph_v5"
+WORKFLOW_VERSION = "langgraph_v6"
 
 
 class GuardedClaimTriageState(TypedDict, total=False):
@@ -87,6 +88,7 @@ def _build_analyst_guidance_summary(
     """
     return format_analyst_guidance(rag_tool_result)
 
+
 def create_guarded_claim_triage_graph(
     data: Mapping[str, Any],
     proposal_builder: ProposalBuilder | None = None,
@@ -95,6 +97,10 @@ def create_guarded_claim_triage_graph(
     rag_retrieval_client: object | None = None,
     rag_top_k: int = 3,
     rag_min_relevance_score: float = 0.20,
+    enable_reranking: bool = False,
+    rag_reranker_scorer: CrossEncoderScorer | None = None,
+    rag_rerank_top_n: int | None = None,
+    rag_reranker_model_name: str | None = None,
 ):
     """
     Create the protected LangGraph claim-triage workflow.
@@ -102,8 +108,18 @@ def create_guarded_claim_triage_graph(
     Deterministic triage remains authoritative. Controlled follow-up selection
     may return only approved catalogue questions. When enabled, controlled RAG
     retrieval runs as a separate analyst-only branch and cannot modify the
-    final customer-facing response.
+    final customer-facing response. Optional reranking may reorder retrieved
+    approved KB chunks only.
     """
+    if enable_reranking and not enable_controlled_rag:
+        raise ValueError(
+            "enable_reranking requires enable_controlled_rag=True."
+        )
+
+    if enable_reranking and rag_reranker_scorer is None:
+        raise ValueError(
+            "rag_reranker_scorer is required when enable_reranking=True."
+        )
 
     def deterministic_triage_node(
         state: GuardedClaimTriageState,
@@ -177,11 +193,27 @@ def create_guarded_claim_triage_graph(
             top_k=rag_top_k,
             min_relevance_score=rag_min_relevance_score,
             client=rag_retrieval_client,
+            reranker_scorer=(
+                rag_reranker_scorer
+                if enable_reranking
+                else None
+            ),
+            rerank_top_n=(
+                rag_rerank_top_n
+                if enable_reranking
+                else None
+            ),
+            reranker_model_name=(
+                rag_reranker_model_name
+                if enable_reranking
+                else None
+            ),
         )
 
         analyst_guidance = _build_analyst_guidance_summary(
             rag_tool_result
         )
+        reranking = _as_dict(rag_tool_result.get("reranking"))
 
         return {
             "rag_tool_result": rag_tool_result,
@@ -197,6 +229,13 @@ def create_guarded_claim_triage_graph(
                         "retrieved_guidance_count"
                     ),
                     "authority": analyst_guidance.get("authority"),
+                    "reranking_status": reranking.get(
+                        "reranking_status",
+                        "NOT_ENABLED",
+                    ),
+                    "reranker_model_name": reranking.get(
+                        "reranker_model_name"
+                    ),
                 }
             ],
         }
@@ -377,6 +416,10 @@ def run_langgraph_guarded_claim_triage(
     rag_retrieval_client: object | None = None,
     rag_top_k: int = 3,
     rag_min_relevance_score: float = 0.20,
+    enable_reranking: bool = False,
+    rag_reranker_scorer: CrossEncoderScorer | None = None,
+    rag_rerank_top_n: int | None = None,
+    rag_reranker_model_name: str | None = None,
 ) -> dict[str, Any]:
     """Run the protected LangGraph claim-triage workflow."""
     graph = create_guarded_claim_triage_graph(
@@ -387,6 +430,10 @@ def run_langgraph_guarded_claim_triage(
         rag_retrieval_client=rag_retrieval_client,
         rag_top_k=rag_top_k,
         rag_min_relevance_score=rag_min_relevance_score,
+        enable_reranking=enable_reranking,
+        rag_reranker_scorer=rag_reranker_scorer,
+        rag_rerank_top_n=rag_rerank_top_n,
+        rag_reranker_model_name=rag_reranker_model_name,
     )
 
     state = graph.invoke(

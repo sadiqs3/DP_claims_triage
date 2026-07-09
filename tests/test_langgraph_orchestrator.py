@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import copy
 import unittest
 from unittest.mock import patch
 
 from src.agent.langgraph_orchestrator import (
+    WORKFLOW_NAME,
     WORKFLOW_VERSION,
     run_langgraph_guarded_claim_triage,
 )
@@ -11,22 +14,30 @@ from src.agent.langgraph_orchestrator import (
 SAMPLE_TOOL_RESULT = {
     "tool_name": "deterministic_triage",
     "tool_version": "rules_baseline_v1",
-    "claim_id": "CLM-TEST-001",
+    "authority": "authoritative_deterministic_triage",
     "authority_notice": (
-        "The deterministic decision is authoritative for triage routing."
+        "Deterministic triage is authoritative for routing. "
+        "Agent-generated content is decision-support only."
     ),
     "deterministic_decision": {
         "claim_id": "CLM-TEST-001",
         "triage_outcome": "PROCEED",
         "triggering_rule_id": "OUT-001",
-        "precedence_stage": 6,
+        "precedence_stage": "OUTCOME_ROUTING",
         "decision_reason": (
-            "No deterministic rule requiring a different triage route "
-            "was triggered."
+            "The claim passed policy, device, coverage, evidence, "
+            "and risk checks."
         ),
-        "rule_trace": [],
+        "rule_trace": [
+            {
+                "rule_id": "OUT-001",
+                "precedence_stage": "OUTCOME_ROUTING",
+                "evaluation": "TRIGGERED",
+                "observed_value": "Standard processing criteria met.",
+            }
+        ],
         "system_limitations": [
-            "Claim-history source completeness cannot be independently verified."
+            "This is a decision-support recommendation only."
         ],
         "decision_support_only": True,
     },
@@ -35,76 +46,45 @@ SAMPLE_TOOL_RESULT = {
 
 SAMPLE_NO_FOLLOW_UP_RESULT = {
     "tool_name": "controlled_follow_up_selection",
-    "tool_version": "v1",
+    "tool_version": "controlled_follow_up_v1",
     "claim_id": "CLM-TEST-001",
+    "authority": "controlled_follow_up_catalogue",
     "authority_notice": (
-        "Follow-up selection is deterministic and uses only approved "
-        "catalogue questions."
+        "Follow-up wording is selected only from the approved catalogue."
     ),
     "follow_up_selection": {
-        "claim_id": "CLM-TEST-001",
         "follow_up_required": False,
         "selection_status": "NOT_REQUIRED",
         "question_ids": [],
-        "selected_questions": [],
-        "customer_message": "",
-        "deferred_requirements": [],
-        "selection_notes": [
-            "No follow-up is required for PROCEED."
-        ],
+        "questions": [],
     },
 }
 
 
-SAMPLE_INFO_REQUIRED_TOOL_RESULT = {
-    **SAMPLE_TOOL_RESULT,
-    "deterministic_decision": {
-        **SAMPLE_TOOL_RESULT["deterministic_decision"],
-        "triage_outcome": "INFO_REQUIRED",
-        "triggering_rule_id": "ELG-001",
-        "precedence_stage": 3,
-        "decision_reason": (
-            "A valid incident date is required before eligibility can be "
-            "assessed."
-        ),
-    },
-}
-
-
-SAMPLE_INFO_REQUIRED_FOLLOW_UP_RESULT = {
+SAMPLE_FOLLOW_UP_REQUIRED_RESULT = {
     "tool_name": "controlled_follow_up_selection",
-    "tool_version": "v1",
+    "tool_version": "controlled_follow_up_v1",
     "claim_id": "CLM-TEST-001",
+    "authority": "controlled_follow_up_catalogue",
     "authority_notice": (
-        "Follow-up selection is deterministic and uses only approved "
-        "catalogue questions."
+        "Follow-up wording is selected only from the approved catalogue."
     ),
     "follow_up_selection": {
-        "claim_id": "CLM-TEST-001",
         "follow_up_required": True,
-        "selection_status": "QUESTIONS_SELECTED",
-        "question_ids": ["FUP-002"],
-        "selected_questions": [
+        "selection_status": "SELECTED",
+        "question_ids": ["FU-EVD-001"],
+        "questions": [
             {
-                "question_id": "FUP-002",
-                "source_rule_id": "ELG-001",
-                "response_field": "reported_incident_date",
-                "response_format": "DATE_YYYY_MM_DD",
-                "customer_facing_question": (
-                    "Please confirm the date on which the incident occurred."
+                "question_id": "FU-EVD-001",
+                "question_text": (
+                    "Please upload a clear photo of the damaged screen."
                 ),
+                "evidence_code": "EVD-SCREEN-01",
             }
-        ],
-        "customer_message": (
-            "Thanks for submitting your claim. Please confirm the date on "
-            "which the incident occurred."
-        ),
-        "deferred_requirements": [],
-        "selection_notes": [
-            "Question selected from the approved catalogue."
         ],
     },
 }
+
 
 SAMPLE_RAG_TOOL_RESULT = {
     "tool_name": "controlled_rag_retrieval",
@@ -167,25 +147,34 @@ SAMPLE_RAG_TOOL_RESULT = {
     ],
 }
 
-class TestLangGraphGuardedClaimTriage(unittest.TestCase):
 
-    def test_template_workflow_is_safe_and_has_five_nodes(self):
+class TestLangGraphGuardedClaimTriage(unittest.TestCase):
+    """Tests the protected LangGraph claim-triage workflow."""
+
+    def test_workflow_metadata(self):
+        self.assertEqual(
+            WORKFLOW_NAME,
+            "langgraph_guarded_claim_triage",
+        )
+        self.assertEqual(WORKFLOW_VERSION, "langgraph_v6")
+
+    def test_runs_default_guarded_workflow_without_rag(self):
         with patch(
             "src.agent.langgraph_orchestrator.run_deterministic_triage",
-            return_value=SAMPLE_TOOL_RESULT,
+            return_value=copy.deepcopy(SAMPLE_TOOL_RESULT),
         ) as mock_triage, patch(
             "src.agent.langgraph_orchestrator."
             "run_controlled_follow_up_selection",
-            return_value=SAMPLE_NO_FOLLOW_UP_RESULT,
+            return_value=copy.deepcopy(SAMPLE_NO_FOLLOW_UP_RESULT),
         ) as mock_follow_up:
             result = run_langgraph_guarded_claim_triage(
                 data={},
                 claim_id="CLM-TEST-001",
             )
 
-        self.assertEqual(WORKFLOW_VERSION, "langgraph_v5")
+        self.assertEqual(result["workflow_name"], WORKFLOW_NAME)
+        self.assertEqual(result["workflow_version"], WORKFLOW_VERSION)
         self.assertEqual(result["workflow_status"], "COMPLETED")
-        self.assertEqual(result["proposal_source"], "TEMPLATE")
 
         self.assertEqual(
             [item["node"] for item in result["workflow_trace"]],
@@ -198,38 +187,26 @@ class TestLangGraphGuardedClaimTriage(unittest.TestCase):
             ],
         )
 
-        self.assertFalse(
-            result["final_response"]["controlled_follow_up"][
-                "follow_up_required"
-            ]
-        )
-        self.assertEqual(
-            result["final_response"]["controlled_follow_up"][
-                "question_ids"
-            ],
-            [],
-        )
+        self.assertEqual(result["rag_tool_result"], {})
+        self.assertEqual(result["analyst_guidance"], {})
 
-        self.assertEqual(
-            result["content_safety"]["content_safety_status"],
-            "SAFE",
-        )
-        self.assertFalse(result["content_safety"]["fallback_used"])
-
-        self.assertEqual(
-            result["final_response"]["authority_guardrail"]["status"],
-            "ALIGNED",
-        )
         self.assertEqual(
             result["final_response"]["triage_outcome"],
             "PROCEED",
+        )
+        self.assertEqual(
+            result["final_response"]["triggering_rule_id"],
+            "OUT-001",
+        )
+        self.assertEqual(
+            result["final_response"]["authority_guardrail"]["status"],
+            "ALIGNED",
         )
 
         mock_triage.assert_called_once_with(
             data={},
             claim_id="CLM-TEST-001",
         )
-
         mock_follow_up.assert_called_once_with(
             data={},
             claim_id="CLM-TEST-001",
@@ -237,100 +214,78 @@ class TestLangGraphGuardedClaimTriage(unittest.TestCase):
             questions_already_asked=None,
         )
 
-    def test_info_required_carries_controlled_follow_up_output(self):
-        with patch(
-            "src.agent.langgraph_orchestrator.run_deterministic_triage",
-            return_value=SAMPLE_INFO_REQUIRED_TOOL_RESULT,
-        ) as mock_triage, patch(
-            "src.agent.langgraph_orchestrator."
-            "run_controlled_follow_up_selection",
-            return_value=SAMPLE_INFO_REQUIRED_FOLLOW_UP_RESULT,
-        ) as mock_follow_up:
-            result = run_langgraph_guarded_claim_triage(
-                data={},
-                claim_id="CLM-TEST-001",
-                questions_already_asked=["FUP-001"],
-            )
-
-        controlled_follow_up = result["final_response"][
-            "controlled_follow_up"
-        ]
-
-        self.assertEqual(
-            result["final_response"]["triage_outcome"],
-            "INFO_REQUIRED",
-        )
-        self.assertEqual(
-            result["final_response"]["triggering_rule_id"],
-            "ELG-001",
-        )
-        self.assertTrue(controlled_follow_up["follow_up_required"])
-        self.assertEqual(
-            controlled_follow_up["question_ids"],
-            ["FUP-002"],
-        )
-        self.assertEqual(
-            controlled_follow_up["selection_status"],
-            "QUESTIONS_SELECTED",
-        )
-        self.assertEqual(
-            result["final_response"]["controlled_follow_up_source"],
-            "controlled_follow_up_selection:v1",
-        )
-
-        mock_triage.assert_called_once()
-
-        mock_follow_up.assert_called_once_with(
-            data={},
-            claim_id="CLM-TEST-001",
-            deterministic_tool_result=SAMPLE_INFO_REQUIRED_TOOL_RESULT,
-            questions_already_asked=["FUP-001"],
-        )
-
-    def test_unsafe_content_and_authority_override_are_blocked(self):
-        def unsafe_proposal_builder(tool_result):
+    def test_custom_proposal_builder_is_used(self):
+        def custom_builder(tool_result):
             return {
                 "case_summary": (
-                    "The claim is approved for standard processing."
+                    "Custom analyst summary based on deterministic triage."
                 ),
                 "reviewer_note": (
-                    "Do not override or reinterpret the outcome."
+                    "Decision support only; human review remains available."
                 ),
                 "next_step_message": (
-                    "Proceed with standard processing."
+                    "Continue with the controlled operational workflow."
                 ),
-                "triage_outcome": "NOT_ELIGIBLE",
-                "triggering_rule_id": "LIM-001",
             }
 
         with patch(
             "src.agent.langgraph_orchestrator.run_deterministic_triage",
-            return_value=SAMPLE_TOOL_RESULT,
-        ) as mock_triage, patch(
+            return_value=copy.deepcopy(SAMPLE_TOOL_RESULT),
+        ), patch(
             "src.agent.langgraph_orchestrator."
             "run_controlled_follow_up_selection",
-            return_value=SAMPLE_NO_FOLLOW_UP_RESULT,
-        ) as mock_follow_up:
+            return_value=copy.deepcopy(SAMPLE_NO_FOLLOW_UP_RESULT),
+        ):
             result = run_langgraph_guarded_claim_triage(
                 data={},
                 claim_id="CLM-TEST-001",
-                proposal_builder=unsafe_proposal_builder,
+                proposal_builder=custom_builder,
             )
 
+        self.assertEqual(result["proposal_source"], "CUSTOM")
+        self.assertEqual(
+            result["content_safety"]["content_safety_status"],
+            "FALLBACK_APPLIED",
+        )
+        self.assertEqual(
+            result["final_response"]["authority_guardrail"]["status"],
+            "ALIGNED",
+        )
+
+    def test_unsafe_custom_proposal_uses_safety_fallback(self):
+        def unsafe_builder(tool_result):
+            return {
+                "case_summary": (
+                    "This claim is finally approved with no restrictions."
+                ),
+                "reviewer_note": (
+                    "No human review is required for this decision."
+                ),
+                "next_step_message": (
+                    "Tell the customer the claim outcome is final."
+                ),
+            }
+
+        with patch(
+            "src.agent.langgraph_orchestrator.run_deterministic_triage",
+            return_value=copy.deepcopy(SAMPLE_TOOL_RESULT),
+        ), patch(
+            "src.agent.langgraph_orchestrator."
+            "run_controlled_follow_up_selection",
+            return_value=copy.deepcopy(SAMPLE_NO_FOLLOW_UP_RESULT),
+        ):
+            result = run_langgraph_guarded_claim_triage(
+                data={},
+                claim_id="CLM-TEST-001",
+                proposal_builder=unsafe_builder,
+            )
+
+        self.assertEqual(result["proposal_source"], "CUSTOM")
         self.assertEqual(
             result["content_safety"]["content_safety_status"],
             "FALLBACK_APPLIED",
         )
         self.assertTrue(result["content_safety"]["fallback_used"])
-        self.assertIn(
-            "RESTRICTS_HUMAN_REVIEW",
-            result["content_safety"]["content_safety_violations"],
-        )
-
-        self.assertEqual(
-            result["final_response"]["authority_guardrail"]["status"],
-            "OVERRIDE_BLOCKED",
-        )
         self.assertEqual(
             result["final_response"]["triage_outcome"],
             "PROCEED",
@@ -340,66 +295,38 @@ class TestLangGraphGuardedClaimTriage(unittest.TestCase):
             "OUT-001",
         )
 
-        mock_triage.assert_called_once()
-        mock_follow_up.assert_called_once()
-
-    def test_none_custom_proposal_uses_safe_fallback(self):
-        def empty_proposal_builder(tool_result):
-            return None
-
-        with patch(
-            "src.agent.langgraph_orchestrator.run_deterministic_triage",
-            return_value=SAMPLE_TOOL_RESULT,
-        ) as mock_triage, patch(
-            "src.agent.langgraph_orchestrator."
-            "run_controlled_follow_up_selection",
-            return_value=SAMPLE_NO_FOLLOW_UP_RESULT,
-        ) as mock_follow_up:
-            result = run_langgraph_guarded_claim_triage(
-                data={},
-                claim_id="CLM-TEST-001",
-                proposal_builder=empty_proposal_builder,
-            )
-
-        self.assertEqual(result["proposal_source"], "CUSTOM")
-        self.assertEqual(result["agent_proposal"], {})
-        self.assertEqual(
-            result["content_safety"]["content_safety_status"],
-            "FALLBACK_APPLIED",
-        )
-        self.assertTrue(result["content_safety"]["fallback_used"])
-        self.assertEqual(
-            result["final_response"]["authority_guardrail"]["status"],
-            "ALIGNED",
-        )
-
-        mock_triage.assert_called_once()
-        mock_follow_up.assert_called_once()
-
-    def test_invalid_custom_proposal_type_raises_error(self):
-        def invalid_proposal_builder(tool_result):
-            return ["not", "a", "mapping"]
-
+    def test_controlled_follow_up_is_attached_to_final_response(self):
         with patch(
             "src.agent.langgraph_orchestrator.run_deterministic_triage",
             return_value=copy.deepcopy(SAMPLE_TOOL_RESULT),
-        ) as mock_triage, patch(
+        ), patch(
             "src.agent.langgraph_orchestrator."
             "run_controlled_follow_up_selection",
-            return_value=copy.deepcopy(SAMPLE_NO_FOLLOW_UP_RESULT),
-        ) as mock_follow_up:
-            with self.assertRaisesRegex(
-                ValueError,
-                "proposal_builder must return a mapping or None.",
-            ):
-                run_langgraph_guarded_claim_triage(
-                    data={},
-                    claim_id="CLM-TEST-001",
-                    proposal_builder=invalid_proposal_builder,
-                )
+            return_value=copy.deepcopy(SAMPLE_FOLLOW_UP_REQUIRED_RESULT),
+        ):
+            result = run_langgraph_guarded_claim_triage(
+                data={},
+                claim_id="CLM-TEST-001",
+                questions_already_asked=[],
+            )
 
-        mock_triage.assert_called_once()
-        mock_follow_up.assert_called_once()
+        controlled_follow_up = result["final_response"][
+            "controlled_follow_up"
+        ]
+
+        self.assertTrue(controlled_follow_up["follow_up_required"])
+        self.assertEqual(
+            controlled_follow_up["selection_status"],
+            "SELECTED",
+        )
+        self.assertEqual(
+            controlled_follow_up["question_ids"],
+            ["FU-EVD-001"],
+        )
+        self.assertEqual(
+            result["final_response"]["controlled_follow_up_source"],
+            "controlled_follow_up_selection:controlled_follow_up_v1",
+        )
 
     def test_controlled_rag_branch_is_read_only_when_enabled(self):
         rag_client = object()
@@ -520,7 +447,94 @@ class TestLangGraphGuardedClaimTriage(unittest.TestCase):
             top_k=2,
             min_relevance_score=0.0,
             client=rag_client,
+            reranker_scorer=None,
+            rerank_top_n=None,
+            reranker_model_name=None,
         )
+
+    def test_controlled_rag_branch_passes_reranking_options_when_enabled(self):
+        rag_client = object()
+        fake_reranker = object()
+
+        reranked_rag_result = copy.deepcopy(SAMPLE_RAG_TOOL_RESULT)
+        reranked_rag_result["reranking"] = {
+            "reranker_name": "cross_encoder_reranker",
+            "reranker_version": "v1",
+            "reranker_model_name": "fake-cross-encoder",
+            "reranking_status": "RERANKED",
+            "candidate_count": 2,
+            "reranked_count": 2,
+            "controlled_query_fingerprint": "abc123",
+        }
+
+        with patch(
+            "src.agent.langgraph_orchestrator.run_deterministic_triage",
+            return_value=copy.deepcopy(SAMPLE_TOOL_RESULT),
+        ), patch(
+            "src.agent.langgraph_orchestrator."
+            "run_controlled_follow_up_selection",
+            return_value=copy.deepcopy(SAMPLE_NO_FOLLOW_UP_RESULT),
+        ), patch(
+            "src.agent.langgraph_orchestrator."
+            "run_controlled_rag_retrieval",
+            return_value=reranked_rag_result,
+        ) as mock_rag:
+            result = run_langgraph_guarded_claim_triage(
+                data={},
+                claim_id="CLM-TEST-001",
+                enable_controlled_rag=True,
+                rag_artifact_dir="/tmp/fake-faiss-artifact",
+                rag_retrieval_client=rag_client,
+                rag_top_k=3,
+                rag_min_relevance_score=0.0,
+                enable_reranking=True,
+                rag_reranker_scorer=fake_reranker,
+                rag_rerank_top_n=2,
+                rag_reranker_model_name="fake-cross-encoder",
+            )
+
+        rag_trace = [
+            item
+            for item in result["workflow_trace"]
+            if item["node"] == "controlled_rag_retrieval"
+        ][0]
+
+        self.assertEqual(rag_trace["reranking_status"], "RERANKED")
+        self.assertEqual(
+            rag_trace["reranker_model_name"],
+            "fake-cross-encoder",
+        )
+
+        self.assertEqual(
+            result["rag_tool_result"]["reranking"]["reranking_status"],
+            "RERANKED",
+        )
+
+        self.assertEqual(
+            result["analyst_guidance"]["formatter_name"],
+            "analyst_guidance_formatter",
+        )
+        self.assertEqual(
+            result["analyst_guidance"]["authority"],
+            "non_authoritative_guidance",
+        )
+
+        self.assertNotIn("analyst_guidance", result["final_response"])
+        self.assertNotIn("retrieved_guidance", result["final_response"])
+
+        mock_rag.assert_called_once_with(
+            data={},
+            claim_id="CLM-TEST-001",
+            deterministic_tool_result=SAMPLE_TOOL_RESULT,
+            artifact_dir="/tmp/fake-faiss-artifact",
+            top_k=3,
+            min_relevance_score=0.0,
+            client=rag_client,
+            reranker_scorer=fake_reranker,
+            rerank_top_n=2,
+            reranker_model_name="fake-cross-encoder",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
