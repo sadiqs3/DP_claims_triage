@@ -106,6 +106,45 @@ SAMPLE_INFO_REQUIRED_FOLLOW_UP_RESULT = {
     },
 }
 
+SAMPLE_RAG_TOOL_RESULT = {
+    "tool_name": "controlled_rag_retrieval",
+    "tool_version": "projection_faiss_v1",
+    "claim_id": "CLM-TEST-001",
+    "decision_source": "deterministic_triage:rules_baseline_v1",
+    "projection_source": "authoritative_rag_facts_projection:v1",
+    "retrieval_source": (
+        "persisted_semantic_sop_retrieval:faiss_embedding_v1"
+    ),
+    "authority": "non_authoritative_guidance",
+    "authority_notice": (
+        "Controlled RAG retrieval provides analyst-facing guidance only."
+    ),
+    "controlled_query": {
+        "query_text": "controlled retrieval query",
+        "query_fingerprint": "abc123",
+        "source": "authoritative_deterministic_triage_facts",
+        "audience": "analyst",
+        "authority": "non_authoritative_guidance",
+    },
+    "retrieval_status": "RESULTS_FOUND",
+    "retrieved_guidance_count": 2,
+    "retrieved_guidance": [
+        {
+            "rank": 1,
+            "chunk_id": "KB-002::S03",
+            "document_id": "KB-002",
+            "section_title": "Evidence profiles",
+            "relevance_score": 0.81,
+        },
+        {
+            "rank": 2,
+            "chunk_id": "KB-002::S02",
+            "document_id": "KB-002",
+            "section_title": "Evidence-review principles",
+            "relevance_score": 0.74,
+        },
+    ],
+}
 
 class TestLangGraphGuardedClaimTriage(unittest.TestCase):
 
@@ -123,7 +162,7 @@ class TestLangGraphGuardedClaimTriage(unittest.TestCase):
                 claim_id="CLM-TEST-001",
             )
 
-        self.assertEqual(WORKFLOW_VERSION, "langgraph_v3")
+        self.assertEqual(WORKFLOW_VERSION, "langgraph_v4")
         self.assertEqual(result["workflow_status"], "COMPLETED")
         self.assertEqual(result["proposal_source"], "TEMPLATE")
 
@@ -341,6 +380,100 @@ class TestLangGraphGuardedClaimTriage(unittest.TestCase):
         mock_triage.assert_called_once()
         mock_follow_up.assert_called_once()
 
+    def test_controlled_rag_branch_is_read_only_when_enabled(self):
+        rag_client = object()
+
+        with patch(
+            "src.agent.langgraph_orchestrator.run_deterministic_triage",
+            return_value=copy.deepcopy(SAMPLE_TOOL_RESULT),
+        ) as mock_triage, patch(
+            "src.agent.langgraph_orchestrator."
+            "run_controlled_follow_up_selection",
+            return_value=copy.deepcopy(SAMPLE_NO_FOLLOW_UP_RESULT),
+        ) as mock_follow_up, patch(
+            "src.agent.langgraph_orchestrator."
+            "run_controlled_rag_retrieval",
+            return_value=copy.deepcopy(SAMPLE_RAG_TOOL_RESULT),
+        ) as mock_rag:
+            result = run_langgraph_guarded_claim_triage(
+                data={},
+                claim_id="CLM-TEST-001",
+                enable_controlled_rag=True,
+                rag_artifact_dir="/tmp/fake-faiss-artifact",
+                rag_retrieval_client=rag_client,
+                rag_top_k=2,
+                rag_min_relevance_score=0.0,
+            )
+
+        self.assertEqual(
+            [item["node"] for item in result["workflow_trace"]],
+            [
+                "deterministic_triage",
+                "controlled_follow_up_selection",
+                "controlled_rag_retrieval",
+                "explanation_proposal",
+                "agent_content_safety_guardrail",
+                "response_guardrail",
+            ],
+        )
+
+        self.assertEqual(
+            result["analyst_guidance"]["authority"],
+            "non_authoritative_guidance",
+        )
+        self.assertEqual(
+            result["analyst_guidance"]["retrieval_status"],
+            "RESULTS_FOUND",
+        )
+        self.assertEqual(
+            result["analyst_guidance"]["retrieved_guidance_count"],
+            2,
+        )
+        self.assertEqual(
+            result["analyst_guidance"]["controlled_query_fingerprint"],
+            "abc123",
+        )
+
+        self.assertEqual(
+            result["rag_tool_result"]["tool_name"],
+            "controlled_rag_retrieval",
+        )
+
+        self.assertNotIn("analyst_guidance", result["final_response"])
+        self.assertNotIn("retrieved_guidance", result["final_response"])
+
+        self.assertEqual(
+            result["final_response"]["triage_outcome"],
+            "PROCEED",
+        )
+        self.assertEqual(
+            result["final_response"]["triggering_rule_id"],
+            "OUT-001",
+        )
+        self.assertEqual(
+            result["final_response"]["authority_guardrail"]["status"],
+            "ALIGNED",
+        )
+
+        mock_triage.assert_called_once_with(
+            data={},
+            claim_id="CLM-TEST-001",
+        )
+        mock_follow_up.assert_called_once_with(
+            data={},
+            claim_id="CLM-TEST-001",
+            deterministic_tool_result=SAMPLE_TOOL_RESULT,
+            questions_already_asked=None,
+        )
+        mock_rag.assert_called_once_with(
+            data={},
+            claim_id="CLM-TEST-001",
+            deterministic_tool_result=SAMPLE_TOOL_RESULT,
+            artifact_dir="/tmp/fake-faiss-artifact",
+            top_k=2,
+            min_relevance_score=0.0,
+            client=rag_client,
+        )
 
 if __name__ == "__main__":
     unittest.main()

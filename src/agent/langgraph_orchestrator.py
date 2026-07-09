@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import operator
+from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from langgraph.graph import END, START, StateGraph
@@ -14,6 +15,9 @@ from src.agent.orchestrator import (
     build_template_proposal,
 )
 from src.agent.response_guardrail import build_guarded_agent_response
+from src.tools.controlled_rag_retrieval import (
+    run_controlled_rag_retrieval,
+)
 from src.tools.deterministic_triage import run_deterministic_triage
 from src.tools.follow_up_selection import (
     run_controlled_follow_up_selection,
@@ -21,7 +25,7 @@ from src.tools.follow_up_selection import (
 
 
 WORKFLOW_NAME = "langgraph_guarded_claim_triage"
-WORKFLOW_VERSION = "langgraph_v3"
+WORKFLOW_VERSION = "langgraph_v4"
 
 
 class GuardedClaimTriageState(TypedDict, total=False):
@@ -32,6 +36,8 @@ class GuardedClaimTriageState(TypedDict, total=False):
     tool_result: dict[str, Any]
     follow_up_tool_result: dict[str, Any]
     controlled_follow_up: dict[str, Any]
+    rag_tool_result: dict[str, Any]
+    analyst_guidance: dict[str, Any]
     agent_proposal: dict[str, Any]
     proposal_source: str
     content_safety: dict[str, Any]
@@ -68,17 +74,52 @@ def _build_agent_proposal(
     return dict(proposal), "CUSTOM"
 
 
+def _build_analyst_guidance_summary(
+    rag_tool_result: Mapping[str, Any],
+) -> dict[str, Any]:
+    """
+    Expose controlled retrieval output as analyst-only guidance.
+
+    This object is intentionally separate from final_response so retrieved
+    guidance cannot alter deterministic triage, follow-up wording, or
+    customer-facing explanation fields.
+    """
+    result = _as_dict(rag_tool_result)
+    controlled_query = _as_dict(result.get("controlled_query"))
+
+    return {
+        "authority": result.get("authority"),
+        "authority_notice": result.get("authority_notice"),
+        "retrieval_status": result.get("retrieval_status"),
+        "retrieved_guidance_count": result.get(
+            "retrieved_guidance_count",
+            0,
+        ),
+        "retrieved_guidance": result.get("retrieved_guidance", []),
+        "controlled_query_fingerprint": controlled_query.get(
+            "query_fingerprint"
+        ),
+        "projection_source": result.get("projection_source"),
+        "retrieval_source": result.get("retrieval_source"),
+    }
+
+
 def create_guarded_claim_triage_graph(
     data: Mapping[str, Any],
     proposal_builder: ProposalBuilder | None = None,
+    enable_controlled_rag: bool = False,
+    rag_artifact_dir: str | Path | None = None,
+    rag_retrieval_client: object | None = None,
+    rag_top_k: int = 3,
+    rag_min_relevance_score: float = 0.20,
 ):
     """
     Create the protected LangGraph claim-triage workflow.
 
     Deterministic triage remains authoritative. Controlled follow-up selection
-    may return only approved catalogue questions. Explanation content passes
-    through a semantic safety guardrail before the response guardrail protects
-    authoritative routing fields.
+    may return only approved catalogue questions. When enabled, controlled RAG
+    retrieval runs as a separate analyst-only branch and cannot modify the
+    final customer-facing response.
     """
 
     def deterministic_triage_node(
@@ -136,6 +177,43 @@ def create_guarded_claim_triage_graph(
                         "question_ids",
                         [],
                     ),
+                }
+            ],
+        }
+
+    def controlled_rag_retrieval_node(
+        state: GuardedClaimTriageState,
+    ) -> dict[str, Any]:
+        tool_result = _as_dict(state.get("tool_result"))
+
+        rag_tool_result = run_controlled_rag_retrieval(
+            data=data,
+            claim_id=state["claim_id"],
+            deterministic_tool_result=tool_result,
+            artifact_dir=rag_artifact_dir,
+            top_k=rag_top_k,
+            min_relevance_score=rag_min_relevance_score,
+            client=rag_retrieval_client,
+        )
+
+        analyst_guidance = _build_analyst_guidance_summary(
+            rag_tool_result
+        )
+
+        return {
+            "rag_tool_result": rag_tool_result,
+            "analyst_guidance": analyst_guidance,
+            "workflow_trace": [
+                {
+                    "node": "controlled_rag_retrieval",
+                    "status": "COMPLETED",
+                    "retrieval_status": analyst_guidance.get(
+                        "retrieval_status"
+                    ),
+                    "retrieved_guidance_count": analyst_guidance.get(
+                        "retrieved_guidance_count"
+                    ),
+                    "authority": analyst_guidance.get("authority"),
                 }
             ],
         }
@@ -252,6 +330,13 @@ def create_guarded_claim_triage_graph(
         "controlled_follow_up_selection",
         controlled_follow_up_selection_node,
     )
+
+    if enable_controlled_rag:
+        workflow.add_node(
+            "controlled_rag_retrieval",
+            controlled_rag_retrieval_node,
+        )
+
     workflow.add_node(
         "explanation_proposal",
         explanation_proposal_node,
@@ -270,10 +355,22 @@ def create_guarded_claim_triage_graph(
         "deterministic_triage",
         "controlled_follow_up_selection",
     )
-    workflow.add_edge(
-        "controlled_follow_up_selection",
-        "explanation_proposal",
-    )
+
+    if enable_controlled_rag:
+        workflow.add_edge(
+            "controlled_follow_up_selection",
+            "controlled_rag_retrieval",
+        )
+        workflow.add_edge(
+            "controlled_rag_retrieval",
+            "explanation_proposal",
+        )
+    else:
+        workflow.add_edge(
+            "controlled_follow_up_selection",
+            "explanation_proposal",
+        )
+
     workflow.add_edge(
         "explanation_proposal",
         "agent_content_safety_guardrail",
@@ -292,11 +389,21 @@ def run_langgraph_guarded_claim_triage(
     claim_id: str,
     proposal_builder: ProposalBuilder | None = None,
     questions_already_asked: Sequence[str] | str | None = None,
+    enable_controlled_rag: bool = False,
+    rag_artifact_dir: str | Path | None = None,
+    rag_retrieval_client: object | None = None,
+    rag_top_k: int = 3,
+    rag_min_relevance_score: float = 0.20,
 ) -> dict[str, Any]:
     """Run the protected LangGraph claim-triage workflow."""
     graph = create_guarded_claim_triage_graph(
         data=data,
         proposal_builder=proposal_builder,
+        enable_controlled_rag=enable_controlled_rag,
+        rag_artifact_dir=rag_artifact_dir,
+        rag_retrieval_client=rag_retrieval_client,
+        rag_top_k=rag_top_k,
+        rag_min_relevance_score=rag_min_relevance_score,
     )
 
     state = graph.invoke(
@@ -315,6 +422,8 @@ def run_langgraph_guarded_claim_triage(
         "workflow_trace": state["workflow_trace"],
         "tool_result": state["tool_result"],
         "follow_up_tool_result": state["follow_up_tool_result"],
+        "rag_tool_result": state.get("rag_tool_result", {}),
+        "analyst_guidance": state.get("analyst_guidance", {}),
         "agent_proposal": state["agent_proposal"],
         "proposal_source": state["proposal_source"],
         "content_safety": state["content_safety"],
