@@ -135,6 +135,17 @@ SAMPLE_RAG_TOOL_RESULT = {
             "document_id": "KB-002",
             "section_title": "Evidence profiles",
             "relevance_score": 0.81,
+            "chunk_text": (
+                "Screen damage claims require the applicable evidence "
+                "profile. Missing evidence should be requested through "
+                "the approved case-management workflow."
+            ),
+            "source_reference": {
+                "source_relative_path": (
+                    "data/knowledge_base/"
+                    "KB-002_evidence_review_guide_v1.md"
+                ),
+            },
         },
         {
             "rank": 2,
@@ -142,6 +153,16 @@ SAMPLE_RAG_TOOL_RESULT = {
             "document_id": "KB-002",
             "section_title": "Evidence-review principles",
             "relevance_score": 0.74,
+            "chunk_text": (
+                "Evidence validates a potentially eligible claim; it does "
+                "not create coverage or override deterministic triage."
+            ),
+            "source_reference": {
+                "source_relative_path": (
+                    "data/knowledge_base/"
+                    "KB-002_evidence_review_guide_v1.md"
+                ),
+            },
         },
     ],
 }
@@ -162,7 +183,7 @@ class TestLangGraphGuardedClaimTriage(unittest.TestCase):
                 claim_id="CLM-TEST-001",
             )
 
-        self.assertEqual(WORKFLOW_VERSION, "langgraph_v4")
+        self.assertEqual(WORKFLOW_VERSION, "langgraph_v5")
         self.assertEqual(result["workflow_status"], "COMPLETED")
         self.assertEqual(result["proposal_source"], "TEMPLATE")
 
@@ -418,6 +439,14 @@ class TestLangGraphGuardedClaimTriage(unittest.TestCase):
         )
 
         self.assertEqual(
+            result["analyst_guidance"]["formatter_name"],
+            "analyst_guidance_formatter",
+        )
+        self.assertEqual(
+            result["analyst_guidance"]["formatter_version"],
+            "v1",
+        )
+        self.assertEqual(
             result["analyst_guidance"]["authority"],
             "non_authoritative_guidance",
         )
@@ -432,6 +461,24 @@ class TestLangGraphGuardedClaimTriage(unittest.TestCase):
         self.assertEqual(
             result["analyst_guidance"]["controlled_query_fingerprint"],
             "abc123",
+        )
+        self.assertEqual(
+            result["analyst_guidance"]["source_references"][0][
+                "reference_id"
+            ],
+            "S1",
+        )
+        self.assertEqual(
+            result["analyst_guidance"]["source_references"][0][
+                "chunk_id"
+            ],
+            "KB-002::S03",
+        )
+        self.assertEqual(
+            result["analyst_guidance"]["guidance_items"][0][
+                "source_label"
+            ],
+            "S1: KB-002 / Evidence profiles",
         )
 
         self.assertEqual(

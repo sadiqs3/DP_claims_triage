@@ -22,10 +22,11 @@ from src.tools.deterministic_triage import run_deterministic_triage
 from src.tools.follow_up_selection import (
     run_controlled_follow_up_selection,
 )
+from src.rag.analyst_guidance_formatter import format_analyst_guidance
 
 
 WORKFLOW_NAME = "langgraph_guarded_claim_triage"
-WORKFLOW_VERSION = "langgraph_v4"
+WORKFLOW_VERSION = "langgraph_v5"
 
 
 class GuardedClaimTriageState(TypedDict, total=False):
@@ -78,31 +79,13 @@ def _build_analyst_guidance_summary(
     rag_tool_result: Mapping[str, Any],
 ) -> dict[str, Any]:
     """
-    Expose controlled retrieval output as analyst-only guidance.
+    Format controlled retrieval output as analyst-only guidance.
 
     This object is intentionally separate from final_response so retrieved
     guidance cannot alter deterministic triage, follow-up wording, or
     customer-facing explanation fields.
     """
-    result = _as_dict(rag_tool_result)
-    controlled_query = _as_dict(result.get("controlled_query"))
-
-    return {
-        "authority": result.get("authority"),
-        "authority_notice": result.get("authority_notice"),
-        "retrieval_status": result.get("retrieval_status"),
-        "retrieved_guidance_count": result.get(
-            "retrieved_guidance_count",
-            0,
-        ),
-        "retrieved_guidance": result.get("retrieved_guidance", []),
-        "controlled_query_fingerprint": controlled_query.get(
-            "query_fingerprint"
-        ),
-        "projection_source": result.get("projection_source"),
-        "retrieval_source": result.get("retrieval_source"),
-    }
-
+    return format_analyst_guidance(rag_tool_result)
 
 def create_guarded_claim_triage_graph(
     data: Mapping[str, Any],
