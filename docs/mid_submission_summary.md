@@ -6,11 +6,13 @@
 
 ---
 
-## 2. Project Objective
+## 2. Mid-Submission Objective
 
-This capstone project builds a controlled Agentic AI workflow to support device protection claim triage.
+This submission represents **Version 1 baseline** of the capstone project.
 
-The system helps evaluate synthetic device protection claims using deterministic policy rules, controlled follow-up selection, a guarded LangGraph workflow, and a non-authoritative RAG layer for analyst-facing SOP guidance.
+The objective of this baseline is to demonstrate a functional, modular, and reproducible Agentic AI solution for device protection claim triage.
+
+The system evaluates synthetic device protection claims using deterministic policy rules, controlled follow-up selection, a guarded LangGraph workflow, and a non-authoritative RAG layer for analyst-facing SOP guidance.
 
 The solution is designed as **decision support only**. It does not approve claims, deny claims finally, determine fraud, or make payout decisions.
 
@@ -35,7 +37,24 @@ This project addresses the problem by creating a traceable workflow that applies
 
 ---
 
-## 4. Current Build Status
+## 4. Dataset Source and Licence
+
+This project uses a synthetic, purpose-built dataset created for the BYOC capstone project.
+
+The dataset represents device protection claim triage scenarios and includes synthetic policy, coverage, evidence, claim-history, risk, follow-up, and knowledge-base records.
+
+No real customer data, production policy data, personal data, or proprietary enterprise records are used.
+
+Dataset details:
+
+- Source: Project-generated synthetic dataset
+- Licence / usage: Academic capstone use within this repository
+- PII status: No real PII included
+- Purpose: Development and evaluation of the baseline claim-triage workflow
+
+---
+
+## 5. Current Build Status
 
 The baseline end-to-end solution is implemented.
 
@@ -48,7 +67,7 @@ Completed components:
 - LangGraph guarded workflow
 - Agent content safety guardrail
 - Response authority guardrail
-- Approved KB/SOP corpus builder
+- Approved KB / SOP corpus builder
 - Lexical TF-IDF retriever
 - Semantic embedding retriever
 - Hybrid RRF retriever
@@ -63,7 +82,7 @@ Completed components:
 
 ---
 
-## 5. Architecture Summary
+## 6. Architecture Summary
 
 High-level workflow:
 
@@ -88,11 +107,11 @@ RAG is non-authoritative and analyst-facing only.
 
 ---
 
-## 6. Agentic AI and GenAI Components
+## 7. Agentic AI and GenAI Components
 
-The project includes the following Agentic AI / GenAI components:
+The project includes the following Agentic AI / GenAI components.
 
-### 6.1 LangGraph Orchestration
+### 7.1 LangGraph Orchestration
 
 The workflow is orchestrated using LangGraph.
 
@@ -113,7 +132,7 @@ deterministic_triage
 → response_guardrail
 ```
 
-### 6.2 RAG Layer
+### 7.2 RAG Layer
 
 The RAG layer retrieves approved SOP / knowledge-base guidance for analysts.
 
@@ -127,7 +146,22 @@ Implemented RAG components:
 - Cross-encoder reranking
 - Source-grounded analyst guidance formatting
 
-### 6.3 Guardrails
+### 7.3 Prompt and Interaction Design
+
+The project avoids uncontrolled customer-facing generation.
+
+Instead, interaction design is implemented through controlled components:
+
+- Deterministic fact projection for RAG queries
+- Controlled query builder using allow-listed fields
+- Approved follow-up question catalogue
+- Analyst guidance formatter with source references
+- Agent content safety guardrail
+- Response authority guardrail
+
+Customer narrative, identifiers, and arbitrary free text are not used for uncontrolled RAG retrieval.
+
+### 7.4 Guardrails
 
 Implemented guardrails:
 
@@ -139,9 +173,7 @@ Implemented guardrails:
 
 ---
 
-## 7. Dataset Summary
-
-The project uses synthetic, purpose-built device protection claims data.
+## 8. Dataset Summary
 
 Runtime data includes:
 
@@ -158,33 +190,18 @@ Runtime data includes:
 - Knowledge-base document registry
 - Development claim intake records
 
-Development claims:
+Key dataset counts:
 
-```text
-165
-```
-
-Evidence bundles:
-
-```text
-220
-```
-
-Knowledge-base documents:
-
-```text
-7
-```
-
-Safety/adversarial cases:
-
-```text
-24
-```
+| Area | Count |
+|---|---:|
+| Development claims | 165 |
+| Evidence bundles | 220 |
+| Knowledge-base documents | 7 |
+| Safety/adversarial cases | 24 |
 
 ---
 
-## 8. Evaluation Summary
+## 9. Evaluation Summary
 
 Detailed evaluation evidence is available in:
 
@@ -192,7 +209,7 @@ Detailed evaluation evidence is available in:
 docs/evaluation_summary.md
 ```
 
-### 8.1 Retrieval Evaluation
+### 9.1 Retrieval Evaluation
 
 The retrieval layer was evaluated on a frozen 14-query retrieval evaluation set.
 
@@ -212,7 +229,7 @@ Interpretation:
 
 ---
 
-### 8.2 Workflow Development Evaluation
+### 9.2 Workflow Development Evaluation
 
 The guarded LangGraph workflow was evaluated on 165 labelled development claims.
 
@@ -236,7 +253,7 @@ Interpretation:
 
 ---
 
-### 8.3 Safety and Adversarial Evaluation
+### 9.3 Safety and Adversarial Evaluation
 
 The safety guardrails were evaluated on 24 adversarial cases.
 
@@ -257,88 +274,123 @@ Interpretation:
 
 ---
 
-## 9. Current Test Status
+## 10. Repository Evidence
 
-Full regression command:
+Key reviewer entry points:
+
+- `README.md`
+- `docs/evaluation_summary.md`
+- `docs/architecture_decisions.md`
+- `docs/mid_submission_checklist.md`
+- `notebooks/05_sop_rag_retrieval.ipynb`
+- `notebooks/06_workflow_evaluation.ipynb`
+
+Generated artifacts:
+
+```text
+data/artifacts/rag/faiss_semantic_index_v1/
+data/evaluation/retrieval/
+data/evaluation/workflow/
+data/evaluation/safety/
+```
+
+---
+
+## 11. Rubric Alignment
+
+| Expected Area | Repository Evidence |
+|---|---|
+| Business problem definition | `README.md`, `docs/mid_submission_summary.md` |
+| Project objective | `README.md`, `docs/mid_submission_summary.md` |
+| GenAI / Agentic AI implementation | LangGraph workflow in `src/agent/`, controlled RAG in `src/rag/` |
+| Data collection and preparation | Synthetic dataset under `data/`, data-loading and validation modules in `src/` |
+| Knowledge/context preparation | Approved KB corpus, corpus builder, FAISS index, retrieval notebook |
+| Baseline workflow | LangGraph workflow, deterministic tools, guarded response path |
+| Prompt / interaction design | Controlled query builder, analyst guidance formatter, follow-up catalogue, guardrails |
+| Initial system evaluation | `docs/evaluation_summary.md`, `data/evaluation/` |
+| Modular implementation | `src/`, `tests/`, `notebooks/`, `docs/`, `data/` |
+| Proposed architecture | `docs/architecture_decisions.md`, architecture overview in README |
+| Planned final enhancements | README and this summary |
+| Reproducibility | `requirements.txt`, notebooks, tests, generated evaluation artifacts |
+
+---
+
+## 12. Reproducibility
+
+Run the full regression suite from the project root:
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-Current status:
+Current expected result:
 
 ```text
 136 tests passed
 ```
 
----
-
-## 10. Generated Artifacts
-
-### 10.1 RAG / Retrieval
+Live semantic retrieval and embedding-based evaluation require a local `.env` file containing:
 
 ```text
-data/artifacts/rag/faiss_semantic_index_v1/
-data/evaluation/retrieval/
+OPENAI_API_KEY=<your_key_here>
 ```
 
-### 10.2 Workflow Evaluation
-
-```text
-data/evaluation/workflow/
-```
-
-### 10.3 Safety Evaluation
-
-```text
-data/evaluation/safety/
-```
-
-### 10.4 Documentation
-
-```text
-README.md
-docs/architecture_decisions.md
-docs/evaluation_summary.md
-docs/mid_submission_summary.md
-```
-
-### 10.5 Notebooks
-
-```text
-notebooks/05_sop_rag_retrieval.ipynb
-notebooks/06_workflow_evaluation.ipynb
-```
+The `.env` file is excluded from Git and must not be committed.
 
 ---
 
-## 11. Known Limitations
+## 13. Known Limitations and Final Submission Plan
 
-1. Held-out labels have not been used in development evaluation.
-2. Some exclusion-related rules are limited because the runtime package does not include a structured exclusion-status dataset.
-3. Cross-encoder reranking was evaluated on a small retrieval evaluation set.
-4. Development-label mismatches are mostly deterministic rule/data issues, not orchestration failures.
-5. Safety evaluation focuses on deterministic preservation, override blocking, and mechanical prohibited-behavior leakage. Broader semantic safety review can be expanded in the final submission.
+The current mid-submission baseline is intentionally scoped as a working, tested, and evaluated foundation.
+
+### 13.1 Known Limitations
+
+1. **Held-out evaluation is reserved for final submission.**  
+   Development evaluation has been completed on labelled development claims. Held-out labels are intentionally not used at this stage to preserve a clean final evaluation boundary.
+
+2. **Some exclusion-rule scenarios depend on structured runtime data availability.**  
+   The current runtime package does not include a separate structured exclusion-status dataset. As a result, exclusion-related gaps are documented rather than handled through unsupported assumptions.
+
+3. **Reranker evaluation is based on a small frozen retrieval set.**  
+   The cross-encoder reranker was implemented and evaluated on the current 14-query retrieval set. It matched semantic retrieval on Hit@1 and Hit@3, with slightly lower MRR@3.
+
+4. **Workflow mismatches are primarily deterministic rule/data gaps.**  
+   The LangGraph workflow and guardrails preserved deterministic outputs correctly. Remaining mismatches are linked to deterministic rule coverage, precedence handling, or available structured data.
+
+5. **Safety evaluation focuses on critical control preservation.**  
+   The safety/adversarial suite validates deterministic preservation, unsafe override blocking, and prohibited-behavior leakage. Broader semantic red-team review can be expanded during final packaging if required.
+
+### 13.2 Planned Final Submission Enhancements
+
+The following items are planned before final submission:
+
+1. **Run locked held-out evaluation.**  
+   Evaluate the final workflow on the held-out claim set and report final generalisation performance separately from development results.
+
+2. **Review development mismatch analysis.**  
+   Review deterministic mismatches and make only justified rule/data refinements that do not overfit to development labels.
+
+3. **Refresh evaluation artifacts if logic changes.**  
+   If deterministic logic is updated, retrieval, workflow, and safety artifacts will be regenerated as needed to keep documentation aligned with code.
+
+4. **Prepare final report.**  
+   Create the final capstone report covering business problem, architecture, dataset, implementation, evaluation, safety controls, limitations, and conclusion.
+
+5. **Prepare final presentation.**  
+   Create the final presentation deck summarising the problem, solution, architecture, demo flow, evaluation metrics, and business value.
+
+6. **Add concise demo walkthrough.**  
+   Add a short reviewer-friendly walkthrough showing how a sample claim moves through deterministic triage, controlled follow-up, optional RAG guidance, and guardrails.
+
+7. **Complete final repository hygiene.**  
+   Re-run tests, confirm GitHub links, verify no secrets/local cache files are tracked, and ensure final documentation is aligned with the submitted code.
 
 ---
 
-## 12. Remaining Work for Final Submission
-
-Planned next steps:
-
-- Run held-out evaluation at final stage.
-- Refine deterministic rule gaps based on development mismatch analysis, without overfitting.
-- Add final report and presentation slides.
-- Add a concise demo walkthrough.
-- Improve documentation for reproducibility and final packaging.
-- Optionally expand human-reviewed qualitative examples.
-
----
-
-## 13. Mid Submission Conclusion
+## 14. Mid Submission Conclusion
 
 The project has reached a strong mid-submission baseline.
 
 The core end-to-end workflow is implemented, tested, and evaluated. The solution demonstrates deterministic rule-grounding, LangGraph orchestration, controlled RAG, FAISS retrieval, cross-encoder reranking, analyst guidance formatting, and safety guardrails.
 
-The system is ready for mid-submission review as a working baseline implementation with documented evaluation evidence.
+The repository is ready for mid-submission review as a working Version 1 baseline implementation with documented evaluation evidence and a clear final-submission plan.

@@ -14,6 +14,9 @@
 - [x] Agent content safety guardrail implemented.
 - [x] Retrieval, workflow, and safety evaluation artifacts generated.
 - [x] Full regression passed with 136 tests.
+- [x] Dataset source, licence/usage, and PII status documented.
+- [x] Execution modes documented, including deterministic tests without OpenAI key and live semantic retrieval with local `.env`.
+- [x] Planned final-submission enhancements documented.
 - [x] `.env` confirmed not tracked.
 - [x] Local cache files cleaned.
 
@@ -58,6 +61,7 @@ Headline results:
 | Semantic + Cross-Encoder Reranker Hit@1 | 78.6% |
 | Semantic + Cross-Encoder Reranker Hit@3 | 92.9% |
 | Semantic + Cross-Encoder Reranker MRR@3 | 0.845 |
+| No result rate | 0.0% |
 
 Interpretation:
 
@@ -166,6 +170,18 @@ Expected result:
 No output
 ```
 
+Confirm `.env` is ignored by Git:
+
+```bash
+git check-ignore -v .env
+```
+
+Expected result:
+
+```text
+A matching .gitignore rule is shown for .env
+```
+
 Check for large files accidentally added inside the repository:
 
 ```bash
@@ -224,6 +240,11 @@ No unexpected files
 - `notebooks/05_sop_rag_retrieval.ipynb`
 - `notebooks/06_workflow_evaluation.ipynb`
 
+### 5.8 Dependency and Configuration Files
+
+- `requirements.txt`
+- `.gitignore`
+
 ---
 
 ## 6. Files That Must Not Be Committed
@@ -239,31 +260,56 @@ No unexpected files
 
 ---
 
-## 7. Mid Submission Position
+## 7. Alignment with Mid-Submission Instructions
 
-The project is ready for mid-submission as a working baseline implementation.
-
-The repository demonstrates:
-
-- Rule-grounded deterministic claim triage
-- Agentic LangGraph orchestration
-- Controlled follow-up selection
-- Controlled RAG with approved KB corpus
-- FAISS persisted vector index
-- Cross-encoder reranking
-- Analyst-only guidance formatting
-- Guardrails against unsafe content and authority override
-- Quantitative retrieval, workflow, and safety evaluation
-- Reproducible tests and documentation
+| University Requirement | Repository Evidence |
+|---|---|
+| Shared repository/folder URL | GitHub repository link to be submitted |
+| Version 1 baseline solution | Implemented LangGraph baseline workflow |
+| Source code | `src/` |
+| Dependency file | `requirements.txt` |
+| Documentation | `README.md`, `docs/` |
+| Sample dataset / access instructions | Synthetic dataset under `data/`, documented in README |
+| Generated artifacts | FAISS index and evaluation artifacts under `data/artifacts/` and `data/evaluation/` |
+| Modular repository structure | `src/`, `data/`, `notebooks/`, `tests/`, `docs/` |
+| Business problem and objective | `README.md`, `docs/mid_submission_summary.md` |
+| Appropriate GenAI use | LangGraph workflow, controlled RAG, embeddings, reranker |
+| Data preparation | Runtime data, data-loading and validation modules |
+| Knowledge/context preparation | KB corpus, corpus builder, FAISS index |
+| Baseline workflow | LangGraph guarded workflow |
+| Prompt / interaction design | Controlled query builder, analyst guidance formatter, follow-up catalogue |
+| Initial evaluation | `docs/evaluation_summary.md`, `data/evaluation/` |
+| Planned final enhancements | README and mid-submission summary |
+| Reproducibility | Tests, notebooks, requirements, documented execution modes |
 
 ---
 
-## 8. Remaining Work After Mid Submission
+## 8. Mid Submission Position
+
+The project is ready for mid-submission as a working Version 1 baseline implementation.
+
+The repository demonstrates:
+
+- Rule-grounded deterministic claim triage.
+- Agentic LangGraph orchestration.
+- Controlled follow-up selection.
+- Controlled RAG with approved KB corpus.
+- FAISS persisted vector index.
+- Cross-encoder reranking.
+- Analyst-only guidance formatting.
+- Guardrails against unsafe content and authority override.
+- Quantitative retrieval, workflow, and safety evaluation.
+- Reproducible tests and documentation.
+
+---
+
+## 9. Remaining Work After Mid Submission
 
 Planned final-submission activities:
 
 - Run held-out evaluation at the final stage.
 - Review deterministic rule/data gaps from development mismatch analysis.
+- Refresh evaluation artifacts if logic changes.
 - Add final report.
 - Add final presentation slides.
 - Add a concise demo walkthrough.
@@ -272,16 +318,21 @@ Planned final-submission activities:
 
 ---
 
-## 9. Final Mid Submission Check
+## 10. Final Mid Submission Check
 
 Before submitting the GitHub link, confirm:
 
 - [ ] Latest changes are committed.
 - [ ] Latest changes are pushed to origin.
+- [ ] GitHub repository link is accessible to anyone with the link.
 - [ ] `git status` shows a clean working tree.
 - [ ] Full regression still passes with 136 tests.
 - [ ] `.env` is not tracked.
+- [ ] README includes dataset source, licence/usage, and PII status.
+- [ ] README includes execution modes and OpenAI key requirement.
+- [ ] README links to `docs/mid_submission_checklist.md`.
 - [ ] README reviewer links work.
+- [ ] Planned final-submission enhancements are documented.
 - [ ] Notebooks open correctly in GitHub.
 - [ ] Evaluation artifacts are visible in GitHub.
 - [ ] Documentation files are visible in GitHub.
