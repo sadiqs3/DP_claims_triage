@@ -2,73 +2,121 @@
 
 ## 1. Purpose
 
-This document summarises the evaluation evidence for the **Device Protection Claims Triage** capstone solution.
+This document summarises the mid-submission evaluation evidence for the Device Protection Claims Triage project.
 
 The evaluation covers three areas:
 
-1. Retrieval quality for the SOP / knowledge-base RAG layer.
+1. Retrieval quality for the approved SOP / knowledge-base RAG layer.
 2. End-to-end guarded LangGraph workflow behaviour on labelled development claims.
 3. Safety and adversarial guardrail behaviour.
 
-The system is designed as a **decision-support workflow**. Deterministic policy rules remain authoritative. RAG output is non-authoritative and is used only as analyst-facing guidance.
+The project is intentionally designed as a rule-grounded decision-support system. Deterministic triage rules are authoritative. RAG is non-authoritative and analyst-facing only.
 
 ---
 
-## 2. Evaluation Scope
+## 2. Evaluation Objective
 
-### 2.1 Retrieval Evaluation
+The evaluation is designed to answer three questions:
 
-Retrieval was evaluated on a frozen retrieval evaluation set of **14 queries** against the approved knowledge-base corpus.
+1. Can the RAG layer retrieve relevant approved SOP / KB guidance?
+2. Can the LangGraph workflow complete claim triage while preserving deterministic authority?
+3. Can the guardrails block unsafe or unauthorized agent-generated overrides?
 
-Methods evaluated:
-
-- Lexical TF-IDF
-- Semantic Embedding
-- Hybrid RRF
-- Semantic + Cross-Encoder Reranker
-
-Semantic embedding model:
-
-```text
-text-embedding-3-small
-```
-
-Cross-encoder reranker model:
-
-```text
-cross-encoder/ms-marco-MiniLM-L-6-v2
-```
-
-### 2.2 Workflow Development Evaluation
-
-The guarded LangGraph workflow was evaluated on **165 labelled development claims**.
-
-Workflow mode:
-
-```text
-enable_controlled_rag=False
-```
-
-RAG was disabled for this evaluation because RAG is non-authoritative and should not affect deterministic triage outcomes, triggering rules, or controlled follow-up wording.
-
-### 2.3 Safety and Adversarial Evaluation
-
-Safety guardrails were evaluated on **24 adversarial test cases** covering:
-
-- Prompt injection and override attempts
-- Privacy and unauthorized action
-- Data and source integrity
-- Evidence date and anomaly scenarios
-- Follow-up and robustness
-- Scope and exclusion boundaries
-
-These cases were evaluated using deterministic tool-result fixtures and adversarial proposed agent content.
+Because RAG is non-authoritative, retrieval evaluation and workflow evaluation are reported separately.
 
 ---
 
-## 3. Retrieval Evaluation Results
+## 3. Evaluation Scope
 
-### 3.1 Overall Retrieval Metrics
+### 3.1 Included in Mid-Submission Evaluation
+
+The current evaluation includes:
+
+- Retrieval evaluation on a frozen retrieval query set.
+- Lexical TF-IDF retrieval.
+- Semantic embedding retrieval.
+- Hybrid RRF retrieval.
+- Semantic retrieval with cross-encoder reranking.
+- Guarded LangGraph workflow evaluation on labelled development claims.
+- Follow-up question selection evaluation.
+- Response authority preservation checks.
+- Agent content safety checks.
+- Safety/adversarial evaluation using tool-result fixtures.
+
+### 3.2 Excluded from Mid-Submission Evaluation
+
+The current evaluation excludes:
+
+- Final held-out evaluation.
+- Production deployment testing.
+- UI testing.
+- Real customer data testing.
+- Automated claim approval or payout decisioning.
+- Fraud determination.
+- Live enterprise system integration.
+
+Held-out evaluation is intentionally reserved for the final submission stage.
+
+---
+
+## 4. Metric Definitions
+
+| Metric | Meaning |
+|---|---|
+| Hit@1 | Whether the expected relevant document/chunk appears as the top retrieved result |
+| Hit@3 | Whether the expected relevant document/chunk appears within the top 3 retrieved results |
+| MRR@3 | Mean reciprocal rank of the expected relevant result within the top 3 |
+| No result rate | Percentage of queries where the retriever returned no results |
+| Workflow completion rate | Percentage of claims processed without workflow failure |
+| Disposition agreement | Match rate between predicted and gold claim disposition |
+| Primary rule exact agreement | Exact match rate between predicted and gold primary rule |
+| Primary rule acceptable agreement | Match rate allowing gold-approved alternate primary rules |
+| Final response matches deterministic outcome | Whether protected final response preserved the deterministic triage outcome |
+| Final response matches deterministic rule | Whether protected final response preserved the deterministic triggering rule |
+| Authority guardrail aligned rate | Percentage of workflow cases where the response authority guardrail preserved deterministic authority |
+| Follow-up exact match rate | Exact match rate for selected follow-up question IDs |
+| Critical safety pass rate | Percentage of adversarial cases passing the critical safety gate |
+| Unsafe override block rate | Percentage of adversarial override attempts blocked |
+| Mechanical prohibited behavior rate | Percentage of cases where prohibited mechanical behavior leaked into output |
+
+---
+
+## 5. Evaluation Acceptance Summary
+
+| Area | Acceptance Target | Actual Result | Status |
+|---|---:|---:|---|
+| Workflow completion | 100% | 100.0% | Met |
+| Final response preserves deterministic outcome | 100% | 100.0% | Met |
+| Final response preserves deterministic rule | 100% | 100.0% | Met |
+| Authority guardrail alignment | 100% | 100.0% | Met |
+| Safety critical pass rate | 100% | 100.0% | Met |
+| Unsafe override blocking | 100% | 100.0% | Met |
+| Mechanical prohibited behavior leakage | 0% | 0.0% | Met |
+| Retrieval no-result rate | 0% preferred | 0.0% | Met |
+| Semantic retrieval Hit@3 | Strong baseline expected | 92.9% | Met |
+
+---
+
+## 6. Retrieval Evaluation
+
+### 6.1 Retrieval Methods Evaluated
+
+The retrieval evaluation compared four methods:
+
+1. Lexical TF-IDF retrieval.
+2. Semantic embedding retrieval.
+3. Hybrid Reciprocal Rank Fusion retrieval.
+4. Semantic retrieval with cross-encoder reranking.
+
+The evaluation used a frozen retrieval query set with:
+
+```text
+14 queries
+```
+
+The retrieval corpus contains approved SOP / KB chunks only.
+
+### 6.2 Retrieval Results
 
 | Method | Query Count | Top K | Hit@1 | Hit@3 | MRR@3 | No Result Rate |
 |---|---:|---:|---:|---:|---:|---:|
@@ -77,24 +125,32 @@ These cases were evaluated using deterministic tool-result fixtures and adversar
 | Hybrid RRF | 14 | 3 | 71.4% | 92.9% | 0.798 | 0.0% |
 | Semantic + Cross-Encoder Reranker | 14 | 3 | 78.6% | 92.9% | 0.845 | 0.0% |
 
-### 3.2 Retrieval Interpretation
+### 6.3 Retrieval Interpretation
 
-The semantic embedding retriever was the strongest baseline by MRR@3.
+Semantic embedding retrieval is the strongest baseline by MRR@3.
 
-The cross-encoder reranker matched the semantic retriever on Hit@1 and Hit@3, but produced a slightly lower MRR@3 on the small 14-query evaluation set.
+The cross-encoder reranker was implemented and evaluated. It matched semantic retrieval on Hit@1 and Hit@3, but produced slightly lower aggregate MRR@3 on the small 14-query retrieval evaluation set.
 
-The reranker is retained as an optional controlled reranking stage because:
+The reranker remains useful as a controlled optional stage because it demonstrates second-stage relevance scoring over retrieved candidates. It does not generate new policy advice and does not modify deterministic claim decisions.
 
-- The rubric expects a reranking component.
-- The reranker was implemented and evaluated against the same frozen retrieval set.
-- The reranker can improve individual query families even if aggregate MRR@3 was slightly lower.
-- The reranker remains non-authoritative and cannot alter deterministic triage outcomes.
+### 6.4 Retrieval Artifacts
+
+Generated artifacts:
+
+```text
+data/evaluation/retrieval/retrieval_summary_metrics_with_reranker_v1.csv
+data/evaluation/retrieval/retrieval_family_metrics_with_reranker_v1.csv
+data/evaluation/retrieval/retrieval_per_query_results_with_reranker_v1.csv
+data/evaluation/retrieval/retrieval_evaluation_with_reranker_manifest_v1.json
+```
 
 ---
 
-## 4. Workflow Development Evaluation Results
+## 7. Workflow Development Evaluation
 
-### 4.1 Dataset
+### 7.1 Workflow Evaluation Setup
+
+The guarded LangGraph workflow was evaluated on labelled development claims.
 
 Development claims evaluated:
 
@@ -102,19 +158,24 @@ Development claims evaluated:
 165
 ```
 
-Development label source:
-
-```text
-data/staging/BYOC_DeviceProtect_Claims_Triage_Dataset_v1/data/internal/ground_truth_claim_labels_development_v1.csv
-```
-
-Workflow evaluation mode:
+The workflow evaluation was run with:
 
 ```text
 enable_controlled_rag=False
 ```
 
-### 4.2 Headline Workflow Metrics
+This was intentional because RAG is non-authoritative. Retrieval and reranking are evaluated separately in the retrieval evaluation.
+
+Workflow evaluation measures:
+
+- Deterministic triage execution.
+- LangGraph orchestration.
+- Follow-up selection.
+- Response authority preservation.
+- Agent content safety behaviour.
+- Final response alignment with deterministic output.
+
+### 7.2 Workflow Results
 
 | Metric | Result |
 |---|---:|
@@ -128,19 +189,30 @@ enable_controlled_rag=False
 | Content safety SAFE rate | 100.0% |
 | Follow-up exact match rate | 99.4% |
 
-### 4.3 Workflow Interpretation
+### 7.3 Workflow Interpretation
 
-The guarded LangGraph workflow completed successfully for all 165 development claims.
+The workflow completed successfully for all 165 development claims.
 
-The final response preserved the deterministic triage outcome and triggering rule in every case. This confirms that the workflow orchestration, proposal layer, content safety guardrail, and response guardrail did not corrupt or override the authoritative deterministic decision.
+The final response preserved deterministic outcome and triggering rule in every evaluated claim. This confirms that LangGraph orchestration, agent content safety checks, and response authority guardrails did not corrupt or override deterministic triage decisions.
 
-The development-label agreement was strong but not perfect. Disposition agreement and acceptable primary-rule agreement were both **91.5%**.
+The development-label agreement metrics show that the deterministic baseline is strong, while still leaving a defined improvement path for final submission.
 
 ---
 
-## 5. Workflow Mismatch Analysis
+## 8. Workflow Mismatch Interpretation
 
-### 5.1 Mismatch Summary
+The workflow evaluation produced:
+
+```text
+91.5% disposition agreement
+91.5% acceptable primary-rule agreement
+```
+
+The mismatches do not indicate LangGraph or RAG override failures. In all evaluated claims, the final response preserved deterministic triage outcome and triggering rule.
+
+The remaining mismatches are primarily linked to deterministic rule coverage, rule precedence interpretation, or structured data availability. These are documented for final-submission review and will be addressed only where changes are justified by rule logic rather than overfitting to development labels.
+
+### 8.1 Mismatch Summary
 
 Total mismatch rows:
 
@@ -148,50 +220,34 @@ Total mismatch rows:
 15
 ```
 
-| Mismatch Type | Count |
+Mismatch categories:
+
+| Category | Count |
 |---|---:|
 | Disposition or rule mismatch | 14 |
-| Follow-up selection mismatch | 1 |
+| Follow-up selection mismatch only | 1 |
 
-### 5.2 Mismatch by Gold Primary Rule
+Mismatch patterns observed:
 
-| Gold Primary Rule | Count |
-|---|---:|
-| DATA-002 | 4 |
-| EVD-002 | 3 |
-| EXC-002 | 3 |
-| ELG-002 | 3 |
-| EVD-001 | 1 |
-| EXC-001 | 1 |
+- Some mismatches are linked to documented baseline limitations for exclusion-related rules.
+- Some mismatches are linked to deterministic precedence differences between coverage, evidence, and manual-review handling.
+- One mismatch was limited to follow-up question selection while the disposition and rule were otherwise aligned.
 
-### 5.3 Known Baseline Limitation
+### 8.2 Mismatch Artifact
 
-Known exclusion-rule limitation mismatches:
+Detailed mismatch analysis is available in:
 
 ```text
-4
+data/evaluation/workflow/workflow_development_mismatch_analysis_v1.csv
 ```
-
-These relate to `EXC-001` and `EXC-002`. The deterministic baseline manifest already documents that exclusion rules are limited because no structured exclusion-status dataset is available in the current runtime package.
-
-### 5.4 Mismatch Interpretation
-
-The mismatch analysis shows that remaining gaps are inherited from the deterministic rules baseline rather than caused by LangGraph, RAG, or the analyst-guidance formatter.
-
-The key evidence is:
-
-- Final response matched deterministic outcome in 100% of cases.
-- Final response matched deterministic rule in 100% of cases.
-- Authority guardrail was aligned in 100% of cases.
-- Content safety status was SAFE in 100% of cases.
-
-Therefore, mismatches against gold labels should be treated as deterministic rule/data error-analysis items, not orchestration failures.
 
 ---
 
-## 6. Safety and Adversarial Evaluation Results
+## 9. Safety and Adversarial Evaluation
 
-### 6.1 Dataset
+### 9.1 Safety Evaluation Setup
+
+The safety/adversarial evaluation used dedicated adversarial cases and tool-result fixtures.
 
 Safety/adversarial cases evaluated:
 
@@ -199,64 +255,43 @@ Safety/adversarial cases evaluated:
 24
 ```
 
-Input files:
+The safety evaluation directly tested the guardrail layers:
 
 ```text
-data/staging/BYOC_DeviceProtect_Claims_Triage_Dataset_v1/data/evaluation/safety_adversarial_test_cases_v1.csv
-data/staging/BYOC_DeviceProtect_Claims_Triage_Dataset_v1/data/evaluation/safety_adversarial_tool_fixtures_v1.json
-data/staging/BYOC_DeviceProtect_Claims_Triage_Dataset_v1/data/internal/safety_adversarial_expected_results_v1.csv
+deterministic tool-result fixture
+→ adversarial proposed agent content
+→ agent content safety guardrail
+→ response authority guardrail
+→ protected final response
 ```
 
-### 6.2 Headline Safety Metrics
+This approach was used because the adversarial cases are not normal runtime claim records. They are designed to test critical guardrail behaviour directly.
+
+### 9.2 Safety Results
 
 | Metric | Result |
 |---|---:|
+| Safety/adversarial cases evaluated | 24 |
 | Critical safety pass rate | 100.0% |
 | Deterministic outcome preservation rate | 100.0% |
 | Deterministic rule preservation rate | 100.0% |
 | Unsafe override block rate | 100.0% |
 | Mechanical prohibited behavior rate | 0.0% |
 
-### 6.3 Safety Result by Family
+### 9.3 Safety Interpretation
 
-| Test Family | Test Count | Pass Rate | Fallback Rate |
-|---|---:|---:|---:|
-| DATA_AND_SOURCE_INTEGRITY | 4 | 100.0% | 100.0% |
-| EVIDENCE_DATE_AND_ANOMALY | 4 | 100.0% | 100.0% |
-| FOLLOW_UP_AND_ROBUSTNESS | 4 | 100.0% | 100.0% |
-| PRIVACY_AND_UNAUTHORIZED_ACTION | 4 | 100.0% | 100.0% |
-| PROMPT_INJECTION_AND_OVERRIDE | 4 | 100.0% | 100.0% |
-| SCOPE_AND_EXCLUSION_BOUNDARIES | 4 | 100.0% | 100.0% |
+All adversarial cases passed the critical safety gate.
 
-### 6.4 Safety Interpretation
+The safety evaluation demonstrates that:
 
-All 24 adversarial cases passed the critical safety gate.
+- Unsafe override attempts were blocked.
+- Deterministic decision fields were preserved.
+- Prohibited mechanical behavior did not leak into the protected final response.
+- Fallback response behaviour worked as expected when unsafe proposed content was detected.
 
-Content safety fallback was applied in all 24 cases, and response guardrail override blocking was triggered in all 24 cases. This confirms that adversarial proposed content did not override deterministic outcomes, deterministic rules, or protected response fields.
+### 9.4 Safety Artifacts
 
----
-
-## 7. Generated Evaluation Artifacts
-
-### 7.1 Retrieval
-
-```text
-data/evaluation/retrieval/retrieval_summary_metrics_with_reranker_v1.csv
-data/evaluation/retrieval/retrieval_family_metrics_with_reranker_v1.csv
-data/evaluation/retrieval/retrieval_per_query_results_with_reranker_v1.csv
-data/evaluation/retrieval/retrieval_evaluation_with_reranker_manifest_v1.json
-```
-
-### 7.2 Workflow
-
-```text
-data/evaluation/workflow/workflow_development_summary_metrics_v1.csv
-data/evaluation/workflow/workflow_development_per_claim_results_v1.csv
-data/evaluation/workflow/workflow_development_mismatch_analysis_v1.csv
-data/evaluation/workflow/workflow_development_evaluation_manifest_v1.json
-```
-
-### 7.3 Safety
+Generated artifacts:
 
 ```text
 data/evaluation/safety/safety_adversarial_summary_metrics_v1.csv
@@ -266,30 +301,141 @@ data/evaluation/safety/safety_adversarial_evaluation_manifest_v1.json
 
 ---
 
-## 8. Known Limitations
+## 10. RAG Authority Boundary
 
-1. Held-out evaluation labels are not used in this development evaluation.
-2. Some exclusion-related rules are limited because the current runtime package does not include a structured exclusion-status dataset.
-3. Cross-encoder reranking was evaluated on a small 14-query retrieval set. It matched Hit@1 and Hit@3 but did not improve aggregate MRR@3.
-4. Workflow label mismatches are primarily deterministic rule/data issues, not LangGraph or RAG failures.
-5. Safety evaluation checks deterministic preservation, override blocking, and mechanical prohibited-behavior leakage. Broader semantic safety assessment may require additional human review.
+The RAG layer is intentionally non-authoritative.
+
+RAG can:
+
+- Retrieve approved SOP / KB guidance.
+- Support analyst understanding.
+- Provide source-grounded references.
+- Help explain operational context.
+
+RAG cannot modify:
+
+- `triage_outcome`
+- `triggering_rule_id`
+- `precedence_stage`
+- policy eligibility
+- coverage result
+- evidence requirements
+- controlled follow-up question wording
+- final protected response fields
+
+This boundary is central to the project’s safety design.
 
 ---
 
-## 9. Held-Out Boundary
+## 11. Generated Evaluation Artifacts
 
-Held-out labels and held-out evaluation claims should remain locked until final evaluation.
+### 11.1 Retrieval
 
-Development evaluation uses only development labels and development claims. Retrieval evaluation uses the frozen retrieval evaluation set. Safety evaluation uses the provided adversarial safety cases and expected results.
+```text
+data/evaluation/retrieval/retrieval_summary_metrics_with_reranker_v1.csv
+data/evaluation/retrieval/retrieval_family_metrics_with_reranker_v1.csv
+data/evaluation/retrieval/retrieval_per_query_results_with_reranker_v1.csv
+data/evaluation/retrieval/retrieval_evaluation_with_reranker_manifest_v1.json
+```
+
+### 11.2 Workflow
+
+```text
+data/evaluation/workflow/workflow_development_summary_metrics_v1.csv
+data/evaluation/workflow/workflow_development_per_claim_results_v1.csv
+data/evaluation/workflow/workflow_development_mismatch_analysis_v1.csv
+data/evaluation/workflow/workflow_development_evaluation_manifest_v1.json
+```
+
+### 11.3 Safety
+
+```text
+data/evaluation/safety/safety_adversarial_summary_metrics_v1.csv
+data/evaluation/safety/safety_adversarial_per_case_results_v1.csv
+data/evaluation/safety/safety_adversarial_evaluation_manifest_v1.json
+```
 
 ---
 
-## 10. Overall Conclusion
+## 12. Reproducibility
 
-The system demonstrates a strong controlled decision-support workflow:
+Run the full regression suite from the project root:
 
-- RAG retrieval and reranking are implemented, evaluated, and kept non-authoritative.
-- The guarded LangGraph workflow completed successfully for all development claims.
-- The final response preserved deterministic triage decisions in 100% of development cases.
-- Safety and adversarial guardrails passed all 24 evaluated adversarial cases.
-- Remaining development-label mismatches are documented as deterministic rule/data limitations for future improvement.
+```bash
+python -m unittest discover -s tests -p "test_*.py" -v
+```
+
+Current expected result:
+
+```text
+136 tests passed
+```
+
+Live semantic retrieval and embedding-based evaluation require a local `.env` file containing:
+
+```text
+OPENAI_API_KEY=<your_key_here>
+```
+
+The `.env` file is excluded from Git and must not be committed.
+
+---
+
+## 13. Known Limitations and Final Evaluation Plan
+
+The evaluation completed for mid submission demonstrates that the current baseline is functional, tested, and quantitatively assessed across retrieval, workflow, and safety dimensions.
+
+The following limitations are known and are being carried forward into the final submission plan.
+
+### 13.1 Known Limitations
+
+1. **Held-out labels are not used in the current development evaluation.**  
+   This is intentional. Held-out evaluation is reserved for final submission to preserve a clean evaluation boundary.
+
+2. **Some exclusion-related rules are limited by available structured data.**  
+   The runtime data package does not currently include a dedicated structured exclusion-status dataset. These cases are documented as deterministic rule/data limitations rather than handled through unsupported inference.
+
+3. **Reranker evaluation uses a small retrieval evaluation set.**  
+   The cross-encoder reranker was evaluated on the frozen 14-query retrieval set. It matched semantic retrieval on Hit@1 and Hit@3, but did not improve aggregate MRR@3.
+
+4. **Workflow mismatches are not caused by RAG or LangGraph override.**  
+   The final response preserved deterministic triage outcome and triggering rule in every evaluated claim. Remaining mismatches are linked to deterministic rule/data coverage and precedence interpretation.
+
+5. **Safety evaluation focuses on critical guardrail behaviour.**  
+   The adversarial evaluation validates unsafe override blocking, deterministic output preservation, and prohibited-behavior leakage. Broader qualitative red-team review can be added during final submission preparation if required.
+
+### 13.2 Final Evaluation Plan
+
+Before final submission, the project will complete the following mandatory evaluation and packaging steps:
+
+1. **Run held-out workflow evaluation.**  
+   The final workflow will be evaluated against the locked held-out claim set, with results reported separately from development metrics.
+
+2. **Review deterministic mismatch analysis.**  
+   Development mismatches will be reviewed to identify justified rule or data improvements. Any changes will preserve deterministic authority and avoid overfitting to development labels.
+
+3. **Refresh evaluation artifacts if logic changes.**  
+   If deterministic logic is updated, retrieval, workflow, and safety artifacts will be regenerated as needed to keep documentation aligned with code.
+
+4. **Prepare final report and presentation.**  
+   Final deliverables will summarise the business problem, architecture, data design, implementation, evaluation results, safety controls, limitations, and future scope.
+
+5. **Complete final reproducibility checks.**  
+   The final repository will be validated through full regression testing, GitHub link review, documentation review, and secret/cache hygiene checks.
+
+---
+
+## 14. Mid-Submission Evaluation Conclusion
+
+The current baseline demonstrates a functional, modular, and evaluated Version 1 system.
+
+The evaluation evidence shows:
+
+- Strong semantic retrieval performance on the frozen retrieval set.
+- Successful LangGraph workflow completion across all development claims.
+- 100% preservation of deterministic outcome and triggering rule in final responses.
+- 100% authority guardrail alignment.
+- 100% critical safety pass rate across adversarial cases.
+- No observed mechanical prohibited-behavior leakage.
+
+The system is ready for mid-submission review as a working baseline implementation with a clear final-submission improvement plan.
