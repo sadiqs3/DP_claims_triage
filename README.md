@@ -266,6 +266,7 @@ DP_claims_triage/
 │   ├── mid_submission_checklist.md
 │   └── mid_submission_summary.md
 ├── notebooks/
+│   ├── 00_mid_submission_reviewer_walkthrough.ipynb
 │   ├── 05_sop_rag_retrieval.ipynb
 │   └── 06_workflow_evaluation.ipynb
 ├── src/
