@@ -298,13 +298,27 @@ pip install -r requirements.txt
 
 ### 7.3 Configure environment variables
 
-For live semantic embedding evaluation, create a local `.env` file with:
+For live semantic embedding evaluation, create a local `.env` file.
+
+An example file is provided:
+
+```text
+.env.example
+```
+
+Create your local `.env` file from the example:
+
+```bash
+cp .env.example .env
+```
+
+Then update `.env` with your OpenAI API key:
 
 ```text
 OPENAI_API_KEY=<your_key_here>
 ```
 
-Do not commit `.env`.
+Do not commit `.env`. The actual `.env` file is intentionally excluded from Git.
 
 ---
 
