@@ -509,11 +509,12 @@ data/evaluation/safety/safety_adversarial_evaluation_manifest_v1.json
 For a quick review, start with:
 
 1. [Mid Submission Summary](docs/mid_submission_summary.md)
-2. [Evaluation Summary](docs/evaluation_summary.md)
-3. [Architecture Decisions](docs/architecture_decisions.md)
-4. [Mid Submission Checklist](docs/mid_submission_checklist.md)
-5. [RAG Retrieval Notebook](notebooks/05_sop_rag_retrieval.ipynb)
-6. [Workflow Evaluation Notebook](notebooks/06_workflow_evaluation.ipynb)
+2. [Mid Submission Reviewer Walkthrough Notebook](notebooks/00_mid_submission_reviewer_walkthrough.ipynb)
+3. [Evaluation Summary](docs/evaluation_summary.md)
+4. [Architecture Decisions](docs/architecture_decisions.md)
+5. [Mid Submission Checklist](docs/mid_submission_checklist.md)
+6. [Detailed RAG Retrieval Notebook](notebooks/05_sop_rag_retrieval.ipynb)
+7. [Detailed Workflow Evaluation Notebook](notebooks/06_workflow_evaluation.ipynb)
 
 Suggested validation command:
 
