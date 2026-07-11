@@ -1,0 +1,5 @@
+dimension,case_count,human_average,judge_average,exact_agreement_rate,within_one_point_rate,mean_absolute_difference
+context_relevance,12,2.75,3.75,0.4166666666666667,0.5833333333333334,1.0
+groundedness,12,3.75,4.0,0.75,1.0,0.25
+answer_relevance,12,3.6666666666666665,3.75,0.9166666666666666,1.0,0.08333333333333333
+hallucination_control,12,3.75,4.0,0.75,1.0,0.25

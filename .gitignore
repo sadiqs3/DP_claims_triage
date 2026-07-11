@@ -33,6 +33,8 @@ env/
 !/data/evaluation/workflow/**
 !/data/evaluation/safety/
 !/data/evaluation/safety/**
+!/data/evaluation/generation/
+!/data/evaluation/generation/**
 
 # Ignore env files
 .env
