@@ -1,0 +1,16 @@
+review_metric,evaluation_case_id,claim_id,deterministic_outcome,triggering_rule_id,reference_chunk_hit,reference_chunks_retrieved,metric_score
+answer_relevancy,GEN-001,CLM-000001,PROCEED,OUT-001,False,[],0.4679537688599586
+answer_relevancy,GEN-003,CLM-000177,PROCEED,OUT-001,False,[],0.47662456152347293
+answer_relevancy,GEN-002,CLM-000053,PROCEED,OUT-001,False,[],0.48501823707442454
+context_precision,GEN-003,CLM-000177,PROCEED,OUT-001,False,[],0.0
+context_precision,GEN-012,CLM-000206,NOT_ELIGIBLE,LIM-001,False,[],0.0
+context_precision,GEN-009,CLM-000180,MANUAL_REVIEW,ANM-001,False,[],0.3333333333
+context_recall,GEN-001,CLM-000001,PROCEED,OUT-001,False,[],0.0
+context_recall,GEN-002,CLM-000053,PROCEED,OUT-001,False,[],0.0
+context_recall,GEN-003,CLM-000177,PROCEED,OUT-001,False,[],0.0
+context_recall,GEN-004,CLM-000103,INFO_REQUIRED,DEV-001,False,[],0.0
+context_recall,GEN-009,CLM-000180,MANUAL_REVIEW,ANM-001,False,[],0.0
+context_recall,GEN-012,CLM-000206,NOT_ELIGIBLE,LIM-001,False,[],0.0
+faithfulness,GEN-002,CLM-000053,PROCEED,OUT-001,False,[],0.38461538461538464
+faithfulness,GEN-007,CLM-000149,MANUAL_REVIEW,EVD-002,True,['KB-002::S02'],0.5
+faithfulness,GEN-011,CLM-000191,NOT_ELIGIBLE,COV-001,False,[],0.5

@@ -35,6 +35,8 @@ env/
 !/data/evaluation/safety/**
 !/data/evaluation/generation/
 !/data/evaluation/generation/**
+!/data/evaluation/ragas/
+!/data/evaluation/ragas/**
 
 # Ignore env files
 .env
