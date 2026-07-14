@@ -1,0 +1,11 @@
+metric,numerator,denominator,rate
+Policy-rule adherence,49,55,0.8909090909090909
+Exact primary-rule agreement,48,55,0.8727272727272727
+Joint disposition and acceptable-rule agreement,49,55,0.8909090909090909
+Follow-up requirement accuracy,55,55,1.0
+Exact follow-up question selection,14,15,0.9333333333333333
+Manual-review routing recall,11,14,0.7857142857142857
+Manual-review routing precision,11,11,1.0
+Unsafe-decision rate,6,55,0.10909090909090909
+Authority-guardrail alignment,55,55,1.0
+Human-control boundary preserved,55,55,1.0
