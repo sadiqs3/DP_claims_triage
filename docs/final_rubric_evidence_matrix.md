@@ -137,7 +137,7 @@ The appropriate final conclusion is:
 | 12 | LLM-as-judge and documented human baseline | 10 | Complete | `notebooks/07_generation_quality_evaluation.ipynb`, human review v2, judge input v2, judge results v2, calibration summary, disagreement analysis | Present human-versus-judge calibration and explain why both are needed |
 | 13 | Technical report | 4 | Pending | Repository evidence and quantitative results are complete | Produce the required 10–15 page final technical report |
 | 14 | Executive presentation | 3 | Pending | Architecture, metrics, claim journey, business value, and limitations are available | Produce the required 8–12 slide executive presentation |
-| 15 | GitHub repository and README | 3 | In progress | Strong modular repository, notebooks, tests, manifests, artifacts, documentation | Replace mid-submission framing with final status, final metrics, execution sequence, limitations, and reviewer navigation |
+| 15 | GitHub repository and README | 3 | Complete; final repository QA pending| Strong modular repository, notebooks, tests, manifests, artifacts, documentation | Replace mid-submission framing with final status, final metrics, execution sequence, limitations, and reviewer navigation |
 | 16 | Final held-out evaluation and approved proposal success criteria | Proposal commitment | Complete | `notebooks/10_final_heldout_evaluation.ipynb`, frozen predictions, SHA-256 fingerprint, case metrics, error analysis, safety results, proposal assessment, manifest | Carry the results and production-readiness limitations into all final artifacts |
 
 ---
@@ -741,7 +741,7 @@ The submission is ready only when all applicable items are complete.
 ### Technical validation
 
 - [x] Final regression test suite passes: 149 tests completed successfully.
-- [ ] Final test count is recorded in README and this matrix.
+- [x] Final test count is recorded in README and this matrix.
 - [ ] No API key or secret is committed.
 - [ ] No personal local path is exposed in final documentation or manifests where avoidable.
 - [ ] All notebooks open successfully.
@@ -769,8 +769,8 @@ The submission is ready only when all applicable items are complete.
 
 ### Final artifacts
 
-- [ ] README updated for final submission.
-- [ ] Final reviewer walkthrough completed.
+- [x] README updated for final submission.
+- [x] Final reviewer walkthrough completed.
 - [ ] Technical report completed and limited to 10–15 pages.
 - [ ] Executive presentation completed and limited to 8–12 slides.
 - [ ] Architecture diagram included.
