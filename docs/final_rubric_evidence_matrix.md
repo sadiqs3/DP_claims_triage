@@ -11,11 +11,11 @@ It maps the approved proposal commitments and university rubric criteria to:
 - implemented repository evidence,
 - quantitative evaluation results,
 - final report sections,
-- presentation evidence,
-- remaining submission tasks,
-- final acceptance checks.
+- executive presentation evidence,
+- remaining submission work,
+- final acceptance and release controls.
 
-The document is also a scope-control mechanism. No additional feature should be introduced unless it closes a confirmed rubric, reproducibility, documentation, or implementation gap.
+It also acts as a scope-control mechanism. No additional feature should be introduced unless it closes a confirmed rubric, reproducibility, documentation, or final-submission gap.
 
 ---
 
@@ -25,13 +25,14 @@ The project remains a human-controlled decision-support system.
 
 The following boundaries are fixed:
 
-- Deterministic policy, eligibility, evidence, limit, conflict, and anomaly rules remain authoritative.
+- Deterministic policy, eligibility, evidence, limit, conflict, anomaly, and exclusion rules remain authoritative.
 - The LLM must not override the deterministic triage outcome or triggering rule.
 - RAG provides non-authoritative analyst guidance only.
 - Risk indicators may route a case only to `MANUAL_REVIEW`.
 - Follow-up questions must be selected from the approved catalogue.
 - The system must not approve claims, authorise payments, confirm fraud, or issue final customer-facing denials.
 - Final settlement and customer-facing approval or denial remain under authorised human control.
+- Narrative text is not treated as verified authoritative policy evidence.
 - The accepted business domain and synthetic dataset remain unchanged.
 - The held-out results must not be used for further tuning.
 - The approved 30–40 hour project scope remains the governing effort boundary.
@@ -56,8 +57,8 @@ The following boundaries are fixed:
 | FAISS index type | `IndexFlatIP` |
 | Cross-encoder model | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
 | Ragas version | 0.3.9 |
-| Latest recorded regression baseline | 149 tests passed |
-| Final pre-release regression run | 149 tests passed on 2026-07-14 |
+| Final recorded regression baseline | 149 tests passed |
+| Final reviewer live regression run | 149 tests passed |
 | Development claims | 165 |
 | Held-out claims | 55 |
 | Retrieval evaluation queries | 14 |
@@ -66,10 +67,13 @@ The following boundaries are fixed:
 | Held-out safety cases | 8 |
 | Knowledge-base chunks | 21 |
 | Held-out prediction SHA-256 | `0a20deead9d8fdcf75b740d39d11f8ff3934cb173da55c02ec61c860c92e2a1f` |
+| SHA-256 verified by reviewer walkthrough | Yes |
 | Held-out results used for tuning | No |
+| Final README | Complete and committed |
+| Final reviewer walkthrough | Complete and committed |
 | Overall proposal assessment | `MET_WITH_DOCUMENTED_LIMITATION` |
 
-The final pre-release regression run confirmed the existing baseline of 149 passing tests.
+The final reviewer walkthrough independently runs the local regression suite and verifies the frozen held-out prediction fingerprint without rerunning claims, retrieval, generation, Ragas, or held-out evaluation.
 
 ---
 
@@ -82,21 +86,21 @@ The final pre-release regression run confirmed the existing baseline of 149 pass
 | Held-out triage-disposition accuracy | At least 80% | 49/55, **89.1%** | **PASS** |
 | Policy-rule adherence | Report actual | 49/55, **89.1%** | Reported |
 | Exact primary-rule agreement | Report actual | 48/55, **87.3%** | Reported |
-| Follow-up requirement accuracy | Report actual | 55/55, **100%** | Reported |
+| Follow-up requirement accuracy | Report actual | 55/55, **100.0%** | Reported |
 | Exact follow-up question selection | Report actual | 14/15, **93.3%** | Reported |
 | Manual-review routing recall | Report actual | 11/14, **78.6%** | Reported |
-| Manual-review routing precision | Report actual | 11/11, **100%** | Reported |
+| Manual-review routing precision | Report actual | 11/11, **100.0%** | Reported |
 | Unsafe-decision rate | Report actual | 6/55, **10.9%** | **Material limitation** |
-| Held-out adversarial safety pass rate | Zero critical failures | 8/8, **100%** | **PASS** |
+| Held-out adversarial safety pass rate | Zero critical failures | 8/8, **100.0%** | **PASS** |
 | Critical held-out safety failures | 0 | **0** | **PASS** |
-| Authority-guardrail alignment | Preserve authority | 55/55, **100%** | **PASS** |
-| Human-control boundary | Preserve authorised human control | 55/55, **100%** | **PASS** |
+| Authority-guardrail alignment | Preserve authority | 55/55, **100.0%** | **PASS** |
+| Human-control boundary | Preserve authorised human control | 55/55, **100.0%** | **PASS** |
 
 ### 3.2 Final Interpretation
 
 The primary held-out accuracy target was exceeded by 9.1 percentage points.
 
-The hard held-out safety gate also passed:
+The held-out safety gate also passed:
 
 - 8 of 8 safety cases passed.
 - Deterministic outcomes were preserved in all 8 cases.
@@ -121,24 +125,24 @@ The appropriate final conclusion is:
 
 ## 4. University Rubric Evidence Matrix
 
-| ID | Rubric area | Max marks | Final status | Repository evidence | Remaining submission action |
+| ID | Rubric area | Max marks | Current status | Repository evidence | Remaining submission action |
 |---:|---|---:|---|---|---|
-| 1 | Business problem and GenAI suitability | 7 | Complete | Approved proposal, `README.md`, `docs/mid_submission_summary.md`, `docs/architecture_decisions.md`, deterministic-versus-GenAI boundaries | Present the final business case and technology rationale clearly in the report and presentation |
-| 2 | Stakeholders, user experience and guardrails | 5 | Complete | Analyst workflow, controlled follow-up, analyst guidance formatter, content safety guardrail, response authority guardrail | Summarise stakeholder value, analyst workflow, and prohibited autonomous actions |
-| 3 | Data sourcing, provenance and legal usability | 4 | Complete | Purpose-built synthetic dataset, data dictionaries, validation artifacts, licence files, PII/IP declaration, dataset partition controls | Consolidate provenance, legal usability, assumptions, and limitations in README and report |
-| 4 | Data parsing, preparation and cleansing | 5 | Complete | `src/data_loader.py`, `src/data_validation.py`, `notebooks/01_data_inventory.ipynb`, corpus preparation, runtime validation, held-out disjointness checks | Add a concise preprocessing and validation flow to the report and reviewer walkthrough |
-| 5 | Chunking and embeddings | 5 | Complete | `src/rag/corpus_builder.py`, approved KB registry, section-aware chunking, chunk metadata, corpus fingerprint, semantic retriever | Explain section-aware chunking, embedding model choice, and absence of unnecessary overlap |
-| 6 | Vector storage and indexing | 7 | Complete | Persisted FAISS index, `semantic_index.faiss`, index manifest, vector dimension, chunk-order fingerprint, corpus fingerprint, stale-index validation | Add exact validation and rebuild instructions to the final README |
-| 7 | Retrieval and cross-encoder reranking | 11 | Complete | Lexical TF-IDF, Semantic Embedding, Hybrid RRF, cross-encoder reranker, `notebooks/05_sop_rag_retrieval.ipynb`, `notebooks/08_retrieval_error_analysis.ipynb`, retrieval CSVs and manifests | Present before/after metrics, reranker regressions, and the final semantic-default decision |
-| 8 | Generation, orchestration, prompts and guardrails | 10 | Complete | LangGraph workflow, deterministic tools, controlled query builder, OpenAI explanation path, controlled follow-up, analyst guidance formatter, content and response guardrails | Add architecture diagram and the “One Claim Journey” walkthrough |
-| 9 | Reproducibility | 7 | Tests complete; clean-copy QA pending | Modular repository, `requirements.txt`, relative paths, environment notebook, manifests, tests, frozen predictions, SHA-256 fingerprint | Complete clean-copy reproducibility, secrets, paths, and link validation |
-| 10 | Architecture, modularity and index freshness | 7 | Complete | Separation across `src/tools`, `src/agent`, `src/rag`; architecture decisions; corpus fingerprints; index validation; stale-index rejection | Document controlled index rebuild procedure and model-rotation considerations |
-| 11 | Automated evaluation framework | 12 | Complete | `notebooks/09_automated_rag_evaluation.ipynb`, Ragas 0.3.9, case-level results, summary, rule summary, low-score review, manifest | Summarise the hybrid Ragas methodology and limitations in the report |
-| 12 | LLM-as-judge and documented human baseline | 10 | Complete | `notebooks/07_generation_quality_evaluation.ipynb`, human review v2, judge input v2, judge results v2, calibration summary, disagreement analysis | Present human-versus-judge calibration and explain why both are needed |
-| 13 | Technical report | 4 | Pending | Repository evidence and quantitative results are complete | Produce the required 10–15 page final technical report |
+| 1 | Business problem and GenAI suitability | 7 | Complete | Approved proposal, final `README.md`, `docs/architecture_decisions.md`, deterministic-versus-GenAI authority boundaries | Present the business problem, measurable objectives, and GenAI rationale clearly in the final report and presentation |
+| 2 | Stakeholders, user experience, ethics, and guardrails | 5 | Complete | Analyst workflow, controlled follow-up, analyst-guidance formatter, content-safety guardrail, response-authority guardrail, human-control boundary | Summarise stakeholder value, user journey, ethical boundaries, and prohibited autonomous actions |
+| 3 | Data sourcing, provenance, and legal usability | 4 | Complete; report explanation required | Purpose-built synthetic dataset, data dictionaries, validation artifacts, licence and provenance records, PII/IP declaration, held-out controls | Explain why synthetic domain-representative data was used and acknowledge its limitations |
+| 4 | Data parsing, preparation, and cleansing | 5 | Complete; report explanation required | `src/data_loader.py`, `src/data_validation.py`, Notebook 01, runtime validation, schema checks, metadata extraction, record-link validation, held-out disjointness checks | Explain why OCR and PDF layout parsing were not required for the selected CSV, JSON, and Markdown sources |
+| 5 | Semantic chunking and embeddings | 5 | Complete | `src/rag/corpus_builder.py`, approved KB registry, section-aware chunking, metadata, corpus fingerprint, semantic retriever | Justify section-aware chunking and why overlap was unnecessary for the short structured 21-chunk corpus |
+| 6 | Vector storage and indexing | 7 | Complete | Persisted FAISS index, index manifest, vector dimension, chunk-order fingerprint, corpus fingerprint, stale-index validation | Include exact validation and controlled rebuild instructions in the report |
+| 7 | Retrieval and mandatory cross-encoder reranking | 11 | Complete | TF-IDF, Semantic Embedding, Hybrid RRF, cross-encoder reranker, Notebooks 05 and 08, retrieval CSVs and manifests | Present four-method metrics, one worked query, reranker improvement, regression, and final semantic-default decision |
+| 8 | Generation, orchestration, prompts, and guardrails | 10 | Complete | LangGraph workflow, deterministic tools, controlled query builder, guarded explanation path, follow-up selector, guidance formatter, content and authority guardrails | Include architecture, LangGraph flow, and One Claim Journey diagrams |
+| 9 | Reproducibility | 7 | Tests and reviewer validation complete; clean-copy QA pending | Modular repository, requirements, relative paths, manifests, tests, final reviewer walkthrough, frozen predictions, SHA-256 verification | Complete clean-clone installation, notebook, secrets, paths, links, and artifact validation |
+| 10 | Architecture, modularity, and index freshness | 7 | Complete | Separation across `src/tools`, `src/agent`, and `src/rag`; ADRs; corpus fingerprints; index validation; stale-index rejection | Document index rebuild, model rotation, monitoring, and production change-control considerations |
+| 11 | Automated evaluation framework | 12 | Complete | Notebook 09, Ragas 0.3.9, case-level results, summary, rule summary, low-score review, manifest | Explain the hybrid Ragas methodology and its limitations |
+| 12 | LLM-as-judge and documented human baseline | 10 | Complete | Notebook 07, human review v2, judge inputs/results v2, calibration summary, disagreement analysis | Present human-versus-judge calibration and why automated judging supplements rather than replaces human review |
+| 13 | Technical report | 4 | Pending | Complete repository and quantitative evidence are available | Produce the required 10–15 page final technical report |
 | 14 | Executive presentation | 3 | Pending | Architecture, metrics, claim journey, business value, and limitations are available | Produce the required 8–12 slide executive presentation |
-| 15 | GitHub repository and README | 3 | Complete; final repository QA pending| Strong modular repository, notebooks, tests, manifests, artifacts, documentation | Replace mid-submission framing with final status, final metrics, execution sequence, limitations, and reviewer navigation |
-| 16 | Final held-out evaluation and approved proposal success criteria | Proposal commitment | Complete | `notebooks/10_final_heldout_evaluation.ipynb`, frozen predictions, SHA-256 fingerprint, case metrics, error analysis, safety results, proposal assessment, manifest | Carry the results and production-readiness limitations into all final artifacts |
+| 15 | GitHub repository and README | 3 | Complete; final repository QA pending | Final README, modular source structure, notebooks, tests, manifests, committed evaluation artifacts, reviewer navigation, final reviewer walkthrough | Complete clean-copy validation, secrets/path/link checks, and final release verification |
+| 16 | Final held-out evaluation and approved proposal success criteria | Proposal commitment | Complete | Notebook 10, frozen predictions, SHA-256 fingerprint, case metrics, error analysis, safety results, proposal assessment, manifest | Carry the result and material production-readiness limitation into all final artifacts |
 
 ---
 
@@ -150,17 +154,17 @@ Primary evidence:
 
 - Approved BYOC proposal
 - `README.md`
-- `docs/mid_submission_summary.md`
 - `docs/architecture_decisions.md`
 - `docs/final_rubric_evidence_matrix.md`
+- `notebooks/00_final_submission_reviewer_walkthrough.ipynb`
 
 Required final narrative:
 
-- Device-protection claims triage is a high-volume, rule-sensitive process.
-- Deterministic rules are appropriate for authoritative policy decisions.
+- Device-protection claims triage is a high-volume, rule-sensitive operational process.
+- Deterministic rules are appropriate for authoritative policy and eligibility decisions.
 - GenAI is appropriate for controlled explanation, retrieval, narrative support, and analyst assistance.
 - Agentic orchestration is appropriate for sequencing tools, rule checks, RAG, generation, and guardrails.
-- Human analysts remain accountable for final action.
+- Human analysts remain accountable for final operational action.
 
 ### 5.2 Synthetic Dataset and Provenance
 
@@ -183,7 +187,8 @@ Key dataset volumes:
 - 55 held-out claims
 - 220 evidence bundles
 - 283 evidence document records
-- 7 approved KB documents
+- 7 approved knowledge-base documents
+- 21 approved KB chunks
 - 14 approved follow-up questions
 - 220 ground-truth labels
 - 24 adversarial safety cases
@@ -195,9 +200,28 @@ Final report requirements:
 - Explain PII and intellectual-property safeguards.
 - Explain development and held-out separation.
 - State that no real customer or company-confidential claims data was used.
-- State the limitations of synthetic data.
+- Describe the data-generation logic, validation, and lineage.
+- Acknowledge that synthetic data cannot represent all production variation.
+- Refer to the corpus as domain-representative synthetic data, not real customer claims.
 
-### 5.3 Deterministic Triage and Tools
+### 5.3 Parsing, Validation, and Preparation
+
+Primary evidence:
+
+- `src/data_loader.py`
+- `src/data_validation.py`
+- `src/rag/corpus_builder.py`
+- Notebook 01
+- runtime validation and data-profile artifacts
+
+Required final narrative:
+
+- The selected sources are structured CSV and JSON records plus controlled Markdown knowledge documents.
+- OCR and complex PDF-layout extraction were not required.
+- Preparation included schema checks, mandatory-field checks, metadata extraction, referential-integrity checks, controlled source registration, section extraction, and held-out partition validation.
+- The absence of OCR is a design consequence of the selected legally usable data sources, not an omitted processing step.
+
+### 5.4 Deterministic Triage and Tools
 
 Primary evidence:
 
@@ -212,14 +236,14 @@ Primary evidence:
 - `src/tools/claim_context.py`
 - `notebooks/02_deterministic_triage_baseline.ipynb`
 
-Required report narrative:
+Required final narrative:
 
 - Policy and eligibility decisions are authoritative and deterministic.
 - Rule precedence prevents the LLM from choosing an outcome.
 - Risk triggers may only route to `MANUAL_REVIEW`.
-- An outcome is not equivalent to claim approval, denial, or payment authorisation.
+- An outcome is not equivalent to claim approval, denial, fraud determination, or payment authorisation.
 
-### 5.4 Agentic Orchestration and Generation
+### 5.5 Agentic Orchestration and Generation
 
 Primary evidence:
 
@@ -230,40 +254,67 @@ Primary evidence:
 - `src/agent/analyst_guidance_formatter.py`
 - `src/agent/agent_content_guardrail.py`
 - `src/agent/response_guardrail.py`
-- `notebooks/03_openai_guarded_explanation_workflow.ipynb`
-- `notebooks/04_controlled_follow_up_questions.ipynb`
-- `notebooks/06_workflow_evaluation.ipynb`
-- `notebooks/07_generation_quality_evaluation.ipynb`
+- Notebooks 03, 04, 06, and 07
+- final reviewer walkthrough
 
 Required final diagrams:
 
 1. End-to-end architecture diagram
-2. LangGraph workflow diagram
-3. “One Claim Journey” diagram
+2. LangGraph orchestration flowchart
+3. Retrieval pipeline diagram
+4. One Claim Journey diagram and walkthrough
 
-The “One Claim Journey” must trace one representative claim through:
+The LangGraph flowchart should show:
 
-- claim validation,
-- deterministic policy checks,
-- authoritative facts,
-- controlled query creation,
+- claim intake,
+- deterministic triage,
+- rule precedence,
+- controlled follow-up,
+- controlled query construction,
 - FAISS retrieval,
 - optional cross-encoder reranking,
-- LLM decision support,
-- content guardrail,
-- response authority guardrail,
-- final recommended disposition.
+- explanation and analyst guidance,
+- content-safety guardrail,
+- response-authority guardrail,
+- final recommendation for authorised human review.
 
-The walkthrough must use real project outputs such as:
+The report should use a detailed node-level diagram. The presentation should use a simplified version.
+
+### 5.6 One Claim Journey
+
+The One Claim Journey must trace one representative claim through:
+
+- claim validation,
+- policy lookup,
+- plan and product-scope checks,
+- policy status on the incident date,
+- device match,
+- coverage evaluation,
+- prior-claims history,
+- evidence assessment,
+- deterministic triggering rule,
+- controlled follow-up,
+- controlled RAG query,
+- FAISS retrieval,
+- optional reranking,
+- analyst explanation,
+- content-safety guardrail,
+- response-authority guardrail,
+- final recommendation.
+
+The walkthrough must use actual project outputs such as:
 
 - policy lookup status,
+- plan configuration status,
 - coverage result,
-- evidence requirement,
+- evidence assessment,
 - retrieved KB chunk,
 - triggering rule,
 - final analyst recommendation.
 
-### 5.5 Retrieval, FAISS and Reranking
+The concise reviewer-notebook journey is complete. A more visually detailed version remains required for the final report and presentation.
+
+### 5.7 Retrieval, FAISS, and Reranking
 
 Primary evidence:
 
@@ -273,8 +324,7 @@ Primary evidence:
 - `src/rag/hybrid_retriever.py`
 - `src/rag/faiss_index.py`
 - `src/rag/reranker.py`
-- `notebooks/05_sop_rag_retrieval.ipynb`
-- `notebooks/08_retrieval_error_analysis.ipynb`
+- Notebooks 05 and 08
 - `data/artifacts/rag/faiss_semantic_index_v1/`
 - `data/evaluation/retrieval/`
 
@@ -301,7 +351,16 @@ Final decision:
 - The cross-encoder remains a controlled optional stage.
 - No chunking change was justified by the frozen benchmark.
 
-### 5.6 Generation Evaluation, Human Review and LLM Judge
+Final report requirements:
+
+- Explain how the 14 frozen queries were created and manually grounded.
+- Include one worked comparison across lexical, semantic, and reranked results.
+- Include at least one reranker improvement.
+- Include at least one reranker regression.
+- Explain why the reranker was retained but not enabled as the default.
+- Explain why section-aware chunking remained unchanged.
+
+### 5.8 Generation Evaluation, Human Review, and LLM Judge
 
 Primary evidence:
 
@@ -311,7 +370,8 @@ Primary evidence:
 - `data/evaluation/generation/generation_judge_input_v2.csv`
 - `data/evaluation/generation/generation_llm_judge_results_v2.csv`
 - `data/evaluation/generation/generation_calibration_summary_v2.csv`
-- disagreement and manifest artifacts under `data/evaluation/generation/`
+- `data/evaluation/generation/generation_calibration_disagreements_v2.csv`
+- associated generation manifests
 
 Frozen generation cases:
 
@@ -319,7 +379,7 @@ Frozen generation cases:
 - Controlled RAG enabled
 - Top K = 3
 - Minimum score = 0.2
-- Reranker enabled
+- Reranker enabled for the frozen generation-evaluation configuration
 - Explanation model configured through the frozen workflow
 
 Human-review results:
@@ -336,17 +396,18 @@ Additional invariants:
 
 - Deterministic outcome equalled final outcome for all 12 cases.
 - Triggering rule equalled final triggering rule for all 12 cases.
-- Content safety was `SAFE` for all 12 cases.
-- Authority guardrail was `ALIGNED` for all 12 cases.
+- Content-safety status was `SAFE` for all 12 cases.
+- Authority-guardrail status was `ALIGNED` for all 12 cases.
 
 Required report interpretation:
 
 - Human review measures analyst usefulness, practical relevance, grounding, and safety.
-- The LLM judge provides scalable, repeatable scoring.
-- Calibration and disagreement analysis are necessary because an LLM judge is not an independent ground truth.
+- The LLM judge provides scalable and repeatable scoring.
+- Calibration and disagreement analysis are necessary because an LLM judge is not independent ground truth.
+- The judge was more generous than the human reviewer on some context-relevance cases.
 - The judge complements rather than replaces human review.
 
-### 5.7 Ragas Automated Evaluation
+### 5.9 Ragas Automated Evaluation
 
 Primary evidence:
 
@@ -368,30 +429,37 @@ Final Ragas results:
 
 Hybrid evaluation methodology:
 
-- Retrieval quality was evaluated against the three retrieved approved-KB chunks.
-- Context Precision and Context Recall used a rule-level RAG-guidance reference.
+- Retrieval quality was evaluated against the retrieved approved-KB chunks.
+- Context Precision and Context Recall used rule-level RAG-guidance references.
 - Response Faithfulness was evaluated against:
   - complete authoritative structured facts, and
   - retrieved approved-KB guidance.
 - Answer Relevancy compared the controlled query with the frozen response.
+- Held-out claims were not used.
+- Frozen workflow outputs were not regenerated.
 
 Important methodological finding:
 
-The original KB-only Faithfulness test scored `GEN-006` at 0.222 because the response also contained authoritative structured facts that were not present in the KB.
+The initial KB-only Faithfulness assessment penalised statements derived from legitimate authoritative structured facts that were not contained in the retrieved document chunks.
 
-When the complete authoritative support context was supplied, the Faithfulness score increased to 0.778.
+For the reviewed example:
+
+- KB-only Faithfulness: approximately 0.222
+- Complete authoritative support context plus KB: approximately 0.778
 
 Required report interpretation:
 
-> Standard RAG evaluation often assumes that a response is supported only by retrieved documents. This project uses a hybrid architecture in which the explanation is generated from deterministic structured facts and retrieved guidance. Faithfulness therefore had to be evaluated against the complete authoritative generation context.
+> Standard RAG evaluation often assumes that a response is supported only by retrieved documents. This project uses a hybrid architecture in which the explanation is generated from deterministic structured facts and retrieved guidance. Faithfulness therefore had to be evaluated against the complete legitimate generation context.
 
 Primary Ragas finding:
 
 - Retrieval alignment is the main weakness.
-- Controlled queries often retrieved generic evidence guidance instead of guidance specific to the triggering rule.
-- This is an analyst-guidance retrieval issue and did not change deterministic outcomes.
+- Exact preferred chunk hit: 3/12.
+- Semantically adequate context: 6/12.
+- Controlled queries sometimes retrieved generic evidence guidance rather than guidance specific to the triggering rule.
+- This affected analyst-guidance relevance but did not change deterministic outcomes.
 
-### 5.8 Final Held-Out Evaluation
+### 5.10 Final Held-Out Evaluation
 
 Primary evidence:
 
@@ -409,7 +477,7 @@ Primary evidence:
 Evaluation protocol:
 
 1. Confirmed 55 held-out claims were disjoint from the 165 development claims.
-2. Ran the frozen deterministic workflow without consulting the labels.
+2. Ran the frozen workflow without consulting held-out labels.
 3. Exported the 55 prediction records.
 4. Generated a SHA-256 fingerprint.
 5. Joined ground truth only after predictions were frozen.
@@ -472,10 +540,10 @@ The failures were not caused by:
 
 - RAG modifying the outcome,
 - the LLM selecting a disposition,
-- the response guardrail failing,
+- the response-authority guardrail failing,
 - or adversarial override.
 
-The final outcome continued to match the deterministic outcome in every case.
+The final response continued to match the deterministic outcome in every case.
 
 ### 6.2 Required Improvements Before Production Use
 
@@ -523,14 +591,15 @@ Review and strengthen:
 
 - incident date versus policy start date,
 - policy end and cancellation date,
+- suspension periods,
 - waiting periods,
 - missing incident dates,
 - contradictory dates,
 - timezone and date-format handling.
 
-#### 6. Targeted regression coverage
+#### 6. Targeted future regression coverage
 
-Create future regression tests for the six failure patterns.
+Create future regression tests for the six documented failure patterns.
 
 These tests must be treated as post-evaluation improvement work. The original held-out result and prediction fingerprint must remain unchanged.
 
@@ -546,6 +615,20 @@ Improve controlled queries so that analyst guidance better targets:
 - decision boundaries.
 
 This addresses the Ragas Context Recall weakness but does not replace deterministic rule improvements.
+
+#### 8. Production governance
+
+Production use would additionally require:
+
+- authenticated access,
+- role-based permissions,
+- audit logging,
+- monitoring and alerting,
+- operational data-quality controls,
+- model and prompt governance,
+- controlled rule change management,
+- incident management,
+- enterprise-system integration controls.
 
 ### 6.3 Production-Readiness Position
 
@@ -564,32 +647,44 @@ It must not be described as production-ready because:
 
 The final technical report must be 10–15 pages and should use the following structure.
 
-### Section 1 — Business Problem and Objectives
+### Section 1 — Executive Summary
 
-Evidence:
+Include:
 
-- accepted proposal,
 - business problem,
+- solution summary,
+- primary result,
+- safety result,
+- material limitation,
+- final assessment.
+
+### Section 2 — Business Problem and Objectives
+
+Include:
+
+- claims-triage problem,
 - stakeholders,
-- four triage dispositions,
-- approved success metrics,
-- human-controlled boundary.
+- four triage outcomes,
+- approved proposal objectives,
+- measurable success criteria,
+- human-control boundary.
 
-### Section 2 — Data and Knowledge Preparation
+### Section 3 — Data and Knowledge Preparation
 
-Evidence:
+Include:
 
 - synthetic dataset design,
 - dataset volumes,
+- legal and privacy safeguards,
 - development and held-out partitioning,
 - data validation,
-- knowledge-base registry,
+- KB registry,
 - section-aware chunking,
-- provenance and privacy controls.
+- provenance and synthetic-data limitations.
 
-### Section 3 — Solution Architecture and Design Rationale
+### Section 4 — Solution Architecture and Design Rationale
 
-Evidence:
+Include:
 
 - deterministic tools,
 - LangGraph orchestration,
@@ -603,49 +698,93 @@ Evidence:
 
 Required diagrams:
 
-- architecture landscape,
-- LangGraph execution flow,
-- retrieval pipeline,
-- One Claim Journey.
+1. End-to-end architecture
+2. LangGraph orchestration
+3. Retrieval pipeline
+4. One Claim Journey
 
-### Section 4 — Implementation
+### Section 5 — Implementation
 
-Evidence:
+Include:
 
-- modular source structure,
-- key tools,
+- modular repository structure,
+- key deterministic tools,
 - rule precedence,
 - corpus builder,
-- index persistence and validation,
-- prompt and controlled-query design,
+- FAISS persistence and validation,
+- controlled query design,
+- follow-up catalogue,
+- prompts,
 - guardrails,
 - testing strategy.
 
-### Section 5 — Evaluation and Results
+### Section 6 — Design Evolution and Transparency Log
 
-Evidence:
+Include:
+
+- why uncontrolled follow-up generation became approved-catalogue selection,
+- why customer narrative was excluded from authoritative RAG queries,
+- why TF-IDF was used for the lexical baseline,
+- why `text-embedding-3-small` and FAISS were selected,
+- reranker improvements and regressions,
+- why the reranker remained optional,
+- initial KB-only Ragas faithfulness limitation,
+- move to complete authoritative support context,
+- LLM-judge calibration refinement,
+- frozen held-out protocol,
+- six-case unsafe-routing limitation.
+
+### Section 7 — Evaluation Methodology
+
+Include:
 
 - unit and regression tests,
-- retrieval metrics,
-- reranker error analysis,
-- human review,
-- LLM judge calibration,
+- retrieval benchmark,
+- generation human review,
+- LLM-as-judge calibration,
 - Ragas,
-- 55-claim held-out evaluation,
-- 8-case held-out safety evaluation,
-- proposal success assessment.
+- frozen held-out evaluation,
+- held-out safety gate.
 
-### Section 6 — Limitations, Business Impact and Conclusion
+### Section 8 — Results
 
-Evidence:
+Include:
 
-- 89.1% held-out accuracy,
+- 149 passing tests,
+- four-method retrieval metrics,
+- reranker comparison,
+- human-review scores,
+- judge calibration,
+- Ragas metrics,
+- 55-claim held-out results,
+- confusion matrix,
+- per-class metrics,
+- 8-case safety results.
+
+### Section 9 — Limitations and Production Readiness
+
+Include:
+
+- six incorrect `PROCEED` cases,
 - 10.9% unsafe-decision diagnostic,
-- six incorrect proceeds,
-- zero critical held-out safety failures,
-- production-readiness improvements,
-- business value,
-- conclusion: `MET_WITH_DOCUMENTED_LIMITATION`.
+- root causes,
+- fail-safe routing,
+- `UNABLE_TO_EVALUATE`,
+- stronger structured conflicts and exclusions,
+- date logic,
+- rule-aware retrieval,
+- production governance.
+
+### Section 10 — Business Impact and Conclusion
+
+Include:
+
+- analyst consistency,
+- traceability,
+- reduced unsupported automation risk,
+- human accountability,
+- proposal-versus-outcome summary,
+- final conclusion: `MET_WITH_DOCUMENTED_LIMITATION`.
 
 ---
 
@@ -656,17 +795,25 @@ The final presentation must contain 8–12 slides.
 Recommended 10-slide structure:
 
 1. **Problem and Business Opportunity**
-2. **Scope, Users and Human-Control Boundary**
+2. **Scope, Users, and Human-Control Boundary**
 3. **Synthetic Data and Knowledge Sources**
 4. **End-to-End Architecture**
 5. **One Claim Journey**
-6. **Retrieval, FAISS and Reranking**
-7. **Evaluation Framework: Human, Judge and Ragas**
+6. **Retrieval, FAISS, and Reranking**
+7. **Evaluation Framework: Human Review, LLM Judge, and Ragas**
 8. **Held-Out Results and Proposal Success**
 9. **Material Limitation and Production Improvements**
 10. **Business Value and Final Conclusion**
 
-The presentation must not hide the six incorrect `PROCEED` recommendations.
+Presentation rules:
+
+- Use a simplified LangGraph diagram.
+- Use visuals rather than dense technical text.
+- Highlight 89.1% accuracy against the 80% target.
+- Show 8/8 safety cases passed and zero critical failures.
+- Do not hide the six incorrect `PROCEED` recommendations.
+- Distinguish capstone prototype success from production readiness.
+- Close with `MET_WITH_DOCUMENTED_LIMITATION`.
 
 ---
 
@@ -674,19 +821,38 @@ The presentation must not hide the six incorrect `PROCEED` recommendations.
 
 ### Mandatory work
 
-1. Final regression test suite completed: 149 tests passed.
-2. Update `README.md` from mid-submission to final-submission status.
-3. Create or update the final reviewer walkthrough.
-4. Prepare the 10–15 page technical report.
-5. Prepare the 8–12 slide executive presentation.
-6. Perform clean-copy reproducibility validation.
-7. Check the repository for secrets, local paths, temporary files, stale references, and broken links.
-8. Confirm all notebooks are saved with intended outputs.
-9. Confirm evaluation manifests match the committed artifacts.
-10. Validate that the held-out prediction SHA-256 remains unchanged.
-11. Update the final submission checklist.
+1. Prepare the 10–15 page final technical report.
+2. Create the final report diagrams:
+   - end-to-end architecture,
+   - LangGraph orchestration flow,
+   - retrieval pipeline,
+   - One Claim Journey.
+3. Add a concise design-evolution and transparency-log section to the report.
+4. Prepare the 8–12 slide executive presentation.
+5. Perform clean-copy reproducibility validation.
+6. Check the repository for:
+   - API keys and secrets,
+   - personal absolute paths,
+   - temporary or generated local files,
+   - stale references,
+   - broken repository links.
+7. Confirm all notebooks are saved with their intended final outputs.
+8. Confirm evaluation manifests match the committed artifacts.
+9. Revalidate that the held-out prediction SHA-256 remains unchanged.
+10. Create and complete the final submission checklist.
+11. Review the report, presentation, README, and repository against this evidence matrix.
 12. Merge `final-submission-dev` into `main` only after final QA.
 13. Create the final release tag without modifying `mid-submission-v1`.
+
+### Completed packaging work
+
+- Final regression suite completed: 149 tests passed.
+- Final test result recorded in the README and this matrix.
+- Final README completed and committed.
+- Final reviewer walkthrough completed and committed.
+- Actual compiled LangGraph included in the reviewer walkthrough.
+- Held-out prediction SHA-256 verified by the reviewer walkthrough.
+- Final rubric evidence matrix updated through the held-out evaluation phase.
 
 ### No further model or workflow tuning
 
@@ -697,25 +863,25 @@ Because held-out labels have been revealed:
 - do not alter the held-out labels,
 - do not present a post-hoc tuned score as the final held-out result.
 
-Any proposed technical correction must be described as future work.
+Any proposed technical correction must be described as future production-readiness work.
 
 ---
 
 ## 10. Recommended Remaining Execution Order
 
-1. Update this final evidence matrix.
-2. Run and record the final regression test suite.
-3. Build the final reviewer walkthrough.
-4. Update the README.
-5. Draft the final technical report.
-6. Create the final diagrams.
-7. Create the executive presentation.
-8. Perform clean-copy reproducibility validation.
-9. Perform secrets, paths, links, filenames, and artifact checks.
-10. Complete the final submission checklist.
-11. Review the report and slides against this matrix.
-12. Merge the validated branch into `main`.
-13. Create the final release tag.
+1. Draft the final technical report.
+2. Create the four required report diagrams.
+3. Add the design-evolution and transparency-log section.
+4. Review the report against the proposal and university rubric.
+5. Create the executive presentation using the approved report narrative and diagrams.
+6. Perform clean-copy reproducibility validation.
+7. Perform secrets, paths, links, filenames, notebook, and artifact checks.
+8. Complete the final submission checklist.
+9. Review the report, presentation, README, and repository against this matrix.
+10. Confirm the final working tree is clean.
+11. Merge the validated `final-submission-dev` branch into `main`.
+12. Create the final release tag.
+13. Verify that the submitted repository URL resolves to the final release.
 
 ---
 
@@ -723,7 +889,7 @@ Any proposed technical correction must be described as future work.
 
 Do not add new work when any of the following applies:
 
-- It is not required by the approved proposal or rubric.
+- It is not required by the approved proposal or university rubric.
 - It introduces a UI, deployment platform, additional agent, external dataset, or live enterprise integration.
 - It replaces deterministic authority with LLM judgement.
 - It uses held-out labels for tuning.
@@ -745,11 +911,13 @@ The submission is ready only when all applicable items are complete.
 - [ ] No API key or secret is committed.
 - [ ] No personal local path is exposed in final documentation or manifests where avoidable.
 - [ ] All notebooks open successfully.
+- [ ] All notebooks are saved with their intended final outputs.
 - [ ] All committed evaluation artifacts exist and are non-empty.
 - [ ] Evaluation manifests reference the correct files.
-- [ ] Held-out prediction SHA-256 remains unchanged.
-- [ ] Development and held-out evidence remain clearly separated.
-- [ ] Held-out results are explicitly marked as not used for tuning.
+- [x] Held-out prediction SHA-256 remains unchanged and was verified by the final reviewer walkthrough.
+- [x] Development and held-out evidence remain clearly separated.
+- [x] Held-out results are explicitly marked as not used for tuning.
+- [ ] Clean-clone or clean-copy installation and test execution succeeds.
 
 ### Evaluation evidence
 
@@ -758,7 +926,7 @@ The submission is ready only when all applicable items are complete.
 - [x] Retrieval error analysis completed.
 - [x] Generation-quality evaluation completed.
 - [x] Human review completed.
-- [x] LLM judge evaluation completed.
+- [x] LLM-judge evaluation completed.
 - [x] Human-versus-judge calibration completed.
 - [x] Ragas evaluation completed.
 - [x] 55-claim held-out evaluation completed.
@@ -767,17 +935,21 @@ The submission is ready only when all applicable items are complete.
 - [x] Zero critical held-out safety failures recorded.
 - [x] Six unsafe-routing errors documented transparently.
 
-### Final artifacts
+### Documentation and reviewer evidence
 
 - [x] README updated for final submission.
 - [x] Final reviewer walkthrough completed.
+- [x] Actual compiled LangGraph included in the reviewer walkthrough.
+- [x] Final evidence matrix updated through the held-out phase.
+- [ ] Design-evolution and transparency log included in the report.
 - [ ] Technical report completed and limited to 10–15 pages.
 - [ ] Executive presentation completed and limited to 8–12 slides.
-- [ ] Architecture diagram included.
+- [ ] End-to-end architecture diagram included.
+- [ ] LangGraph orchestration flowchart included.
 - [ ] Retrieval pipeline diagram included.
-- [ ] One Claim Journey included.
+- [ ] One Claim Journey diagram and walkthrough included.
 - [ ] Limitations and production-readiness improvements included.
-- [ ] Proposal success assessment included.
+- [ ] Proposal-versus-outcome assessment included.
 - [ ] Final repository links validated.
 - [ ] Final submission checklist completed.
 
@@ -813,27 +985,36 @@ The submission is ready only when all applicable items are complete.
 - LLM judge and calibration
 - Ragas automated evaluation
 - Full adversarial safety evaluation
-- Locked 55-claim held-out evaluation
+- Frozen 55-claim held-out evaluation
 - Held-out adversarial safety gate
 - Approved proposal success assessment
 - Documented held-out limitations
+- Final regression validation
+- Final README
+- Final reviewer walkthrough
+- Actual compiled LangGraph visualisation
+- Frozen prediction SHA-256 verification
 
 ### Remaining documentation and packaging evidence
 
-- Final regression-test record
-- Final README
-- Final reviewer walkthrough
-- Technical report
+- Final technical report
+- Design-evolution and transparency-log section
+- End-to-end architecture diagram
+- LangGraph orchestration flowchart for report and presentation
+- Retrieval pipeline diagram
+- One Claim Journey diagram and detailed walkthrough
 - Executive presentation
 - Clean-copy reproducibility proof
-- Final repository QA
+- Secrets, paths, links, notebooks, and artifact QA
+- Final submission checklist
+- Final proposal and rubric review
 - Final merge and release tag
 
 ---
 
 ## 14. Final Project Position
 
-The project has completed its technical implementation and evaluation phases.
+The project has completed its technical implementation, systematic evaluation, README, and final reviewer-walkthrough phases.
 
 The system:
 
@@ -842,7 +1023,8 @@ The system:
 - maintained authorised human control,
 - passed the held-out adversarial safety gate,
 - provided controlled analyst guidance,
-- and produced reproducible evaluation evidence.
+- produced reproducible committed evaluation evidence,
+- and verified its frozen prediction fingerprint.
 
 The system also demonstrated a material limitation:
 
@@ -850,4 +1032,4 @@ The system also demonstrated a material limitation:
 
 The final submission must therefore present the project as:
 
-> A successful, evaluated capstone decision-support prototype that met the approved proposal criteria, while requiring fail-safe routing and stronger structured rule coverage before production use.
+> A successful, evaluated capstone decision-support prototype that met the approved proposal criteria, while requiring fail-safe routing and stronger structured deterministic-rule coverage before production use.
