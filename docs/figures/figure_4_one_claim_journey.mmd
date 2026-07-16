@@ -1,0 +1,97 @@
+flowchart TB
+
+    A["Claim Intake<br/><br/>CLM-000001<br/>Screen-damage repair claim"]
+
+    subgraph DET["1. Authoritative Deterministic Evaluation"]
+        B["Policy Lookup<br/><br/>Status: UNIQUE_MATCH<br/>Plan: DP-ESSENTIAL"]
+
+        C["Plan Configuration<br/><br/>ACTIVE_CONFIGURATION_AVAILABLE<br/>Product: IN_SCOPE"]
+
+        D["Policy and Device Checks<br/><br/>ACTIVE_ON_INCIDENT_DATE<br/>DEVICE_MATCH"]
+
+        E["Coverage Evaluation<br/><br/>UNIQUE_COVERAGE_RECORD<br/>Covered: True"]
+
+        F["Claims History<br/><br/>Annual claims used: 0 of 1<br/>Theft limit: Not applicable"]
+
+        G["Evidence Assessment<br/><br/>Profile: EVD-SCREEN-01<br/>Status: SUFFICIENT<br/>No required evidence missing"]
+
+        H["Risk and Conflict Checks<br/><br/>No risk indicators triggered<br/>No manual-review reasons"]
+
+        I["Rule Precedence<br/><br/>Earlier rules not triggered<br/>Triggering rule: OUT-001"]
+
+        J["Authoritative Recommendation<br/><br/>Outcome: PROCEED<br/>Decision-support recommendation only"]
+    end
+
+    subgraph FOLLOW["2. Controlled Follow-Up"]
+        K["Follow-Up Selection<br/><br/>Status: NOT_REQUIRED<br/>No catalogue question selected"]
+    end
+
+    subgraph RAG["3. Controlled Retrieval and Guidance"]
+        L["AuthoritativeTriageFacts<br/><br/>Outcome, rule, category,<br/>service type, coverage,<br/>evidence and device status"]
+
+        M["Controlled Query<br/><br/>Customer narrative and<br/>identifiers excluded"]
+
+        N["FAISS Semantic Retrieval<br/><br/>Approved 21-chunk corpus"]
+
+        O["Retrieved Chunks<br/><br/>KB-002::S03<br/>KB-001::S01<br/>KB-002::S01"]
+
+        P["Highest-Ranked Guidance<br/><br/>Evidence Review Guide<br/>Evidence Profiles<br/>EVD-SCREEN-01 requires<br/>a damage photo"]
+
+        Q["Optional Cross-Encoder<br/>Reranking<br/><br/>Approved candidates only"]
+    end
+
+    subgraph GEN["4. Explanation and Protective Controls"]
+        R["LLM Analyst Explanation<br/><br/>No earlier rule triggered<br/>PROCEED means standard-processing<br/>routing, not claim approval"]
+
+        S["Content-Safety Guardrail<br/><br/>Status: SAFE<br/>Fallback not required"]
+
+        T["Response-Authority Guardrail<br/><br/>Status: ALIGNED<br/>Outcome and rule preserved"]
+
+        U["Protected Final Response<br/><br/>Outcome: PROCEED<br/>Rule: OUT-001<br/>No follow-up required<br/>Human-control notice retained"]
+    end
+
+    V["Authorised Analyst Review<br/><br/>Analyst validates the evidence<br/>and determines final action"]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
+    I --> J
+
+    J --> K
+    J --> L
+    L --> M
+    M --> N
+    N --> O
+    O --> Q
+    Q --> P
+
+    K --> R
+    P --> R
+
+    R --> S
+    S --> T
+
+    J -. "Protected outcome<br/>and triggering rule" .-> T
+    K -. "Protected follow-up<br/>selection" .-> T
+
+    T --> U
+    U --> V
+
+    classDef intake fill:#F7F7F7,stroke:#555555,stroke-width:1px;
+    classDef authoritative fill:#DCEAF7,stroke:#24527A,stroke-width:1.5px;
+    classDef followup fill:#E8E3F3,stroke:#5B467A,stroke-width:1.5px;
+    classDef retrieval fill:#E7F1E8,stroke:#3D6841,stroke-width:1.5px;
+    classDef protective fill:#F8E8D8,stroke:#8A572A,stroke-width:1.5px;
+    classDef human fill:#FFF4CC,stroke:#806A1A,stroke-width:1.5px;
+
+    class A intake;
+    class B,C,D,E,F,G,H,I,J authoritative;
+    class K followup;
+    class L,M,N,O,P,Q retrieval;
+    class R,S,T,U protective;
+    class V human;

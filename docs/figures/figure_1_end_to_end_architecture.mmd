@@ -1,0 +1,66 @@
+flowchart TB
+
+    A["Synthetic Claim Intake<br/>Claim, Policy, Device, Evidence and History Records"]
+    B["Input Validation and<br/>Authoritative Claim Context"]
+
+    subgraph AUTH["Authoritative Deterministic Decision Layer"]
+        C["Deterministic Tools<br/>Policy, Plan, Device, Coverage,<br/>History, Evidence and Risk"]
+        D["Rule Precedence Engine"]
+        E["Authoritative Triage Result<br/>Outcome, Triggering Rule,<br/>Reason and Rule Trace"]
+    end
+
+    subgraph ORCH["LangGraph Agentic Orchestration"]
+        F["Controlled Follow-Up Selection<br/>Approved Catalogue Only"]
+        G["Controlled Query Builder<br/>Allow-Listed Authoritative Facts"]
+    end
+
+    subgraph RAG["Non-Authoritative Retrieval and Explanation Support"]
+        H["FAISS Semantic Retrieval<br/>Approved 21-Chunk Knowledge Base"]
+        I["Optional Cross-Encoder Reranking"]
+        J["Retrieved Operational Guidance"]
+        K["LLM Analyst Explanation"]
+    end
+
+    subgraph SAFE["Protective Controls"]
+        L["Agent Content-Safety Guardrail"]
+        M["Response-Authority Guardrail"]
+        N["Protected Decision-Support Response"]
+    end
+
+    O["Authorised Human Review"]
+    P["Final Operational Action<br/>Outside Autonomous System Boundary"]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+
+    E --> F
+    E --> G
+    G --> H
+    H --> I
+    I --> J
+    J --> K
+    F --> K
+
+    K --> L
+    L --> M
+    E -. "Protected outcome and rule" .-> M
+    F -. "Protected follow-up selection" .-> M
+    M --> N
+    N --> O
+    O --> P
+
+    classDef source fill:#F7F7F7,stroke:#555555,stroke-width:1px;
+    classDef authoritative fill:#DCEAF7,stroke:#24527A,stroke-width:1.5px;
+    classDef orchestration fill:#E8E3F3,stroke:#5B467A,stroke-width:1.5px;
+    classDef support fill:#E7F1E8,stroke:#3D6841,stroke-width:1.5px;
+    classDef protective fill:#F8E8D8,stroke:#8A572A,stroke-width:1.5px;
+    classDef human fill:#F4DEDE,stroke:#7A3434,stroke-width:1.5px;
+
+    class A,B source;
+    class C,D,E authoritative;
+    class F,G orchestration;
+    class H,I,J,K support;
+    class L,M,N protective;
+    class O,P human;
