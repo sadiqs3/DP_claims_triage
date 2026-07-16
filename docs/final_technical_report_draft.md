@@ -138,21 +138,11 @@ The governing design principle is:
 
 ## 2. Data Architecture & Methodology
 
-### 2.1 Synthetic Data, Governance, and Evaluation Partitions
+### 2.1 Synthetic Data, Governance, and Held-Out Design
 
-Real device-protection claims may contain personal identifiers, device details, financial information, incident narratives, and confidential policy decisions. Production rules and operating procedures may also contain proprietary organisational information. The project therefore used a purpose-built, domain-representative synthetic ecosystem, consistent with the approved proposal’s privacy and intellectual-property safeguards [1].
+Real device-protection claims may contain personal identifiers, device details, financial information, incident narratives, and confidential policy decisions. Production rules and operating procedures may also contain proprietary organisational information. The project therefore used a purpose-built, domain-representative synthetic ecosystem consistent with the approved privacy and intellectual-property safeguards [1].
 
-The synthetic data models the principal relationships required for claim triage:
-
-- policies, customers, plans, and protected devices;
-- policy status and incident dates;
-- incident coverage and product eligibility;
-- historical claims and usage limits;
-- evidence bundles and document records;
-- risk and anomaly indicators;
-- approved operational guidance;
-- controlled follow-up questions;
-- expected outcomes and triggering rules.
+The synthetic data models policies, protected devices, plan configuration, incident coverage, claim history, evidence, risk indicators, operational guidance, follow-up questions, and expected outcomes.
 
 **Table 2.1 — Final data and evaluation volumes**
 
@@ -172,86 +162,64 @@ The synthetic data models the principal relationships required for claim triage:
 | Safety and adversarial cases | 24 |
 | Held-out safety cases | 8 |
 
-The 220 new claims were divided into 165 development cases and 55 held-out cases. Claim identifiers were verified as disjoint. Development cases supported implementation, retrieval benchmarking, generation-quality review, and debugging; held-out cases were reserved for final evaluation.
+The 220 new claims were divided into 165 development cases and 55 held-out cases, with identifiers verified as disjoint. Development cases supported implementation and evaluation design; held-out cases were reserved for the final assessment.
 
-Data preparation focused on structural quality rather than document extraction because the controlled sources consisted of CSV, JSON, and Markdown files. Optical Character Recognition and complex PDF-layout processing were therefore not required. Validation covered:
+The controlled sources consisted of CSV, JSON, and Markdown files, so Optical Character Recognition and complex layout extraction were not required. Validation focused on:
 
-- expected schemas and mandatory fields;
-- controlled categorical values;
+- schemas, mandatory fields, and controlled values;
 - claim-to-policy and policy-to-device relationships;
-- evidence-bundle and evidence-document links;
-- historical-claim relationships;
+- evidence and historical-claim links;
 - date normalisation;
 - ground-truth identifier integrity;
 - development and held-out partition separation.
 
-The final held-out protocol was designed to reduce leakage:
+The final held-out protocol was:
 
 1. freeze the workflow and configuration;
-2. run all 55 claims without consulting their labels;
+2. run all 55 claims without consulting labels;
 3. export the prediction-only artifact;
 4. calculate its SHA-256 fingerprint;
-5. join the labels only after predictions were frozen;
-6. calculate the approved metrics;
-7. document errors without retuning the workflow.
+5. join labels only after predictions were frozen;
+6. calculate metrics without subsequent tuning.
 
 The frozen prediction fingerprint is:
 
 `0a20deead9d8fdcf75b740d39d11f8ff3934cb173da55c02ec61c860c92e2a1f`
 
-All claims, policies, evidence records, and knowledge documents are synthetic. No real customer data, production claims, or proprietary organisational records were included. The resulting evaluation is reproducible and legally usable, but it cannot represent the full ambiguity, missingness, behavioural variation, and system-integration complexity of production data.
+All claims, policies, evidence records, and knowledge documents are synthetic. This supports privacy, legal usability, and reproducibility, but cannot fully represent the ambiguity, missingness, behavioural variation, and integration complexity of production data.
 
 ### 2.2 Architecture and Authority Model
 
-The solution uses a hybrid architecture that separates authoritative business-rule execution from non-authoritative AI assistance. LangGraph represents the workflow as a stateful graph in which nodes operate on shared workflow state and execute in a controlled sequence [5].
-
-The principal layers are:
-
-1. structured claim and reference data;
-2. deterministic policy, eligibility, evidence, history, and risk tools;
-3. rule precedence and authoritative triage outcome;
-4. controlled follow-up-question selection;
-5. controlled retrieval from an approved knowledge base;
-6. LLM-based analyst explanation;
-7. content-safety and response-authority guardrails;
-8. authorised human review.
+The solution separates authoritative business-rule execution from non-authoritative AI assistance. LangGraph represents the workflow as a stateful graph in which nodes operate on shared state and execute in a controlled sequence [5].
 
 **Figure 1 — End-to-End System Architecture**
 
 ![End-to-end architecture of the rule-grounded claims-triage system](figures/figure_1_end_to_end_architecture.svg)
 
-*The architecture separates authoritative deterministic decision-making from non-authoritative retrieval and LLM explanation. LangGraph coordinates the workflow, guardrails protect the deterministic result, and an authorised human retains final accountability.*
+*The architecture separates authoritative deterministic evaluation from non-authoritative retrieval and LLM explanation. LangGraph coordinates the workflow, guardrails protect the deterministic result, and an authorised human retains final accountability.*
 
-**Table 2.2 — Component responsibilities and authority**
+Deterministic tools evaluate policy, plan, device, coverage, evidence, history, risk, conflicts, and limits. Rule precedence then selects the outcome and triggering rule. Retrieval and generation occur only after this result has been established.
 
-| Component | Responsibility | Authority |
-|---|---|---|
-| Deterministic tools | Evaluate policy, plan, device, coverage, evidence, limits, conflicts, and risk | Authoritative |
-| Rule-precedence engine | Select the outcome and triggering rule | Authoritative |
-| LangGraph | Coordinate tools, retrieval, generation, and guardrails | Orchestration only |
-| Follow-up selector | Select an approved catalogue question | Catalogue-controlled |
-| RAG and FAISS | Retrieve operational guidance | Non-authoritative |
-| Cross-encoder | Optionally reorder approved candidate chunks | Non-authoritative |
-| LLM explanation | Produce analyst-facing explanation support | Non-authoritative |
-| Content-safety guardrail | Block prohibited generated behaviour | Protective |
-| Response-authority guardrail | Preserve protected deterministic values | Protective |
-| Authorised human | Determine the final operational action | Final accountability |
+The remaining components have restricted responsibilities:
 
-The deterministic tools produce the recommended disposition, triggering rule, precedence stage, supporting facts, and rule trace. Retrieval and generation begin only after this result has been established. Consequently, neither the retrieved guidance nor the LLM explanation can create policy eligibility, alter coverage, change evidence requirements, apply exclusions, or replace the triggering rule.
+- LangGraph coordinates execution but does not select the disposition;
+- the follow-up selector chooses only from an approved catalogue;
+- FAISS and the cross-encoder retrieve or reorder approved guidance;
+- the LLM produces analyst-facing explanation;
+- content and authority guardrails block unsafe behaviour and preserve protected fields;
+- an authorised human determines the final operational action.
 
-This separation addresses the different strengths of rules and generative AI. Rules provide repeatable execution and auditability, while generative components support semantic retrieval and explanation. Human control is implemented through the architecture and guardrails rather than being treated only as a disclaimer.
+This design combines the repeatability and auditability of deterministic rules with the retrieval and communication capabilities of generative AI, without transferring policy authority to the LLM.
 
 ### 2.3 Knowledge Base, Embeddings, and FAISS
 
-Retrieval-Augmented Generation combines external retrieved information with language-model generation, allowing responses to use information outside the model’s internal parameters [2]. In this project, retrieval supplies approved operational guidance after deterministic triage; it does not determine the claim outcome.
+Retrieval-Augmented Generation combines retrieved information with language-model generation [2]. In this project, retrieval provides operational guidance after deterministic triage; it does not determine claim eligibility or outcome.
 
-The knowledge base contains seven allow-listed synthetic documents covering evidence handling, escalation, review expectations, and analyst procedures. A section-aware corpus builder divided these documents into 21 coherent chunks. Each chunk retains its source-document and section identity.
+Seven allow-listed synthetic documents were divided into 21 section-aware chunks. Each chunk retains its source-document and section identity. Chunk overlap was not used because the documents were short and structurally organised; overlap would have created duplicated guidance and near-identical Top-K results.
 
-Chunk overlap was not used because the source documents were short and structurally organised. Overlap would have duplicated substantial portions of guidance and increased the likelihood of near-identical Top-K results. The frozen retrieval benchmark did not provide evidence that a different chunking strategy was required.
+The semantic retriever uses `text-embedding-3-small`, which produces 1536-dimensional embeddings by default [4]. Vectors are L2-normalised and searched using FAISS `IndexFlatIP`. FAISS provides efficient dense-vector indexing and similarity search [3].
 
-The semantic retriever uses `text-embedding-3-small`. Its default output is a 1536-dimensional vector, which matches the persisted project index configuration [4]. The vectors are L2-normalised and searched using FAISS `IndexFlatIP`. FAISS provides indexing and similarity-search methods for dense vectors [3].
-
-**Table 2.3 — Retrieval configuration**
+**Table 2.2 — Retrieval configuration**
 
 | Component | Configuration |
 |---|---|
@@ -264,78 +232,41 @@ The semantic retriever uses `text-embedding-3-small`. Its default output is a 15
 | Cross-encoder | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
 | Reranker status | Controlled optional stage |
 
-Exact search was appropriate because the corpus contained only 21 chunks. Approximate indexing would have added configuration and validation complexity without a meaningful scale advantage.
-
-The persisted index is accompanied by controls for:
-
-- embedding model and vector dimension;
-- expected chunk count;
-- corpus fingerprint;
-- stable chunk-order fingerprint;
-- index-to-corpus consistency;
-- stale-index detection.
-
-A mismatch blocks normal index loading and requires a controlled rebuild.
+Exact search was appropriate because the corpus contained only 21 chunks. The persisted index records the embedding model, vector dimension, expected chunk count, corpus fingerprint, and chunk-order fingerprint. A mismatch blocks normal loading and requires a controlled rebuild.
 
 **Figure 2 — Controlled Retrieval Pipeline**
 
 ![Controlled retrieval pipeline showing knowledge-base preparation, query construction, FAISS retrieval, optional reranking, and index validation](figures/figure_2_controlled_retrieval_pipeline.svg)
 
-*The retrieval pipeline uses only allow-listed knowledge documents and authoritative structured triage facts. Customer narrative and identifiers are excluded from the controlled query. Corpus and chunk-order fingerprints protect the persisted FAISS index from stale or mismatched use, while retrieved content remains non-authoritative analyst guidance.*
+*The pipeline uses allow-listed documents and authoritative structured facts. Customer narrative and identifiers are excluded from the controlled query. Fingerprints protect the persisted index from stale or mismatched use, while retrieved content remains non-authoritative guidance.*
 
-The runtime retrieval query is built from an allow-listed projection of authoritative facts, such as:
+The runtime query is built from an allow-listed projection that may include the outcome, triggering rule, claim category, coverage status, evidence state, missing evidence codes, and manual-review requirement. Customer statements, arbitrary free text, identifiers, evidence-document text, and generated reasons are excluded. This improves reproducibility and limits the influence of unverified or adversarial narrative.
 
-- deterministic outcome and triggering rule;
-- claim category and requested service type;
-- coverage and evidence status;
-- missing evidence codes;
-- manual-review requirement.
+### 2.4 Comparative Retrieval and Design Choices
 
-Customer statements, arbitrary free text, identifiers, evidence-document text, and generated decision reasons are excluded. This restriction improves reproducibility and reduces the risk of unverified or adversarial narrative influencing retrieval as though it were an authoritative fact.
-
-### 2.4 Comparative Retrieval Methodology
-
-Four retrieval configurations were implemented:
+Four retrieval configurations were evaluated on the same frozen set of 14 manually grounded queries at `Top K = 3`:
 
 1. lexical TF-IDF;
 2. semantic embedding retrieval;
 3. Hybrid Reciprocal Rank Fusion;
 4. semantic retrieval followed by cross-encoder reranking.
 
-TF-IDF provided a transparent term-based baseline. Semantic retrieval measured whether embeddings improved retrieval where the query and target guidance used different wording. Hybrid Reciprocal Rank Fusion combined lexical and semantic rankings without requiring their raw scores to be directly comparable [9]. The cross-encoder provided a second-stage relevance assessment of a bounded semantic candidate set.
+TF-IDF provided a transparent lexical baseline. Semantic retrieval tested whether embeddings improved retrieval where query and document wording differed. Reciprocal Rank Fusion combined lexical and semantic rankings without requiring directly comparable raw scores [9]. The cross-encoder provided second-stage scoring of a bounded semantic candidate set.
 
-All four methods were evaluated against the same frozen set of 14 manually grounded queries at `Top K = 3`. The target chunks and query families were defined before final comparison, reducing the risk of selecting examples based on favourable results.
+The principal metrics were Hit@1, Hit@3, MRR@3, and no-result rate. Aggregate results were supplemented by query-level analysis so that reranker improvements and regressions remained visible.
 
-The principal retrieval metrics were:
+Several initial assumptions were deliberately narrowed:
 
-- **Hit@1:** whether a relevant chunk was ranked first;
-- **Hit@3:** whether a relevant chunk appeared within the first three results;
-- **MRR@3:** the reciprocal rank of the first relevant result, limited to three positions;
-- **No-result rate:** the proportion of queries for which no result was returned.
+- unrestricted follow-up generation became selection from an approved 14-question catalogue;
+- customer narrative was excluded from authoritative decisions and controlled queries;
+- TF-IDF replaced the planned BM25-style baseline because it was sufficient for the small corpus;
+- semantic retrieval became the default after comparative evaluation;
+- reranking remained optional because it did not improve aggregate performance;
+- Ragas faithfulness used structured authoritative facts plus retrieved guidance;
+- the LLM judge was calibrated against human review;
+- predictions were frozen before held-out labels were revealed.
 
-Aggregate metrics were supplemented by case-level analysis so that improvements and regressions introduced by reranking remained visible.
-
-### 2.5 Design Refinements
-
-Several initial assumptions were narrowed during implementation to strengthen control and methodological validity.
-
-**Table 2.4 — Principal design refinements**
-
-| Initial assumption | Final implementation | Reason |
-|---|---|---|
-| LLM-generated follow-up questions | Selection from an approved 14-question catalogue | Improved consistency, auditability, and exact evaluation |
-| Customer narrative used in AI processing | Excluded from authoritative decisions and controlled retrieval queries | Prevented unverified or adversarial text from acquiring policy influence |
-| Planned BM25-style lexical retrieval | TF-IDF baseline | Transparent and sufficient for the small controlled corpus |
-| Reranking enabled by default | Retained as an optional controlled stage | Mixed improvements and regressions on the frozen benchmark |
-| Faithfulness assessed only against retrieved documents | Assessed against structured authoritative facts plus retrieved guidance | Reflected the actual hybrid generation context |
-| LLM judge used without a baseline | Calibrated against documented human review | Avoided treating automated judgement as independent ground truth |
-| Final evaluation performed with visible labels | Predictions frozen before label reveal | Reduced post-hoc optimisation and leakage |
-
-The most important refinement concerned authority. Customer narrative and generated text were deliberately prevented from becoming authoritative inputs. A production system could use an LLM to identify possible facts from narrative text, but those facts should remain unverified until confirmed by an authoritative source or an authorised analyst.
-
-The reranker was retained because second-stage scoring was a technically valid and rubric-relevant component. However, its use remained evidence-driven: it was not made the default when the frozen benchmark failed to show an aggregate improvement.
-
-Similarly, the automated RAG methodology was adapted to the hybrid architecture. Retrieval quality was measured against preferred operational guidance, while response faithfulness was measured against all legitimate generation inputs: authoritative structured facts and retrieved guidance. This avoided penalising correct deterministic statements merely because they were not repeated in a knowledge-base chunk.
+These refinements reduced generative authority and improved auditability, reproducibility, and methodological validity.
 
 ---
 
@@ -616,101 +547,77 @@ However, successful guardrail performance did not correct errors already present
 
 ### 4.1 Operational Implications
 
-The project demonstrates that deterministic business rules and generative AI can support different parts of the claims-triage process without sharing decision authority.
+The project demonstrates that deterministic rules and generative AI can support different stages of claim triage without sharing decision authority.
 
-The deterministic layer provides repeatable evaluation of policy, device, coverage, evidence, claim-history, and risk conditions. LangGraph coordinates the workflow, while RAG and the LLM support the analyst through guidance retrieval and concise explanation.
+The deterministic layer provides repeatable evaluation of policy, device, coverage, evidence, claim-history, exclusion, and risk conditions. LangGraph coordinates the sequence, while retrieval and explanation components provide supporting guidance to the analyst.
 
-The evaluated architecture indicates four principal operational benefits.
+The architecture indicates three principal operational benefits.
 
-#### Consistent preliminary triage
+#### Consistent and traceable preliminary triage
 
-Equivalent structured inputs are processed through the same tools and rule-precedence sequence. This provides a repeatable starting point for analyst review and reduces reliance on individual interpretation during the initial triage stage.
+Equivalent structured inputs follow the same tool and rule-precedence sequence. Each recommendation records the outcome, triggering rule, decision reason, supporting facts, and rule trace.
 
-#### Traceable recommendations
+The response also preserves a clear distinction between:
 
-Each result contains a disposition, triggering rule, decision reason, supporting facts, and rule trace. The solution also preserves a clear distinction between:
-
-- authoritative facts produced by deterministic tools;
+- authoritative facts established by deterministic tools;
 - operational guidance retrieved from the knowledge base;
 - explanatory text generated by the LLM.
 
-This separation improves auditability and allows an analyst to identify the source and authority of each part of the response.
+This separation improves auditability and allows an analyst to understand both the basis and authority of the recommendation.
 
-#### Controlled access to operational guidance
+#### More accessible operational guidance
 
-The retrieval layer uses the deterministic outcome, triggering rule, evidence state, and review requirement to locate relevant guidance. This demonstrates the feasibility of presenting procedural information alongside the claim recommendation rather than requiring analysts to search multiple documents manually.
+The retrieval layer uses the deterministic outcome, triggering rule, evidence state, and review requirement to locate relevant procedural guidance. This demonstrates the feasibility of presenting supporting information within the claim workflow rather than requiring separate manual document searches.
 
-The project did not measure handling-time reduction in a live environment. Faster processing is therefore an expected benefit requiring production validation rather than a measured project outcome.
+No live handling-time study was conducted. Reduced search effort and faster preliminary triage are therefore expected benefits that require validation in a production pilot.
 
-#### Standardised follow-up handling
+#### Controlled follow-up and generative assistance
 
-The approved 14-question catalogue provides consistent wording for recognised information gaps. Catalogue-based selection also prevents the LLM from requesting unsupported evidence or generating uncontrolled customer-facing questions.
+Selection from an approved 14-question catalogue provides standard wording for recognised information gaps and prevents unrestricted generation of customer-facing questions.
 
-These benefits support the proposal’s objectives of improving consistency, traceability, analyst productivity, and risk control [1]. However, the six held-out routing errors show that these benefits depend on complete and fail-safe deterministic rule coverage.
+Similarly, the LLM may explain the result but cannot independently alter the outcome, rule, evidence requirement, or follow-up selection. These controls support the proposal objectives of improved consistency, traceability, analyst support, and risk control [1].
 
 ### 4.2 Technical and Methodological Deductions
 
-The implementation and evaluation produced several broader conclusions.
+The implementation and evaluation produced six principal findings.
 
-#### Deterministic rules and GenAI require distinct responsibilities
+#### Deterministic rules and GenAI require different responsibilities
 
-Policy eligibility, coverage, exclusions, limits, and evidence requirements require predictable and auditable execution. These responsibilities are best handled through deterministic rules and authoritative structured data.
+Policy eligibility, coverage, exclusions, evidence requirements, and limits require predictable and auditable execution. These responsibilities were therefore assigned to deterministic tools.
 
-Generative AI is more appropriate for:
+Generative AI was used for semantic retrieval, explanation, and orchestration support. The project shows that GenAI can provide value without becoming the source of policy authority.
 
-- semantic retrieval;
-- explanation and summarisation;
-- analyst guidance;
-- orchestration of supporting workflow stages.
+#### Semantic retrieval outperformed the lexical baseline
 
-The project therefore shows that GenAI can add value without becoming the source of policy authority.
+Semantic Embedding achieved Hit@1 of 78.6%, Hit@3 of 92.9%, and MRR@3 of 0.857. This exceeded the TF-IDF baseline and supported semantic retrieval as the default method for the approved operational corpus.
 
-#### Semantic retrieval improved guidance access
+The result applies only to guidance retrieval. Semantic similarity was not used to determine claim eligibility or disposition.
 
-Semantic Embedding achieved Hit@1 of 78.6%, Hit@3 of 92.9%, and MRR@3 of 0.857, outperforming the TF-IDF baseline. This supports semantic retrieval for specialised operational guidance where equivalent concepts may be expressed using different wording.
+#### Reranking complexity did not guarantee improvement
 
-The result does not imply that semantic similarity should determine claim eligibility. Retrieval remains an analyst-support function.
+The cross-encoder improved two queries but regressed two others. Aggregate MRR@3 decreased from 0.857 to 0.845.
 
-#### Additional model complexity did not guarantee improvement
-
-The cross-encoder improved two queries but regressed two others, while aggregate MRR@3 decreased from 0.857 to 0.845. Retaining it as an optional stage was therefore more appropriate than enabling it by default.
-
-This finding reinforces an evidence-based engineering principle:
-
-> A more complex model should be adopted only when it produces a consistent improvement in the target workflow.
+Retaining the reranker as an optional stage was therefore more appropriate than enabling it by default. This illustrates that additional model complexity should be adopted only when it produces consistent workflow improvement.
 
 #### Hybrid architectures require adapted evaluation
 
-The explanation workflow uses both deterministic structured facts and retrieved guidance. A document-only faithfulness assessment would incorrectly penalise statements grounded in authoritative tool outputs but absent from retrieved chunks.
+The explanation workflow uses both deterministic structured facts and retrieved knowledge. A document-only faithfulness measure would penalise valid statements grounded in tool outputs but absent from the retrieved chunks.
 
-The final Ragas methodology therefore separated retrieval quality from response faithfulness. This distinction is relevant to other systems that combine databases, rule engines, tools, and RAG.
+The final Ragas methodology therefore evaluated retrieval quality against preferred guidance and explanation faithfulness against the complete legitimate generation context.
 
 #### Automated judges require human calibration
 
-The LLM judge broadly aligned with the human reviewer for groundedness, answer relevance, and hallucination control, but was more generous on context relevance. Semantically related content was not always considered operationally useful by the human reviewer.
+The LLM judge broadly aligned with human review for groundedness, answer relevance, and hallucination control. It was more generous when scoring context relevance, where semantically related text was not always considered operationally useful by the human reviewer.
 
-Automated judging can improve scalability and consistency, but human review remains necessary for domain-specific usefulness and risk interpretation.
+Automated judging was therefore retained as supplementary evidence rather than as a replacement for domain-informed human assessment.
 
 #### Aggregate accuracy can conceal unsafe error patterns
 
-The overall held-out accuracy of 89.1% exceeded the approved target. However, all six errors were incorrect `PROCEED` recommendations.
+The 89.1% held-out accuracy exceeded the approved target. However, all six errors were incorrect `PROCEED` recommendations.
 
-This demonstrates that overall accuracy is insufficient for safety-sensitive triage. Evaluation must also examine:
+This demonstrates that a safety-sensitive triage system must evaluate more than overall accuracy. Class-specific recall, confusion patterns, manual-review routing, and unsafe-continuation rates are also required.
 
-- confusion patterns;
-- class-specific recall;
-- manual-review routing;
-- false continuation rates;
-- unsafe-decision diagnostics.
-
-#### Guardrail safety and rule completeness are separate requirements
-
-The guardrails successfully blocked unsafe LLM behaviour and preserved deterministic outcomes. They also preserved the six incorrect deterministic recommendations.
-
-Production safety therefore requires both:
-
-1. controls that prevent generated content from overriding authority;
-2. complete and fail-safe deterministic business-rule coverage.
+The evaluation further showed that guardrail safety and deterministic rule completeness are separate concerns. The guardrails successfully preserved the deterministic result, but they could not correct an incomplete deterministic outcome.
 
 ### 4.3 Proposal Commitment versus Final Outcome
 
@@ -719,7 +626,7 @@ Production safety therefore requires both:
 | Proposal commitment | Final evidence | Status |
 |---|---|---|
 | Four triage outcomes | All four outcomes implemented | Met |
-| Deterministic policy and eligibility rules | Modular tools and rule precedence implemented | Met |
+| Deterministic policy and eligibility evaluation | Modular tools and rule precedence implemented | Met |
 | Agentic orchestration | LangGraph workflow implemented and validated | Met |
 | RAG-based operational guidance | Allow-listed KB, embeddings, FAISS, and controlled query implemented | Met |
 | Cross-encoder reranking | Implemented and evaluated as an optional stage | Met |
@@ -727,41 +634,39 @@ Production safety therefore requires both:
 | Analyst-facing explanations | Guarded LLM explanation workflow implemented | Met |
 | Authorised human control | Preserved throughout final evaluation | Met |
 | At least 80% accuracy on 55 held-out claims | 49 of 55 claims correct, or 89.1% | Passed |
-| Supporting rule and follow-up metrics | Rule, follow-up, review-routing, and safety metrics reported | Met |
 | Zero critical held-out safety failures | Zero failures across eight safety cases | Passed |
-| Reproducible evidence | 149 tests, manifests, frozen outputs, fingerprint, and reviewer walkthrough | Substantially met; final clean-copy QA pending |
+| Reproducible technical evidence | 149 tests, manifests, frozen outputs, fingerprint, and reviewer walkthrough | Substantially met; final clean-copy QA pending |
 | Production readiness | Six unsafe `PROCEED` errors require correction | Not claimed |
 
-The implementation also introduced controlled refinements:
+The final implementation introduced controlled refinements to the initial proposal:
 
 - unrestricted follow-up generation became approved-catalogue selection;
-- customer narrative was excluded from authoritative decisions and controlled retrieval queries;
+- unverified narrative was excluded from authoritative decisions and retrieval queries;
 - semantic retrieval became the default after comparative evaluation;
-- reranking remained optional because it did not improve aggregate performance;
-- Ragas evaluation was adapted to the hybrid structured-fact and document context;
-- final predictions were frozen before held-out label comparison.
+- reranking remained optional because aggregate performance did not improve;
+- automated evaluation was adapted to the hybrid rule-and-RAG architecture;
+- held-out predictions were frozen before label comparison.
 
-These refinements preserved the approved business problem while strengthening safety, auditability, and methodological validity.
+These changes preserved the approved business problem while strengthening safety, auditability, and methodological validity.
 
 ### 4.4 Business Impact Position
 
 The prototype indicates potential value in three areas:
 
-1. **Operational consistency:** repeatable rule execution and standard follow-up selection can provide a more consistent starting point for analyst review.
-2. **Analyst effectiveness:** consolidated facts, retrieved guidance, and guarded explanation can reduce information fragmentation.
-3. **Governance:** explicit authority boundaries, rule traces, guardrails, manifests, and frozen evaluation evidence can reduce the risk of unsupported generative decisions.
+1. **Operational consistency:** repeatable rule execution and standard follow-up selection can provide a more consistent basis for analyst review.
+2. **Analyst effectiveness:** consolidated facts, retrieved guidance, and guarded explanations can reduce information fragmentation.
+3. **Governance:** authority boundaries, rule traces, guardrails, manifests, and frozen evaluation evidence can reduce the risk of unsupported generative decisions.
 
-The project did not evaluate production volumes, handling time, customer satisfaction, claim cost, leakage, staffing impact, or financial return. These benefits are therefore stated as expected implications rather than measured outcomes.
+The project did not measure production claim volumes, handling time, customer satisfaction, claim cost, leakage, staffing impact, or financial return. These benefits are therefore stated as expected implications rather than measured outcomes.
 
-A production pilot should quantify:
+A production pilot should measure:
 
-- change in average handling time;
+- analyst handling time and procedural-search effort;
 - analyst acceptance and override rates;
-- reduction in procedural-search effort;
-- manual-review volume;
+- manual-review volumes;
 - false `PROCEED` and false `NOT_ELIGIBLE` rates;
 - customer-service impact;
-- implementation and operating cost.
+- operating and implementation cost.
 
 The principal business conclusion is:
 
@@ -773,9 +678,9 @@ The principal business conclusion is:
 
 ### 5.1 Material Held-Out Limitation
 
-The system exceeded the approved primary accuracy target, but the error pattern revealed an important operational risk.
+Although the system exceeded the approved accuracy target, the held-out error pattern revealed a material operational risk.
 
-Six of the 55 held-out claims were incorrectly routed to `PROCEED`, producing an unsafe-decision diagnostic of **10.9%**.
+Six of the 55 claims were incorrectly routed to `PROCEED`, producing an unsafe-decision diagnostic of **10.9%**.
 
 **Table 5.1 — Held-out routing errors**
 
@@ -786,134 +691,73 @@ Six of the 55 held-out claims were incorrectly routed to `PROCEED`, producing an
 | `ELG-002` | `NOT_ELIGIBLE` | `PROCEED` | 1 |
 | `EXC-001` | `NOT_ELIGIBLE` | `PROCEED` | 2 |
 
-The affected claims were:
+The affected claims were `CLM-000174`, `CLM-000175`, `CLM-000179`, `CLM-000202`, `CLM-000219`, and `CLM-000220`.
 
-- `CLM-000174`;
-- `CLM-000175`;
-- `CLM-000179`;
-- `CLM-000202`;
-- `CLM-000219`;
-- `CLM-000220`.
+The failures occurred because some decisive conditions were not available to the deterministic workflow as validated structured facts. These included unresolved data conflicts, exclusions represented mainly in narrative text, and policy-date or eligibility conditions not triggered by the available runtime attributes.
 
-The failures occurred because some decisive conditions were not available to the deterministic workflow as validated structured facts. The affected scenarios included unresolved data conflicts, exclusions represented mainly in narrative text, and policy-date or eligibility conditions that were not triggered by the available runtime attributes.
+The errors were not caused by RAG, LLM generation, adversarial override, or failure of the response-authority guardrail. In every case, the generated response remained aligned with the deterministic result. The limitation therefore originated in structured-data availability and deterministic rule coverage.
 
-The errors were not caused by:
-
-- RAG changing the disposition;
-- the LLM selecting the triggering rule;
-- an unsafe explanation overriding the workflow;
-- failure of the response-authority guardrail.
-
-In every case, the generated response remained aligned with the deterministic result. The limitation was therefore located upstream, in structured-data availability and deterministic business-rule coverage.
-
-This distinction is significant. Guardrails can prevent generative components from changing authority, but they cannot determine that the authoritative result itself is incomplete.
+This distinction is important: guardrails can prevent an LLM from changing an authoritative outcome, but they cannot determine that the authoritative outcome itself is incomplete.
 
 ### 5.2 Data and Evaluation Limitations
 
-The reported results should be interpreted within the boundaries of the controlled synthetic prototype.
+The results should be interpreted within the boundaries of the controlled synthetic prototype.
 
-#### Synthetic data
-
-The purpose-built dataset provided privacy protection, legal usability, controlled ground truth, and reproducibility. However, it may not represent the full range of production conditions, including:
+The synthetic data provided privacy protection, legal usability, controlled ground truth, and reproducibility. However, it may not represent the full range of production conditions, including:
 
 - inconsistent or duplicate enterprise records;
 - incomplete policy histories;
-- unstructured analyst notes;
 - changing plan configurations;
 - market-specific rules;
-- unusual customer behaviour;
-- real document-quality variation;
+- unstructured analyst notes;
+- document-quality variation;
 - delays or mismatches across source systems.
 
-The held-out errors demonstrate that some business conditions require richer and more explicit structured representation.
+The knowledge base contained seven documents and 21 chunks. This was sufficient to evaluate chunking, embeddings, FAISS, controlled retrieval, and reranking, but retrieval behaviour may differ in a larger corpus containing overlapping procedures, multiple jurisdictions, obsolete document versions, and semantically similar sections.
 
-#### Knowledge-base scale
+The retrieval benchmark contained 14 queries, while human review, LLM judging, and Ragas used 12 generation cases. These samples covered the intended query families and all four dispositions, but they do not establish performance across every rule combination, evidence profile, exclusion, or rare exception.
 
-The approved knowledge base contained seven documents and 21 chunks. This was sufficient to evaluate chunking, embeddings, FAISS, controlled retrieval, and reranking, but it is substantially smaller than an enterprise knowledge corpus.
+Embedding, generation, LLM-judge, and Ragas workflows also depend on external models and libraries. Frozen cases, committed outputs, manifests, dependency records, and fingerprints reduce this risk, but future service or model changes may affect exact regeneration.
 
-Retrieval behaviour may change when the corpus includes more products, jurisdictions, document versions, overlapping procedures, contradictory guidance, and semantically similar sections.
-
-#### Evaluation sample size
-
-The retrieval benchmark contained 14 queries, while human review, LLM judging, and Ragas evaluation used 12 generation cases. These samples covered the intended query families and four dispositions, but they do not establish performance across every rule combination, evidence profile, exclusion, or rare exception.
-
-#### External-model variability
-
-Embedding, explanation, LLM-judge, and Ragas workflows depend on external models and software libraries. Future model or service versions may produce different outputs. The project mitigated this risk through frozen cases, manifests, committed results, dependency records, and fingerprints, but exact regeneration may still be affected by external change.
-
-#### No live operational validation
-
-The prototype was not integrated with production policy, claims, payment, identity, or customer-service systems. It was also not evaluated with claims analysts in a live workflow.
-
-The project therefore did not measure:
-
-- handling-time reduction;
-- analyst productivity;
-- analyst override behaviour;
-- customer satisfaction;
-- claim cost or leakage;
-- production latency;
-- system availability;
-- financial return.
-
-Business benefits remain expected implications rather than measured production outcomes.
+Finally, the prototype was not evaluated in a live operational environment. The project did not measure analyst handling time, productivity, override behaviour, customer satisfaction, claim cost, leakage, production latency, or financial return. Business benefits therefore remain expected implications rather than measured outcomes.
 
 ### 5.3 Required Production Improvements
 
-The held-out findings identify several priorities for future development.
+The held-out findings identify five priority improvements.
 
-**Table 5.2 — Required production improvements**
+**Table 5.2 — Priority production improvements**
 
-| Improvement | Purpose |
-|---|---|
-| Fail-safe `MANUAL_REVIEW` routing | Prevent unresolved conditions from falling through to `PROCEED` |
-| Explicit `PASS`, `FAIL`, and `UNABLE_TO_EVALUATE` states | Distinguish a successful check from missing or unsupported evaluation |
-| Stronger conflict detection | Identify duplicate, conflicting, or mismatched policy, customer, device, and evidence records |
-| Structured exclusion indicators | Prevent exclusions described only in narrative from being missed |
-| Stronger date and eligibility logic | Improve handling of policy start, end, cancellation, suspension, waiting periods, and conflicting dates |
-| Future regression tests | Cover the six documented failure patterns without changing the frozen result |
-| Rule-aware retrieval | Improve guidance alignment for exclusions, conflicts, limits, anomalies, and manual-review conditions |
-| Production governance | Add access control, audit logging, monitoring, versioning, and change management |
+| Priority | Required change | Intended control |
+|---:|---|---|
+| 1 | Fail-safe `MANUAL_REVIEW` routing | Prevent unresolved conditions from falling through to `PROCEED` |
+| 2 | Explicit `PASS`, `FAIL`, and `UNABLE_TO_EVALUATE` states | Distinguish successful evaluation from missing or unsupported checks |
+| 3 | Stronger structured rule coverage | Detect conflicts, exclusions, date conditions, duplicate records, and identifier mismatches |
+| 4 | Rule-aware retrieval | Improve guidance relevance for exclusions, conflicts, limits, and manual-review conditions |
+| 5 | Production governance | Add access control, audit logging, monitoring, versioning, and change management |
 
-#### Fail-safe routing
+#### Fail-safe evaluation
 
-The workflow should apply the principle:
+The workflow should apply the following principle:
 
 > An unresolved authoritative condition must route to `MANUAL_REVIEW`, not silently pass.
 
-A missing record, unsupported exclusion, conflicting identifier, or unavailable policy date should produce `UNABLE_TO_EVALUATE` rather than being treated as an implicit pass.
+A missing record, unsupported exclusion, conflicting identifier, or unavailable policy date should produce `UNABLE_TO_EVALUATE`. This state should not be treated as equivalent to `PASS`.
 
-#### Stronger structured rule coverage
+#### Stronger structured business facts
 
-Conflict detection should cover:
+Conflict detection should cover duplicate or multiple policy matches, customer and policy identifier conflicts, device mismatches, and disagreement between claims and evidence records.
 
-- conflicting customer or policy identifiers;
-- claim-to-policy mismatches;
-- multiple authoritative policy matches;
-- duplicate records;
-- inconsistent device identifiers;
-- disagreement between claim and evidence records.
+Important exclusion conditions should be represented as controlled structured attributes or validated evidence signals. An LLM may identify a possible fact from narrative text, but it should remain unverified until confirmed by an authoritative source or an analyst.
 
-Important exclusions should also be represented as controlled structured attributes or validated evidence signals. An LLM may identify a possible exclusion from narrative text, but the extracted fact should remain unverified until confirmed by an authoritative source or an authorised analyst.
+Date logic should also cover policy start, end, cancellation, suspension, waiting periods, missing dates, contradictory dates, and timezone consistency.
 
-#### Date and eligibility controls
+#### Future regression coverage
 
-Production logic should strengthen evaluation of:
+The six documented failure patterns should become future regression cases during a post-capstone improvement phase. These additions must not alter or replace the frozen held-out result, prediction artifact, or SHA-256 fingerprint.
 
-- incident date against policy start date;
-- policy end and cancellation dates;
-- suspension periods;
-- waiting periods;
-- missing or contradictory dates;
-- timezone and date-format consistency.
+#### Rule-aware retrieval
 
-Conditions that cannot be evaluated reliably should route to manual review.
-
-#### Retrieval improvements
-
-More rule-aware controlled queries may improve Context Precision and Context Recall, especially for exclusions, conflicts, claim limits, anomalies, and unsupported conditions.
-
-This improvement would make analyst guidance more relevant, but it would not replace deterministic rule corrections.
+Controlled queries should better represent rule-specific guidance needs, particularly for exclusions, data conflicts, claim limits, anomalies, and unsupported conditions. This may improve Context Precision and Context Recall but cannot substitute for deterministic rule corrections.
 
 #### Production governance
 
@@ -921,51 +765,47 @@ A production implementation would additionally require:
 
 - authenticated and role-based access;
 - encryption and secrets management;
-- audit logging;
-- operational monitoring and alerts;
-- data-quality controls;
+- audit logging and human-override records;
+- operational monitoring and data-quality alerts;
 - knowledge-document versioning;
 - rule, prompt, and model change control;
 - fallback and incident procedures;
-- formal human-override recording;
-- privacy and retention controls;
-- integration testing with authoritative enterprise systems.
+- privacy, retention, and enterprise-integration controls.
 
 ### 5.4 Future Evaluation Priorities
 
-A production pilot should extend the capstone evaluation by:
+A production pilot should extend the evaluation using representative operational data and multiple analyst reviewers.
 
-1. testing with representative historical claims under appropriate privacy controls;
-2. increasing retrieval queries across products, rules, and jurisdictions;
-3. expanding human review across multiple analysts;
-4. measuring analyst acceptance and override rates;
-5. evaluating handling time and procedural-search effort;
-6. monitoring false `PROCEED` and false `NOT_ELIGIBLE` outcomes separately;
-7. testing missing, conflicting, and delayed source data;
-8. evaluating knowledge-base updates and stale-index controls;
-9. assessing model and prompt version changes;
-10. conducting operational, security, compliance, and responsible-AI review.
-
-The principal production safety measures should include:
+The principal measures should include:
 
 - unsafe continuation rate;
 - manual-review recall;
 - false non-eligibility rate;
 - unresolved-condition routing;
+- analyst acceptance and override rates;
+- handling time and procedural-search effort;
 - authority-preservation rate;
 - critical guardrail failures.
 
-Overall accuracy should remain a supporting measure rather than the sole indicator of safety.
+Overall accuracy should remain a supporting metric rather than the sole indicator of safety.
+
+Evaluation should also test:
+
+- larger and more diverse retrieval corpora;
+- multiple products and jurisdictions;
+- missing, conflicting, and delayed source data;
+- model, prompt, rule, and knowledge-base version changes;
+- production security, compliance, and responsible-AI controls.
 
 ### 5.5 Final Project Position
 
-This capstone implemented and systematically evaluated a rule-grounded Agentic AI decision-support architecture.
+The capstone implemented and systematically evaluated a rule-grounded Agentic AI decision-support architecture.
 
 The project:
 
 - implemented modular deterministic triage tools;
 - used LangGraph for controlled orchestration;
-- created an allow-listed RAG pipeline with FAISS;
+- created an allow-listed FAISS-based RAG pipeline;
 - evaluated lexical, semantic, hybrid, and reranked retrieval;
 - generated guarded analyst-facing explanations;
 - preserved deterministic authority and authorised human control;
@@ -974,7 +814,7 @@ The project:
 - passed all eight held-out adversarial safety cases;
 - documented the six unsafe-routing errors transparently.
 
-The six incorrect `PROCEED` recommendations show that the current structured-data and deterministic-rule coverage is insufficient for production use. Guardrails successfully prevented LLM override, but they could not correct incomplete deterministic evaluation.
+The six incorrect `PROCEED` recommendations show that the current structured-data and deterministic-rule coverage is insufficient for production use. Guardrails prevented LLM override but could not correct incomplete deterministic evaluation.
 
 The final conclusion is:
 
