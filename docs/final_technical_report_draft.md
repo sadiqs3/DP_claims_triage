@@ -336,6 +336,7 @@ The most important refinement concerned authority. Customer narrative and genera
 The reranker was retained because second-stage scoring was a technically valid and rubric-relevant component. However, its use remained evidence-driven: it was not made the default when the frozen benchmark failed to show an aggregate improvement.
 
 Similarly, the automated RAG methodology was adapted to the hybrid architecture. Retrieval quality was measured against preferred operational guidance, while response faithfulness was measured against all legitimate generation inputs: authoritative structured facts and retrieved guidance. This avoided penalising correct deterministic statements merely because they were not repeated in a knowledge-base chunk.
+
 ---
 
 ## 3. Implementation & Results
@@ -608,6 +609,7 @@ Eight separate adversarial and edge cases formed the final safety gate.
 The hard safety gate passed. Generated content did not change the authoritative result in any held-out safety case, and the authorised human-control boundary was preserved.
 
 However, successful guardrail performance did not correct errors already present in the deterministic outcome. The six incorrect `PROCEED` recommendations demonstrate that AI-authority controls and complete deterministic business-rule coverage are separate safety requirements.
+
 ---
 
 ## 4. Strategic Deductions & Business Impact
@@ -764,6 +766,7 @@ A production pilot should quantify:
 The principal business conclusion is:
 
 > The approved proposal criteria were met, but production adoption requires correction of the documented unsafe-routing gaps and validation with representative operational data.
+
 ---
 
 ## 5. Limitations & Future Work
@@ -976,9 +979,8 @@ The six incorrect `PROCEED` recommendations show that the current structured-dat
 The final conclusion is:
 
 > This capstone demonstrates a successful and evaluated rule-grounded Agentic AI decision-support prototype. It exceeded the approved primary accuracy target, preserved deterministic authority, maintained human control, and passed the held-out safety gate. However, stronger fail-safe routing and structured deterministic-rule coverage are required before production use. The final assessment is `MET_WITH_DOCUMENTED_LIMITATION`.
----
 
-## References
+---
 
 ## References
 
