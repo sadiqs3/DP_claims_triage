@@ -910,7 +910,6 @@ The implementation and evaluation are frozen. Only release validation, merge, ta
 - [x] Actual compiled LangGraph included in the reviewer walkthrough.
 - [x] Final evaluation artifacts committed.
 - [x] Final diagrams committed and referenced.
-- [x] Obsolete `data/internal/` reference removed from this matrix.
 - [ ] Confirm no API key, credential, or secret is committed.
 - [ ] Confirm no unintended personal absolute path is exposed.
 - [ ] Confirm all evaluation manifests reference the correct files.
