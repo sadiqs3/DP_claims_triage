@@ -73,8 +73,8 @@ The governing design principle is:
 | Final report diagrams | **Complete** |
 | README and reviewer navigation | **Complete** |
 | Final evidence matrix | **Complete with this update** |
-| Final pre-merge validation | **Pending** |
-| Merge into `main` | **Pending** |
+| Final pre-merge validation | **Complete — 149 tests passed** |
+| Merge into `main` | **Complete — PR #1 merged at commit `97531f8`** |
 | Final release tag | **Pending** |
 | University portal submission | **Pending** |
 
@@ -975,4 +975,4 @@ The six incorrect `PROCEED` recommendations remain a material production-readine
 
 No additional model or workflow development is required for capstone submission.
 
-The branch is ready for final release validation, merge into `main`, creation of the `final-submission-v1` tag, and university submission.
+The validated implementation has been merged into `main` and is ready for final post-merge verification, creation of the `final-submission-v1` tag, and university submission.
