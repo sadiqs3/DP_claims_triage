@@ -1,0 +1,94 @@
+{
+  "artifact_name": "Automated RAG Evaluation",
+  "artifact_version": "v1",
+  "generated_at_utc": "2026-07-13T04:35:44.223690+00:00",
+  "notebook": "notebooks/09_automated_rag_evaluation.ipynb",
+  "framework": {
+    "name": "Ragas",
+    "version": "0.3.9"
+  },
+  "evaluator_configuration": {
+    "llm": "gpt-5.4-mini",
+    "embedding_model": "text-embedding-3-small",
+    "timeout_seconds": 120,
+    "max_retries": 2,
+    "max_workers": 1
+  },
+  "evaluation_scope": {
+    "case_count": 12,
+    "case_partition": "frozen development generation cases",
+    "held_out_data_used": false,
+    "workflow_outputs_regenerated": false
+  },
+  "methodology": {
+    "retrieval_quality": {
+      "contexts": "three retrieved approved-KB chunks",
+      "reference": "rule-level RAG guidance reference",
+      "metrics": [
+        "context_precision",
+        "context_recall"
+      ]
+    },
+    "response_quality": {
+      "contexts": "complete authoritative structured facts plus three retrieved approved-KB chunks",
+      "response": "frozen generated explanation",
+      "metrics": [
+        "faithfulness",
+        "answer_relevancy"
+      ]
+    },
+    "hybrid_context_rationale": "The generated explanation combines deterministic structured facts and retrieved KB guidance. Faithfulness was therefore evaluated against all authoritative inputs available during generation."
+  },
+  "metric_summary": {
+    "Context Precision": {
+      "mean": 0.576389,
+      "median": 0.5,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "Context Recall": {
+      "mean": 0.416667,
+      "median": 0.25,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "Faithfulness": {
+      "mean": 0.626744,
+      "median": 0.6,
+      "minimum": 0.384615,
+      "maximum": 0.857143
+    },
+    "Answer Relevancy": {
+      "mean": 0.533142,
+      "median": 0.540203,
+      "minimum": 0.467954,
+      "maximum": 0.602571
+    }
+  },
+  "human_review_summary": {
+    "context_relevance_mean": 2.75,
+    "groundedness_mean": 3.75,
+    "answer_relevance_mean": 3.666667,
+    "hallucination_control_mean": 3.75,
+    "critical_safety_failures": 0
+  },
+  "retrieval_diagnostics": {
+    "exact_reference_chunk_hits": 3,
+    "semantic_context_coverage_cases": 6,
+    "semantic_coverage_without_exact_hit": 3
+  },
+  "source_artifacts": [
+    "data/evaluation/generation/generation_evaluation_cases_v1.csv",
+    "data/evaluation/generation/generation_human_review_v2.csv",
+    "data/evaluation/generation/generation_judge_input_v2.csv",
+    "data/evaluation/generation/generation_llm_judge_results_v2.csv",
+    "data/evaluation/generation/generation_calibration_summary_v2.csv"
+  ],
+  "output_artifacts": [
+    "ragas_case_results_v1.csv",
+    "ragas_summary_v1.csv",
+    "ragas_rule_summary_v1.csv",
+    "ragas_low_score_review_v1.csv",
+    "ragas_manifest_v1.json"
+  ]
+}

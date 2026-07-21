@@ -1,0 +1,67 @@
+{
+  "artifact_name": "retrieval_error_analysis",
+  "artifact_version": "v1",
+  "created_at_utc": "2026-07-12T00:55:49.405014+00:00",
+  "analysis_scope": {
+    "analysis_type": "offline_post_evaluation_diagnostic",
+    "evaluation_query_count": 14,
+    "top_k": 3,
+    "reranker_candidate_k": 5,
+    "compared_methods": [
+      "Semantic Embedding",
+      "Semantic + Cross-Encoder Reranker"
+    ],
+    "all_methods_used_for_diagnostics": [
+      "Hybrid RRF",
+      "Lexical TF-IDF",
+      "Semantic + Cross-Encoder Reranker",
+      "Semantic Embedding"
+    ],
+    "model_or_api_calls_performed": false,
+    "held_out_claim_data_used": false
+  },
+  "source_evaluation": {
+    "query_set": "data/evaluation/retrieval/rag_retrieval_eval_v1.csv",
+    "per_query_results": "data/evaluation/retrieval/retrieval_per_query_results_with_reranker_v1.csv",
+    "source_manifest": "data/evaluation/retrieval/retrieval_evaluation_with_reranker_manifest_v1.json",
+    "corpus_chunk_count": 21,
+    "corpus_document_count": 4,
+    "semantic_embedding_model": "text-embedding-3-small",
+    "cross_encoder_model": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  },
+  "headline_findings": {
+    "semantic_embedding": {
+      "hit_at_1": 0.7857142857142857,
+      "hit_at_3": 0.9285714285714286,
+      "mrr_at_3": 0.8571428571428571
+    },
+    "semantic_cross_encoder_reranker": {
+      "hit_at_1": 0.7857142857142857,
+      "hit_at_3": 0.9285714285714286,
+      "mrr_at_3": 0.8452380714285714
+    },
+    "improved_query_count": 2,
+    "regressed_query_count": 2,
+    "unchanged_top_1_query_count": 9,
+    "persistent_top_3_miss_count": 1,
+    "mean_mrr_at_3_change": -0.011904785714285706
+  },
+  "recommendation": {
+    "default_retrieval_method": "Semantic Embedding",
+    "reranker_role": "CONTROLLED_OPTIONAL_STAGE",
+    "chunking_change_recommended": false,
+    "rationale": "The reranker matched semantic retrieval on Hit@1 and Hit@3 but produced a slightly lower MRR@3. Query-level analysis found two improvements, two regressions, nine unchanged top-1 results, and one persistent top-3 miss."
+  },
+  "limitations": [
+    "The frozen retrieval evaluation contains 14 queries, so family-level conclusions are directional.",
+    "The committed reranker results retain final top-3 outputs but not the complete top-5 candidate list or individual cross-encoder scores.",
+    "The persistent audit-field miss cannot therefore be attributed conclusively to candidate retrieval or reranker scoring.",
+    "No corpus, chunking, embedding, or relevance-label changes were made during error analysis."
+  ],
+  "output_files": {
+    "summary": "data/evaluation/retrieval/retrieval_error_analysis_summary_v1.csv",
+    "query_comparison": "data/evaluation/retrieval/retrieval_error_analysis_query_comparison_v1.csv",
+    "error_taxonomy": "data/evaluation/retrieval/retrieval_error_taxonomy_v1.csv",
+    "manifest": "data/evaluation/retrieval/retrieval_error_analysis_manifest_v1.json"
+  }
+}

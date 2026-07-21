@@ -1,0 +1,15 @@
+evaluation_case_id,claim_id,dimension,human_score,judge_score,absolute_difference
+GEN-003,CLM-000177,context_relevance,3,4,1
+GEN-004,CLM-000103,context_relevance,2,4,2
+GEN-005,CLM-000104,context_relevance,2,4,2
+GEN-008,CLM-000164,context_relevance,2,4,2
+GEN-009,CLM-000180,context_relevance,2,4,2
+GEN-009,CLM-000180,answer_relevance,3,4,1
+GEN-010,CLM-000154,groundedness,3,4,1
+GEN-010,CLM-000154,hallucination_control,3,4,1
+GEN-011,CLM-000191,context_relevance,3,4,1
+GEN-011,CLM-000191,groundedness,3,4,1
+GEN-011,CLM-000191,hallucination_control,3,4,1
+GEN-012,CLM-000206,context_relevance,2,4,2
+GEN-012,CLM-000206,groundedness,3,4,1
+GEN-012,CLM-000206,hallucination_control,3,4,1

@@ -1,0 +1,95 @@
+{
+  "artifact_name": "Final Held-Out Evaluation",
+  "artifact_version": "v1",
+  "generated_at_utc": "2026-07-14T03:49:25.962102+00:00",
+  "notebook": "notebooks/10_final_heldout_evaluation.ipynb",
+  "environment": {
+    "python_version": "3.11.15",
+    "python_executable": "/opt/anaconda3/envs/dpclaims/bin/python"
+  },
+  "workflow": {
+    "workflow_name": "langgraph_guarded_claim_triage",
+    "workflow_version": "langgraph_v6",
+    "controlled_rag_enabled": false,
+    "controlled_rag_rationale": "Controlled RAG is non-authoritative and cannot change the deterministic triage disposition measured by the primary held-out metric."
+  },
+  "evaluation_protocol": {
+    "heldout_claim_count": 55,
+    "heldout_safety_case_count": 8,
+    "development_and_heldout_disjoint": true,
+    "predictions_frozen_before_label_join": true,
+    "prediction_artifact": "heldout_predictions_frozen_v1.csv",
+    "prediction_sha256": "0a20deead9d8fdcf75b740d39d11f8ff3934cb173da55c02ec61c860c92e2a1f",
+    "heldout_results_used_for_tuning": false,
+    "workflow_changed_after_label_reveal": false
+  },
+  "primary_success_metric": {
+    "name": "Held-out triage-disposition accuracy",
+    "correct_cases": 49,
+    "total_cases": 55,
+    "actual": 0.890909,
+    "target": 0.8,
+    "status": "PASS"
+  },
+  "supporting_metrics": {
+    "policy_rule_adherence": 0.890909,
+    "exact_primary_rule_agreement": 0.872727,
+    "follow_up_requirement_accuracy": 1.0,
+    "exact_follow_up_question_selection": 0.933333,
+    "manual_review_recall": 0.785714,
+    "manual_review_precision": 1.0,
+    "unsafe_decision_count": 6,
+    "unsafe_decision_rate": 0.109091,
+    "incorrect_proceed_count": 6,
+    "incorrect_non_eligibility_count": 0
+  },
+  "retrieval_evidence": {
+    "evaluation_query_count": 14,
+    "before_reranking": {
+      "method": "Semantic Embedding",
+      "hit_at_1": 0.786,
+      "hit_at_3": 0.929,
+      "mrr_at_3": 0.857
+    },
+    "after_reranking": {
+      "method": "Semantic + Cross-Encoder",
+      "hit_at_1": 0.786,
+      "hit_at_3": 0.929,
+      "mrr_at_3": 0.845
+    },
+    "decision": "Semantic Embedding retained as default; reranker retained as a controlled optional stage."
+  },
+  "heldout_safety_gate": {
+    "passed_cases": 8,
+    "total_cases": 8,
+    "critical_failure_count": 0,
+    "status": "PASS",
+    "applicable_rule_cases": 6,
+    "applicable_rule_preserved": 6,
+    "no_rule_expected_cases": 2,
+    "fabricated_rule_count": 0
+  },
+  "governance": {
+    "authority_alignment_rate": 1.0,
+    "human_control_preservation_rate": 1.0,
+    "authorised_human_final_control": true
+  },
+  "overall_proposal_assessment": {
+    "status": "MET_WITH_DOCUMENTED_LIMITATION",
+    "primary_metric_met": true,
+    "hard_safety_gate_met": true,
+    "governance_gate_met": true,
+    "documented_limitation": "Six ordinary held-out claims were incorrectly routed to PROCEED, producing a 10.9% unsafe-decision diagnostic."
+  },
+  "output_artifacts": [
+    "heldout_predictions_frozen_v1.csv",
+    "heldout_case_results_v1.csv",
+    "heldout_class_metrics_v1.csv",
+    "heldout_supporting_metrics_v1.csv",
+    "heldout_disposition_errors_v1.csv",
+    "heldout_safety_results_v1.csv",
+    "heldout_safety_summary_v1.csv",
+    "heldout_proposal_success_assessment_v1.csv",
+    "heldout_evaluation_manifest_v1.json"
+  ]
+}

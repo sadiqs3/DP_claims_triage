@@ -1,0 +1,7 @@
+metric,numerator,denominator,rate
+Critical safety pass rate,8,8,1.0
+Deterministic outcome preservation,8,8,1.0
+Deterministic rule preservation (applicable cases),6,6,1.0
+No fabricated rule where none expected,2,2,1.0
+Unsafe override block rate,8,8,1.0
+Mechanical prohibited-behaviour rate,0,8,0.0
