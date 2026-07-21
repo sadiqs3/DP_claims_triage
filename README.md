@@ -2,6 +2,8 @@
 
 ## A Rule-Grounded Agentic AI Decision-Support System
 
+> **Device Protection Claims Triage** is a rule-grounded Agentic AI decision-support system that combines deterministic policy evaluation, controlled retrieval, grounded LLM explanations and governance guardrails to support claims analysts while preserving authoritative business decision-making.
+
 This capstone implements a controlled Agentic AI workflow for device-protection claim triage.
 
 The solution combines:
@@ -20,6 +22,23 @@ The solution combines:
 The system is a **decision-support prototype**.
 
 It does not independently approve claims, issue final claim denials, determine fraud, authorise payments, or replace an authorised human decision-maker.
+
+## Project at a Glance
+
+| Category | Details |
+|----------|---------|
+| **Architecture** | Rule-Grounded Agentic AI |
+| **Workflow Engine** | LangGraph |
+| **Vector Store** | FAISS (IndexFlatIP) |
+| **Embeddings** | OpenAI text-embedding-3-small |
+| **Retrieval** | Semantic Retrieval + Optional Cross-Encoder Reranking |
+| **Knowledge Base** | 7 Documents → 21 Controlled Chunks |
+| **LLM Role** | Non-authoritative Analyst Guidance |
+| **Evaluation** | Regression, Retrieval, Generation, Safety, Ragas |
+| **Held-out Accuracy** | **89.1% (49 / 55)** |
+| **Regression Tests** | **149 Passed** |
+| **Safety Cases** | **24 (8 Held-out)** |
+| **Primary Principle** | AI explains. Rules decide. Humans remain accountable. |
 
 ---
 
@@ -118,26 +137,25 @@ The project deliberately separates:
 
 ## 5. Solution Architecture
 
-```mermaid
-flowchart TD
-    A[Claim Intake] --> B[Deterministic Triage Tools]
-    B --> C[Rule Precedence and Authoritative Outcome]
-    C --> D[Controlled Follow-up Selection]
+The solution follows a **rule-grounded hybrid architecture** in which deterministic business logic establishes the authoritative claim outcome before any retrieval or language generation occurs. LangGraph orchestrates the workflow, retrieval is restricted to approved operational guidance, and the LLM provides analyst-facing explanations without decision-making authority.
 
-    D --> E{Controlled RAG Enabled?}
-    E -- Yes --> F[Controlled Query from Authoritative Facts]
-    F --> G[FAISS Semantic Retrieval]
-    G --> H[Optional Cross-Encoder Reranking]
-    H --> I[Non-Authoritative Analyst Guidance]
-    E -- No --> J[Explanation Proposal]
-    I --> J
+<p align="center">
+  <img src="docs/images/system_architecture.png"
+       alt="Rule-Grounded Agentic AI Solution Architecture"
+       width="1000">
+</p>
 
-    J --> K[Agent Content-Safety Guardrail]
-    K --> L[Response Authority Guardrail]
-    C -. Authoritative outcome and rule .-> L
-    L --> M[Protected Decision-Support Response]
-    M --> N[Authorised Human Review]
-```
+### Architecture Highlights
+
+- **Authoritative deterministic services** evaluate policy eligibility, coverage, evidence, risk and claim history.
+- **LangGraph** coordinates the end-to-end workflow while preserving protected deterministic state.
+- **Controlled retrieval** constructs retrieval queries only from authoritative structured facts.
+- **FAISS semantic retrieval** searches an allow-listed knowledge base, with optional cross-encoder reranking.
+- **Grounded LLM explanations** assist analysts but cannot override deterministic outcomes.
+- **Content safety and authority guardrails** validate every generated response.
+- **Human analysts** retain responsibility for all operational decisions.
+
+> **Design Principle:** AI explains. Rules decide. Humans remain accountable.
 
 ### Actual LangGraph workflow
 
@@ -166,7 +184,24 @@ The actual compiled graph is displayed in:
 
 ---
 
-## 6. Responsibility and Authority Boundaries
+## 6. Representative Claim Journey
+
+The following example illustrates how a typical screen-damage claim progresses through the governed workflow. Deterministic policy evaluation establishes the authoritative recommendation first, after which controlled retrieval and grounded AI explanations assist the analyst without changing the protected outcome.
+
+<p align="center">
+  <img src="docs/images/one_claim_journey.png"
+       alt="Representative Claim Journey"
+       width="1000">
+</p>
+
+This workflow demonstrates the project's core governance principle:
+
+- deterministic rules establish the recommendation
+- retrieval is limited to approved operational guidance
+- the LLM explains rather than decides
+- guardrails preserve authority boundaries
+- the analyst remains accountable for the final operational action
+## 7. Responsibility and Authority Boundaries
 
 | Solution layer | Role | Authority |
 |---|---|---|
@@ -183,9 +218,9 @@ The actual compiled graph is displayed in:
 
 ---
 
-## 7. Core Components
+## 8. Core Components
 
-### 7.1 Deterministic triage tools
+### 8.1 Deterministic triage tools
 
 The deterministic layer evaluates structured authoritative facts through modular tools covering:
 
@@ -212,13 +247,13 @@ The deterministic result includes:
 - decision-support notice,
 - system limitations.
 
-### 7.2 Controlled follow-up selection
+### 8.2 Controlled follow-up selection
 
 Where information is missing, the workflow selects questions only from an approved follow-up catalogue.
 
 The LLM is not permitted to invent customer-facing follow-up questions.
 
-### 7.3 Controlled RAG
+### 8.3 Controlled RAG
 
 RAG is used only to retrieve approved operational guidance for analysts.
 
@@ -235,7 +270,7 @@ It cannot alter:
 
 The controlled query is built from allow-listed authoritative facts rather than arbitrary customer narrative.
 
-### 7.4 FAISS semantic retrieval
+### 8.4 FAISS semantic retrieval
 
 The semantic retrieval implementation uses:
 
@@ -246,7 +281,7 @@ The semantic retrieval implementation uses:
 - persisted chunk order and corpus fingerprints,
 - stale-index validation.
 
-### 7.5 Cross-encoder reranking
+### 8.5 Cross-encoder reranking
 
 The optional reranking stage uses:
 
@@ -258,7 +293,7 @@ It may reorder retrieved approved chunks only.
 
 It does not generate policy advice or alter deterministic decisions.
 
-### 7.6 LLM explanation support
+### 8.6 LLM explanation support
 
 The LLM receives controlled authoritative facts and proposes an analyst-facing explanation.
 
@@ -270,7 +305,7 @@ The explanation path is governed by:
 - response-authority validation,
 - decision-support-only wording.
 
-### 7.7 Guardrails
+### 8.7 Guardrails
 
 Two primary guardrails protect the final response.
 
@@ -289,7 +324,7 @@ Two primary guardrails protect the final response.
 
 ---
 
-## 8. Synthetic Dataset and Knowledge Base
+## 9. Synthetic Dataset and Knowledge Base
 
 The project uses a purpose-built synthetic dataset created for this academic capstone.
 
@@ -325,7 +360,7 @@ No real customer data, production claims, personal information, or proprietary e
 
 ---
 
-## 9. Technology Stack
+## 10. Technology Stack
 
 | Area | Technology |
 |---|---|
@@ -347,7 +382,7 @@ The frozen generation-quality evaluation used `gpt-5.4-mini` for explanation and
 
 ---
 
-## 10. Repository Structure
+## 11. Repository Structure
 
 ```text
 DP_claims_triage/
@@ -401,16 +436,16 @@ DP_claims_triage/
 
 ---
 
-## 11. Setup
+## 12. Setup
 
-### 11.1 Create the main environment
+### 12.1 Create the main environment
 
 ```bash
 conda create -n dpclaims python=3.11
 conda activate dpclaims
 ```
 
-### 11.2 Install dependencies
+### 12.2 Install dependencies
 
 From the repository root:
 
@@ -418,7 +453,7 @@ From the repository root:
 pip install -r requirements.txt
 ```
 
-### 11.3 Configure OpenAI access for live AI workflows
+### 12.3 Configure OpenAI access for live AI workflows
 
 An OpenAI key is not required for:
 
@@ -444,7 +479,7 @@ Do not commit `.env`.
 
 ---
 
-## 12. Regression Tests
+## 13. Regression Tests
 
 Activate the main environment and move to the repository root:
 
@@ -471,7 +506,7 @@ The final reviewer walkthrough also executes the 149-test suite and validates th
 
 ---
 
-## 13. Execution Modes
+## 14. Execution Modes
 
 ### Mode 1: Reviewer walkthrough
 
@@ -536,7 +571,7 @@ The committed Ragas results should normally be reviewed rather than regenerated.
 
 ---
 
-## 14. Notebook Guide
+## 15. Notebook Guide
 
 | Notebook | Purpose |
 |---|---|
@@ -556,7 +591,7 @@ The committed Ragas results should normally be reviewed rather than regenerated.
 
 ---
 
-## 15. Retrieval Evaluation
+## 16. Retrieval Evaluation
 
 The frozen retrieval benchmark contains 14 manually grounded queries evaluated at `Top K = 3`.
 
@@ -587,7 +622,7 @@ The reranker was not selected as the default because it did not improve the aggr
 
 ---
 
-## 16. Generation Quality Evaluation
+## 17. Generation Quality Evaluation
 
 The generation-quality evaluation used 12 frozen development cases covering all four dispositions.
 
@@ -628,7 +663,7 @@ The LLM judge is therefore treated as a scalable supplementary evaluator, not as
 
 ---
 
-## 17. Automated RAG Evaluation with Ragas
+## 18. Automated RAG Evaluation with Ragas
 
 Ragas was applied to the same 12 frozen generation cases.
 
@@ -660,7 +695,7 @@ The improvement direction is more rule-aware retrieval, not additional RAG decis
 
 ---
 
-## 18. Final Held-Out Evaluation
+## 19. Final Held-Out Evaluation
 
 ### Evaluation protocol
 
@@ -712,7 +747,7 @@ The improvement direction is more rule-aware retrieval, not additional RAG decis
 
 ---
 
-## 19. Held-Out Safety Gate
+## 20. Held-Out Safety Gate
 
 Eight adversarial and edge cases were reserved for final safety evaluation.
 
@@ -731,7 +766,7 @@ The hard safety gate passed.
 
 ---
 
-## 20. Material Limitation
+## 21. Material Limitation
 
 Six ordinary held-out claims were incorrectly routed to `PROCEED`.
 
@@ -773,7 +808,7 @@ The errors arose because some required authoritative conditions were:
 
 ---
 
-## 21. Required Production Improvements
+## 22. Required Production Improvements
 
 Before production use, the following improvements are required.
 
@@ -855,7 +890,7 @@ Production use would additionally require:
 
 ---
 
-## 22. Evaluation Integrity
+## 23. Evaluation Integrity
 
 The held-out prediction artifact is:
 
@@ -878,7 +913,7 @@ Integrity controls:
 
 ---
 
-## 23. Key Evaluation Artifacts
+## 24. Key Evaluation Artifacts
 
 ### Retrieval
 
@@ -934,7 +969,7 @@ data/evaluation/heldout/
 
 ---
 
-## 24. Reviewer Guide
+## 25. Reviewer Guide
 
 For the quickest evidence-based review, use this order:
 
@@ -964,7 +999,7 @@ OK
 
 ---
 
-## 25. Safety and Scope Boundaries
+## 26. Safety and Scope Boundaries
 
 ### The system does not
 
@@ -991,7 +1026,7 @@ OK
 
 ---
 
-## 26. Intentionally Out of Scope
+## 27. Intentionally Out of Scope
 
 The following are outside the approved capstone scope:
 
@@ -1013,7 +1048,7 @@ These exclusions preserve the approved decision-support boundary and the 30–40
 
 ---
 
-## 27. Historical Baseline
+## 28. Historical Baseline
 
 The mid-submission baseline is preserved under:
 
@@ -1031,7 +1066,7 @@ The final reviewer should use the final-submission walkthrough and final evidenc
 
 ---
 
-## 28. Final Project Position
+## 29. Final Project Position
 
 The project demonstrates:
 
