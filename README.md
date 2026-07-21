@@ -26,18 +26,17 @@ It does not independently approve claims, issue final claim denials, determine f
 ## Project at a Glance
 
 | Category | Details |
-|----------|---------|
-| **Architecture** | Rule-Grounded Agentic AI |
+|---|---|
+| **Business Use Case** | Device-protection claims triage |
+| **System Type** | Human-controlled decision-support prototype |
+| **Architecture** | Rule-grounded Agentic AI |
+| **Decision Authority** | Deterministic policy and triage rules |
 | **Workflow Engine** | LangGraph |
-| **Vector Store** | FAISS (IndexFlatIP) |
-| **Embeddings** | OpenAI text-embedding-3-small |
-| **Retrieval** | Semantic Retrieval + Optional Cross-Encoder Reranking |
-| **Knowledge Base** | 7 Documents → 21 Controlled Chunks |
-| **LLM Role** | Non-authoritative Analyst Guidance |
-| **Evaluation** | Regression, Retrieval, Generation, Safety, Ragas |
-| **Held-out Accuracy** | **89.1% (49 / 55)** |
-| **Regression Tests** | **149 Passed** |
-| **Safety Cases** | **24 (8 Held-out)** |
+| **Retrieval** | FAISS semantic retrieval with optional cross-encoder reranking |
+| **Knowledge Base** | 7 approved documents → 21 controlled chunks |
+| **LLM Role** | Non-authoritative analyst explanation support |
+| **Data** | Purpose-built synthetic data with no real customer PII |
+| **Human Control** | Authorised analyst retains final operational accountability |
 | **Primary Principle** | AI explains. Rules decide. Humans remain accountable. |
 
 ---
@@ -404,6 +403,11 @@ DP_claims_triage/
 │   ├── runtime/
 │   └── staging/
 ├── docs/
+│   ├── images/
+│   │   ├── system_architecture.png
+│   │   ├── retrieval_pipeline.png
+│   │   ├── langgraph_workflow.png
+│   │   └── one_claim_journey.png
 │   ├── architecture_decisions.md
 │   ├── evaluation_summary.md
 │   ├── final_rubric_evidence_matrix.md
